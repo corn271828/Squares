@@ -29,6 +29,8 @@ public class Level {
     protected String levelLabel; // Name of Level
     protected String[][] design; // level layout
     private String levelCode;
+
+	public final Block[][] blocks;
     
     protected int startPosRow = -78954; // Starting position in indices
     protected int startPosCol = -84739;
@@ -42,28 +44,6 @@ public class Level {
     public static final char LAUNCHER_BLOCK_CHAR = 'L';
     public static final char BLASTER_BLOCK_CHAR = 'B';
     public static final char CANNON_BLOCK_CHAR = 'C';
-    
-    public Level(String[][] in, String label) {
-        design = new String[in.length][in[0].length];
-        for (int i = 0; i < in.length; i++)
-            for (int j = 0; j < in[0].length; j++)
-            {
-                design[i][j] = in[i][j];
-                if(in[i][j].length() > 0)
-                    switch(in[i][j].charAt(0)) {
-                        case START_CHAR:
-                            startPosRow = i;
-                            startPosCol = j;
-                            break;
-                        case END_CHAR:
-                            endPosRow = i;
-                            endPosCol = j;
-                            break;
-                    }
-            }
-        levelLabel = label;
-        levelCode = "\"\\\"";
-    }
     
     public Level(String[][] in, String label, String code) {
         design = new String[in.length][in[0].length];
@@ -84,7 +64,84 @@ public class Level {
                     }
             }
         levelLabel = label;
-        levelCode = eviscerator(code);
+        levelCode = code == null ? "\"\\\"" : eviscerator(code);
+		blocks = new Block[in.length][in[0].length];
+        for (int rowNumber = 0; rowNumber < in.length; rowNumber++) {
+            for (int columnNumber = 0; columnNumber < in[0].length; columnNumber++) {
+                
+                Block hold = null;
+                if(in[rowNumber][columnNumber] == null || 
+                        "".equals(in[rowNumber][columnNumber]))
+                    continue;
+                switch(in[rowNumber][columnNumber].charAt(0)) {
+                    case START_CHAR:
+                    case NORMAL_BLOCK_CHAR:
+                        hold = new Block.NormalBlock();
+                        break;
+                        
+                    case END_CHAR:
+                        hold = new Block.EndingBlock();
+                        break;
+                        
+                    case LAUNCHER_BLOCK_CHAR:
+                        switch(in[rowNumber][columnNumber].charAt(1)) {
+                            case '^':
+                                hold = new Block.LauncherBlock(Block.Direction.UP);
+                                break;
+                            case '>':
+                                hold = new Block.LauncherBlock(Block.Direction.RIGHT);
+                                break;
+                            case 'v':
+                                hold = new Block.LauncherBlock(Block.Direction.DOWN);
+                                break;
+                            case '<':
+                                hold = new Block.LauncherBlock(Block.Direction.LEFT);
+                                break;
+                        }
+                        break;
+                        
+                    case BLASTER_BLOCK_CHAR:
+                        int dbs = Integer.parseInt(in[rowNumber][columnNumber].substring(2,4));
+                        int fbs = Integer.parseInt(in[rowNumber][columnNumber].substring(4,6));
+                        int delay = 1;
+                        if (in[rowNumber][columnNumber].length() > 6)
+                            delay = Integer.parseInt(in[rowNumber][columnNumber].substring(6, 8));
+                        
+                        switch(in[rowNumber][columnNumber].charAt(1)) {
+                            case '^':
+                                hold = new Block.BlasterBlock(Block.Direction.UP, dbs, fbs, delay);
+                                break;
+                            case '>':
+                                hold = new Block.BlasterBlock(Block.Direction.RIGHT, dbs, fbs, delay);
+                                break;
+                            case 'v':
+                                hold = new Block.BlasterBlock(Block.Direction.DOWN, dbs, fbs, delay);
+                                break;
+                            case '<':
+                                hold = new Block.BlasterBlock(Block.Direction.LEFT, dbs, fbs, delay);
+                                break;
+                        }
+                        break;
+                        
+                    case CANNON_BLOCK_CHAR:
+                        dbs = Integer.parseInt(in[rowNumber][columnNumber].substring(1,3));
+                        fbs = Integer.parseInt(in[rowNumber][columnNumber].substring(3,5));
+                        delay = 1;
+                        if (in[rowNumber][columnNumber].length() > 5)
+                            delay = Integer.parseInt(in[rowNumber][columnNumber].substring(5, 7));
+                        
+                        hold = new Block.CannonBlock(dbs, fbs, delay);
+                        
+                        break;
+                }
+                blocks[rowNumber][columnNumber] = hold;
+            }
+            
+        }
+    }
+    
+    public Level(String[][] in, String label) {
+		this(in, label, null);
     }
     
     private String eviscerator(String input) {
