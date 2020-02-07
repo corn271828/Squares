@@ -23,7 +23,7 @@ public class ResourceLocator {
 			}
 		}
 		if(!okay)
-			throw new IllegalArgumentException("Could not locate file: " + this.path);
+			throw new IllegalArgumentException("Not Okay - Could not locate file: " + this.path);
 	}
 	public BufferedReader asBufferedReader() {
 		return new BufferedReader(new java.io.InputStreamReader(stream));
