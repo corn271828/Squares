@@ -47,10 +47,6 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int maxLevelIndex = currentLevelIndex;
     public int holdLevelIndex = currentLevelIndex;
 
-    public static final int RIGHT_KEY_PRESS = 39;
-    public static final int LEFT_KEY_PRESS = 37;
-    public static final int DOWN_KEY_PRESS = 40;
-    public static final int UP_KEY_PRESS = 38;
 
     public ArrayList<BlasterBlock.Blast> blasts = new ArrayList<>();
     public ArrayList<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
@@ -554,40 +550,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         if(player.charState != CharacterState.NORMAL) {
             return;
         }
-        switch (evt.getKeyCode()) { // move
-            case RIGHT_KEY_PRESS:
-            case 'D':
-                if (player.xPosition == player.level.blocks[0].length - 1)
-                    return;
-                if (player.level.blocks[player.yPosition][player.xPosition + 1] == null || !player.level.blocks[player.yPosition][player.xPosition + 1].stepable)
-                    return;
-                player.xPosition++;
-                break;
-            case LEFT_KEY_PRESS:
-            case 'A':
-                if (player.xPosition == 0)
-                    return;
-                if (player.level.blocks[player.yPosition][player.xPosition - 1] == null || !player.level.blocks[player.yPosition][player.xPosition - 1].stepable)
-                    return;
-                player.xPosition--;
-                break;
-            case DOWN_KEY_PRESS:
-            case 'S':
-                if (player.yPosition == player.level.blocks.length - 1)
-                    return;
-                if (player.level.blocks[player.yPosition + 1][player.xPosition] == null || !player.level.blocks[player.yPosition + 1][player.xPosition].stepable)
-                    return;
-                player.yPosition++;
-                break;
-            case UP_KEY_PRESS:
-            case 'W':
-                if (player.yPosition == 0)
-                    return;
-                if (player.level.blocks[player.yPosition - 1][player.xPosition] == null || !player.level.blocks[player.yPosition - 1][player.xPosition].stepable)
-                    return;
-                player.yPosition--;
-                break;
-        }
+        
+        player.callMove(evt.getKeyCode());
+        
         player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         if (player.charState == CharacterState.NORMAL) {
