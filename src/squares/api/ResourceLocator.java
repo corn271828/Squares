@@ -2,7 +2,6 @@ package squares.api;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import javax.sound.sampled.AudioInputStream;
 
 public class ResourceLocator {
@@ -16,6 +15,7 @@ public class ResourceLocator {
 		for(String prefix: prefices) {
 			stream = getClass().getResourceAsStream(prefix + path);
 			if(stream != null) {
+				stream = new java.io.BufferedInputStream(stream);
 				okay = true;
 				break;
 			}
@@ -24,7 +24,7 @@ public class ResourceLocator {
 			throw new IllegalArgumentException("Could not locate file: " + path);
 	}
 	public BufferedReader asBufferedReader() {
-		return new BufferedReader(new InputStreamReader(stream));
+		return new BufferedReader(new java.io.InputStreamReader(stream));
 	}
 	public AudioInputStream asAudioStream() throws javax.sound.sampled.UnsupportedAudioFileException, java.io.IOException {
 		return javax.sound.sampled.AudioSystem.getAudioInputStream(stream);
