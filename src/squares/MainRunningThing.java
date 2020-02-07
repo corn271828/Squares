@@ -5,7 +5,7 @@
  */
 package squares;
 
-import Block.Block;
+import Block.*;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;

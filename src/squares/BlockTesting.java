@@ -5,7 +5,7 @@
  */
 package squares;
 
-import Block.Block;
+import Block.*;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -88,7 +88,7 @@ public class BlockTesting extends javax.swing.JFrame {
     
     @Override
     public void paint(Graphics g) {
-        Block normalBlock = new Block.NormalBlock();
+        Block normalBlock = new NormalBlock();
         normalBlock.getIcon().paintIcon(this, g, 100, 100);
         g.fillRect(90, 100, 10, 81);
     }
