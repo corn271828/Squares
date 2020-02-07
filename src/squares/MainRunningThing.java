@@ -28,6 +28,7 @@ import javax.swing.ImageIcon;
 
 import squares.api.CharacterState;
 import squares.api.ResourceLocator;
+import squares.block.*;
 
 import static squares.api.RenderingConstants.*;
 
@@ -48,19 +49,19 @@ public class MainRunningThing extends javax.swing.JFrame {
     public long clipTimeHolder = 0;
     public AudioInputStream bossMusicStream;
     public Clip bossClip;
-    
+
     public int currentLevelIndex = 0; // INDEX of current level (add one to get level number)
     public int maxLevelIndex = currentLevelIndex;
     public int holdLevelIndex = currentLevelIndex;
-    
+
     public static final int RIGHT_KEY_PRESS = 39;
     public static final int LEFT_KEY_PRESS = 37;
     public static final int DOWN_KEY_PRESS = 40;
     public static final int UP_KEY_PRESS = 38;
     
-    public ArrayList<Block.BlasterBlock.Blast> blasts = new ArrayList<>();
+    public ArrayList<BlasterBlock.Blast> blasts = new ArrayList<>();
     public ArrayList<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
-    
+
     public Color transitioning = null;
     public boolean isSwitching = false;
     public int opacity = 0;
@@ -73,26 +74,26 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int timestamp;
     public int endx; //Border of block drawings; used to determine when ammunition disappears
     public int endy;
-    
+
     public boolean isIFrame = false;
     public int iframeStart = 0;
     public int iframeTime = 10;
     public int currentLevelHealth = 1;
     public int currentHP = 1;
-    
+
     public Area clipholder;
     public Area ouchArea;
-    
+
     public static final ImageIcon characterIconAlive = new ImageIcon("Pics/Character.png", "Character image");
-    
+
     public static final boolean SEE_OVERLAP = false;
     public boolean musicOn = true;
     public static final int PRACTICE_MODE_LIVES = 100;
     public boolean isPracticeMode = false;
-    
+
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 100;
-    
+
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
     public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("sjbossscript.txt"));
@@ -102,256 +103,227 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final ImageIcon LEAGIF = new ImageIcon("Pics/lea.gif");
     public boolean isLeaGif = false;
     public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
-    
-    public Level[] levels = new Level[] {
-        
-        
-        // ang,  xvel,  yvel,  xa,  ya,  angvel
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "N",    "O"}
-        }
-        , "1", "Ap_lEs"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "" ,    "N",    "O"},
-            new String[] {  "N",    "" ,    "N",    ""},
-            new String[] {  "N",    "N",    "N",    ""}
-        }
-        , "2", "BaKAr_Na"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "L>" ,  "",     "N",    "O"}
-        }
-        , "3", "P0TaTo_$"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "N",    "Lv"},
-            new String[] {  "",     "",     ""},
-            new String[] {  "Lv",   "N",    "N"},
-            new String[] {  "",     "",     ""},
-            new String[] {  "N",    "N",    "O"}
-        }
-        , "4", "C_oSsC0dE"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "" ,    "N",    "Lv", "N",   "O"},
-            new String[] {  "N",    "" ,    "",     "",   "",    ""},
-            new String[] {  "L>",   "" ,    "",     "",   "",    "N"},
-            new String[] {  "N",    "" ,    "",     "",   "",    "L<"},
-            new String[] {  "L>",   "" ,    "",     "",   "",    "N"},
-            new String[] {  "N",    "" ,    "",     "",   "",    "L<"},
-            new String[] {  "N",    "N" ,   "L^",   "N", "L^",   ""}
-        }
-        , "5", "_eLe$tE"),
-        
-        new Level(new String[][] {
-            new String[] {  "",     "" ,    "L>",   "",     "Lv"},
-            new String[] {  "X",    "L>" ,  "",     "Lv",   ""},
-            new String[] {  "",     "" ,    "",     "",     ""},
-            new String[] {  "O",    "" ,    "",     "",     "L<"},
-            new String[] {  "",     "" ,    "L^",   "L<",   ""},
-        }
-        , "6", "UnD_rTAle"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "L>" ,  "Lv",   "N",    "Lv",   "L>",   "N"},
-            new String[] {  "Lv",   "" ,    "",     "L^",   "",     "",     "L<"},
-            new String[] {  "L>",   "" ,    "",     "",     "",     "",     "Lv"},
-            new String[] {  "N",    "L^" ,  "",     "",     "",     "",     "N"},
-            new String[] {  "L^",   "Lv" ,  "",     "",     "",     "",     "L<"},
-            new String[] {  "L^",   "" ,    "",     "L<",   "L>",   "",     "Lv"},
-            new String[] {  "N",    "L<" ,  "L>",   "N",    "L>",   "L^",   "O"}
-        }
-        , "7", "BoWsEtTe"),
-        
-        new Level(new String[][] {
-            new String[] {  "",     "",     "Bv153005",   ""},
-            new String[] {  "",     "",      "",     ""},
-            new String[] {  "X",    "N",    "N",    "O"}
-        }
-        , "8", "0vER_Ord"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "Bv2030" ,      "N",    "O"},
-            new String[] {  "N",    "B>1530" ,      "N",    "B<1530"},
-            new String[] {  "N",    "N",            "N",    ""}
-        }
-        , "9", "KoN0sUb_"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "Bv2540" ,  "N",    "O"},
-            new String[] {  "Lv",   "" ,        "",     "B<1530"},
-            new String[] {  "",     "",         "",     "B<2025"},
-            new String[] {  "N",    "N",        "L^",   ""}
-        }
-        , "10", "NGaMeNL_fe"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "" ,      "",    ""},
-            new String[] {  "N",    "N" ,      "B<3020",  ""},
-            new String[] {  "N",    "",       "",    ""},
-            new String[] {  "N",    "N",      "N",    ""},
-            new String[] {  "",    "",        "N",    "B<1530"},
-            new String[] {  "B^3520",    "",  "O",    ""}
-        }
-        , "11", "BonG0cAT"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "Bv2015" ,    "N",    "Lv", "N",   "O"},
-            new String[] {  "N",    "Bv3020" ,    "",     "",   "",    ""},
-            new String[] {  "L>",   "" ,    "",     "",   "",    "N"},
-            new String[] {  "N",    "" ,    "",     "",   "",    "L<"},
-            new String[] {  "L>",   "" ,    "",     "",   "",    "N"},
-            new String[] {  "N",    "" ,    "B>3040",     "",   "",    "L<"},
-            new String[] {  "N",    "N" ,   "L^",   "N", "L^",   "B<4015"}
-        }
-        , "12", "HyPErfAnG"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "Bv104001" ,    "Bv104002",    "Bv104003", ""},
-            new String[] {  "N",    "" ,    "",     "",   "B<2015"},
-            new String[] {  "N",   "" ,    "",     "",    "B<201503"},
-            new String[] {  "N",    "" ,    "",     "",   "B<201505"},
-            new String[] {  "L>",   "" ,    "",     "",   "N"},
-            new String[] {  "O",    "" ,    "",     "",    "L<"}
-        }
-        , "13", "SHaDoWs"),
-            
-        new Level(new String[][] {
-            new String[] {  "X",    "" ,      "N",    "O"},
-            new String[] {  "N",    "" ,      "N",    "B<1520"},
-            new String[] {  "N",    "N",      "N",    "B<2525"},
-            new String[] {  "",     "N",      "B^3010",     ""}
-        }
-        , "14", "SwRDrTnLn"),
-            
-        new Level(new String[][] {
-            new String[] {  "",    "" ,      "C153005",    ""},
-            new String[] {  "",    "" ,      "",    ""},
-            new String[] {  "X",    "N",      "N",    "O"}
-        }
-        , "15", "L0gHriZn"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "C2020" ,      "N",    "O"},
-            new String[] {  "N",    "C1510" ,      "N",    "C1510"},
-            new String[] {  "N",    "N",           "N",    ""}
-        }
-        , "16", "1PnchMaN"),
-        
-        new Level(new String[][] {
-            new String[] {  "B>302505",  "X",    "C2020",   "N",   "Lv",  "N", "Lv"},
-            new String[] {  "B>201505",  "Lv",   "",   "",    "",    "",   ""},
-            new String[] {  "O",         "" ,    "",   "",    "",    "",   "L<"},
-            new String[] {  "B>302520",  "N",    "N",   "L^",  "N",   "L^", "C2020"}
-        }
-        , "17", "c6H12o6"),
-        
-        new Level(new String[][] {
-            new String[] {  "",    "X" ,      "N",    "",       "" ,    "Bv302025",   ""},
-            new String[] {  "",    "N" ,      "",     "C202004",  "",     "",         ""},
-            new String[] {  "N",   "N",       "",     "",       "",     "N",        "O"},
-            new String[] {  "",    "N",       "",     "",       "N",    "N",        ""},
-            new String[] { "N",    "N" ,      "",     "",       "",     "N",        "N"},
-            new String[] { "",     "N" ,      "N",    "N",      "N",    "N",        "B<3020"},
-            new String[] { "",     "B^302005" , "N",    "",       "N",     "",        ""}
-        }
-        , "18", "CelsAtwRk"),
-        
-        new SJBossFight(new String[][] {
-            new String[] {  "", "", "",     "",    "",    "",   "", "", ""},
-            new String[] {  "", "", "",     "",    "",    "",   "", "", ""},
-            new String[] {  "", "", "N",    "N",    "N",  "N",  "N", "", ""},
-            new String[] {  "", "", "N",    "N",    "N",  "N",  "N", "", ""},
-            new String[] {  "", "", "N",    "N",    "X",  "N",  "N", "", ""},
-            new String[] {  "", "", "N",    "N",    "N",  "N",  "N", "", ""},
-            new String[] {  "", "", "N",    "N",    "N",  "N",  "N", "", ""},
-            new String[] {  "", "",  "",     "",    "",    "",   "", "", ""},
-            new String[] {  "", "", "",     "",    "",    "",   "", "", ""}
-        }
-        , "BOSS", 20, new ResourceLocator("sjbossfight_easy.txt"), "YoUJ0snKi"),
-        
-        new Level(new String[][] {
-            new String[] {  "", "",     "",    "",    "",   "", ""},
-            new String[] {  "", "X",    "N",    "N",  "N",  "N", ""},
-            new String[] {  "", "N",    "N",    "N",  "N",  "N", ""},
-            new String[] {  "", "C201010",     "",    "",    "",   "N", ""},
-            new String[] {  "", "N",    "N",    "N",  "N",  "N", ""},
-            new String[] { "", "O",    "N",    "N",  "N",  "N", ""},
-            new String[] {  "", "",     "",    "",    "",   "", ""}
-        }
-        , "-4", "No!n0!i"),
-        
-        new Level(new String[][] {
-            new String[] {  "", "",     "",    "",    "",   "", ""},
-            new String[] {  "", "X",    "N",    "N",  "N",  "N", ""},
-            new String[] {  "", "N",    "N",    "N",  "N",  "N", ""},
-            new String[] {  "", "C201010",     "",    "",    "",   "N", ""},
-            new String[] {  "", "N",    "N",    "N",  "N",  "N", ""},
-            new String[] { "", "O",    "N",    "N",  "N",  "N", ""},
-            new String[] {  "", "",     "",    "",    "",   "", ""}
-        }
-        , "-3", "foRKnSpO0n"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "N",    "N",  "N",  "N"},
-            new String[] {  "N",    "N",    "N",  "N",  "N"},
-            new String[] {  "C201010",     "",    "",  "",     "N"},
-            new String[] {  "N",    "N",    "N",  "N",  "N"},
-            new String[] {  "O",    "N",    "N",  "N",  "N"}
-        }
-        , "-2", "CppErHeD"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "N",    "",  "N",  "N", "N"},
-            new String[] {  "",    "N",    "N",  "N",  "",  "N"},
-            new String[] {  "C201005",     "",    "",    "C201005",   "N", "N"},
-            new String[] {  "N",    "N",    "N",  "",  "N",  ""},
-            new String[] {  "O",    "",    "N",  "N",  "N",  ""}
-        }
-        , "-1", "ThIsiShaRD"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "N",    "N",  "N",  "N"},
-            new String[] {  "N",    "N",    "N",  "N",  "N"},
-            new String[] {  "C201005",     "",    "",  "",  "N"},
-            new String[] {  "N",    "N",    "N",  "N",  "N"},
-            new String[] {  "O",    "N",    "N",  "N",  "N"}
-        }
-        , "0", "cHaoSchA0s"),
-        
-        new Level(new String[][] {
-            new String[] {  "X",    "N",    "O"}
-        }
-        , "1", "soEasyyy"),
-        
-        new SJBossFight(new String[][] {
-            new String[] {  "", "", "",     "",    "",    "",   "", "", ""},
-            new String[] {  "", "", "",     "",    "",    "",   "", "", ""},
-            new String[] {  "", "", "N",    "N",    "N",  "N",  "N", "", ""},
-            new String[] {  "", "", "N",    "N",    "N",  "N",  "N", "", ""},
-            new String[] {  "", "", "N",    "N",    "X",  "N",  "N", "", ""},
-            new String[] {  "", "", "N",    "N",    "N",  "N",  "N", "", ""},
-            new String[] {  "", "", "N",    "N",    "N",  "N",  "N", "", ""},
-            new String[] {  "", "",  "",     "",    "",    "",   "", "", ""},
-            new String[] {  "", "", "",     "",    "",    "",   "", "", ""}
-        }
-        , "BOSS", 10, new ResourceLocator("sjbossfight.txt"), "wHThvIdn"),
 
-        new Level(new String[][] {
-            new String[] {  "Lv",    "N",    "",    "L<",    "N"},
-            new String[] {  "",    "Lv",    "N",   "N",     "N"},
-            new String[] {  "",    "",    "X",     "",       ""},
-            new String[] {  "N",    "N",    "N",    "L^",    ""},
-            new String[] {  "N",    "L>",    "",    "N",    "L^"}
-        }
-        , "CONGRATS!", "tHxF0rPlynG")
+    public Level[] levels = new Level[]{
+        // ang,  xvel,  yvel,  xa,  ya,  angvel
+
+        new Level(new String[][]{
+            new String[]{"X", "N", "O"}
+        },
+         "1", "Ap_lEs"),
+        new Level(new String[][]{
+            new String[]{"X", "", "N", "O"},
+            new String[]{"N", "", "N", ""},
+            new String[]{"N", "N", "N", ""}
+        },
+         "2", "BaKAr_Na"),
+        new Level(new String[][]{
+            new String[]{"X", "L>", "", "N", "O"}
+        },
+         "3", "P0TaTo_$"),
+        new Level(new String[][]{
+            new String[]{"X", "N", "Lv"},
+            new String[]{"", "", ""},
+            new String[]{"Lv", "N", "N"},
+            new String[]{"", "", ""},
+            new String[]{"N", "N", "O"}
+        },
+         "4", "C_oSsC0dE"),
+        new Level(new String[][]{
+            new String[]{"X", "", "N", "Lv", "N", "O"},
+            new String[]{"N", "", "", "", "", ""},
+            new String[]{"L>", "", "", "", "", "N"},
+            new String[]{"N", "", "", "", "", "L<"},
+            new String[]{"L>", "", "", "", "", "N"},
+            new String[]{"N", "", "", "", "", "L<"},
+            new String[]{"N", "N", "L^", "N", "L^", ""}
+        },
+         "5", "_eLe$tE"),
+        new Level(new String[][]{
+            new String[]{"", "", "L>", "", "Lv"},
+            new String[]{"X", "L>", "", "Lv", ""},
+            new String[]{"", "", "", "", ""},
+            new String[]{"O", "", "", "", "L<"},
+            new String[]{"", "", "L^", "L<", ""},},
+         "6", "UnD_rTAle"),
+        new Level(new String[][]{
+            new String[]{"X", "L>", "Lv", "N", "Lv", "L>", "N"},
+            new String[]{"Lv", "", "", "L^", "", "", "L<"},
+            new String[]{"L>", "", "", "", "", "", "Lv"},
+            new String[]{"N", "L^", "", "", "", "", "N"},
+            new String[]{"L^", "Lv", "", "", "", "", "L<"},
+            new String[]{"L^", "", "", "L<", "L>", "", "Lv"},
+            new String[]{"N", "L<", "L>", "N", "L>", "L^", "O"}
+        },
+         "7", "BoWsEtTe"),
+        new Level(new String[][]{
+            new String[]{"", "", "Bv153005", ""},
+            new String[]{"", "", "", ""},
+            new String[]{"X", "N", "N", "O"}
+        },
+         "8", "0vER_Ord"),
+        new Level(new String[][]{
+            new String[]{"X", "Bv2030", "N", "O"},
+            new String[]{"N", "B>1530", "N", "B<1530"},
+            new String[]{"N", "N", "N", ""}
+        },
+         "9", "KoN0sUb_"),
+        new Level(new String[][]{
+            new String[]{"X", "Bv2540", "N", "O"},
+            new String[]{"Lv", "", "", "B<1530"},
+            new String[]{"", "", "", "B<2025"},
+            new String[]{"N", "N", "L^", ""}
+        },
+         "10", "NGaMeNL_fe"),
+        new Level(new String[][]{
+            new String[]{"X", "", "", ""},
+            new String[]{"N", "N", "B<3020", ""},
+            new String[]{"N", "", "", ""},
+            new String[]{"N", "N", "N", ""},
+            new String[]{"", "", "N", "B<1530"},
+            new String[]{"B^3520", "", "O", ""}
+        },
+         "11", "BonG0cAT"),
+        new Level(new String[][]{
+            new String[]{"X", "Bv2015", "N", "Lv", "N", "O"},
+            new String[]{"N", "Bv3020", "", "", "", ""},
+            new String[]{"L>", "", "", "", "", "N"},
+            new String[]{"N", "", "", "", "", "L<"},
+            new String[]{"L>", "", "", "", "", "N"},
+            new String[]{"N", "", "B>3040", "", "", "L<"},
+            new String[]{"N", "N", "L^", "N", "L^", "B<4015"}
+        },
+         "12", "HyPErfAnG"),
+        new Level(new String[][]{
+            new String[]{"X", "Bv104001", "Bv104002", "Bv104003", ""},
+            new String[]{"N", "", "", "", "B<2015"},
+            new String[]{"N", "", "", "", "B<201503"},
+            new String[]{"N", "", "", "", "B<201505"},
+            new String[]{"L>", "", "", "", "N"},
+            new String[]{"O", "", "", "", "L<"}
+        },
+         "13", "SHaDoWs"),
+        new Level(new String[][]{
+            new String[]{"X", "", "N", "O"},
+            new String[]{"N", "", "N", "B<1520"},
+            new String[]{"N", "N", "N", "B<2525"},
+            new String[]{"", "N", "B^3010", ""}
+        },
+         "14", "SwRDrTnLn"),
+        new Level(new String[][]{
+            new String[]{"", "", "C153005", ""},
+            new String[]{"", "", "", ""},
+            new String[]{"X", "N", "N", "O"}
+        },
+         "15", "L0gHriZn"),
+        new Level(new String[][]{
+            new String[]{"X", "C2020", "N", "O"},
+            new String[]{"N", "C1510", "N", "C1510"},
+            new String[]{"N", "N", "N", ""}
+        },
+         "16", "1PnchMaN"),
+        new Level(new String[][]{
+            new String[]{"B>302505", "X", "C2020", "N", "Lv", "N", "Lv"},
+            new String[]{"B>201505", "Lv", "", "", "", "", ""},
+            new String[]{"O", "", "", "", "", "", "L<"},
+            new String[]{"B>302520", "N", "N", "L^", "N", "L^", "C2020"}
+        },
+         "17", "c6H12o6"),
+        new Level(new String[][]{
+            new String[]{"", "X", "N", "", "", "Bv302025", ""},
+            new String[]{"", "N", "", "C202004", "", "", ""},
+            new String[]{"N", "N", "", "", "", "N", "O"},
+            new String[]{"", "N", "", "", "N", "N", ""},
+            new String[]{"N", "N", "", "", "", "N", "N"},
+            new String[]{"", "N", "N", "N", "N", "N", "B<3020"},
+            new String[]{"", "B^302005", "N", "", "N", "", ""}
+        },
+         "18", "CelsAtwRk"),
+        new SJBossFight(new String[][]{
+            new String[]{"", "", "", "", "", "", "", "", ""},
+            new String[]{"", "", "", "", "", "", "", "", ""},
+            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
+            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
+            new String[]{"", "", "N", "N", "X", "N", "N", "", ""},
+            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
+            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
+            new String[]{"", "", "", "", "", "", "", "", ""},
+            new String[]{"", "", "", "", "", "", "", "", ""}
+        },
+         "BOSS", 20, new ResourceLocator("sjbossfight_easy.txt"), "YoUJ0snKi"),
+        new Level(new String[][]{
+            new String[]{"", "", "", "", "", "", ""},
+            new String[]{"", "X", "N", "N", "N", "N", ""},
+            new String[]{"", "N", "N", "N", "N", "N", ""},
+            new String[]{"", "C201010", "", "", "", "N", ""},
+            new String[]{"", "N", "N", "N", "N", "N", ""},
+            new String[]{"", "O", "N", "N", "N", "N", ""},
+            new String[]{"", "", "", "", "", "", ""}
+        },
+         "-4", "No!n0!i"),
+        new Level(new String[][]{
+            new String[]{"", "", "", "", "", "", ""},
+            new String[]{"", "X", "N", "N", "N", "N", ""},
+            new String[]{"", "N", "N", "N", "N", "N", ""},
+            new String[]{"", "C201010", "", "", "", "N", ""},
+            new String[]{"", "N", "N", "N", "N", "N", ""},
+            new String[]{"", "O", "N", "N", "N", "N", ""},
+            new String[]{"", "", "", "", "", "", ""}
+        },
+         "-3", "foRKnSpO0n"),
+        new Level(new String[][]{
+            new String[]{"X", "N", "N", "N", "N"},
+            new String[]{"N", "N", "N", "N", "N"},
+            new String[]{"C201010", "", "", "", "N"},
+            new String[]{"N", "N", "N", "N", "N"},
+            new String[]{"O", "N", "N", "N", "N"}
+        },
+         "-2", "CppErHeD"),
+        new Level(new String[][]{
+            new String[]{"X", "N", "", "N", "N", "N"},
+            new String[]{"", "N", "N", "N", "", "N"},
+            new String[]{"C201005", "", "", "C201005", "N", "N"},
+            new String[]{"N", "N", "N", "", "N", ""},
+            new String[]{"O", "", "N", "N", "N", ""}
+        },
+         "-1", "ThIsiShaRD"),
+        new Level(new String[][]{
+            new String[]{"X", "N", "N", "N", "N"},
+            new String[]{"N", "N", "N", "N", "N"},
+            new String[]{"C201005", "", "", "", "N"},
+            new String[]{"N", "N", "N", "N", "N"},
+            new String[]{"O", "N", "N", "N", "N"}
+        },
+         "0", "cHaoSchA0s"),
+        new Level(new String[][]{
+            new String[]{"X", "N", "O"}
+        },
+         "1", "soEasyyy"),
+        new SJBossFight(new String[][]{
+            new String[]{"", "", "", "", "", "", "", "", ""},
+            new String[]{"", "", "", "", "", "", "", "", ""},
+            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
+            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
+            new String[]{"", "", "N", "N", "X", "N", "N", "", ""},
+            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
+            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
+            new String[]{"", "", "", "", "", "", "", "", ""},
+            new String[]{"", "", "", "", "", "", "", "", ""}
+        },
+         "BOSS", 10, new ResourceLocator("sjbossfight.txt"), "wHThvIdn"),
+        new Level(new String[][]{
+            new String[]{"Lv", "N", "", "L<", "N"},
+            new String[]{"", "Lv", "N", "N", "N"},
+            new String[]{"", "", "X", "", ""},
+            new String[]{"N", "N", "N", "L^", ""},
+            new String[]{"N", "L>", "", "N", "L^"}
+        },
+         "CONGRATS!", "tHxF0rPlynG")
     };
-    
+
     public int[] deathCount = new int[levels.length];
     public int totalDeathCount = 0;
-    
+
     /**
      * Creates new form MainRunningThing
      */
@@ -539,7 +511,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
-        
+
     }//GEN-LAST:event_formKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -556,15 +528,18 @@ public class MainRunningThing extends javax.swing.JFrame {
     @SuppressWarnings("fallthrough")
     private void jPanel1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyReleased
         // TODO add your handling code here:
-        if (player.level.blocks.length == 0)
+        if (player.level.blocks.length == 0) {
             return;
+        }
         //System.out.println(evt.getKeyCode());
-        
-        switch(evt.getKeyCode()) {
+
+        switch (evt.getKeyCode()) {
             case 'T':
                 if (levels[currentLevelIndex] instanceof SJBossFight) {
                     tasActive = !tasActive;
                     timestart = Instant.now();
+                } else {
+                    break;
                 }
             case 'R':
                 if (player.charState == CharacterState.NORMAL || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING) {
@@ -588,19 +563,22 @@ public class MainRunningThing extends javax.swing.JFrame {
                 break;
             case 'V':
                 if (levels[currentLevelIndex] instanceof Level.BossLevel && isPracticeMode) {
-                    if (checkpointTimes.size() > 0)
+                    if (checkpointTimes.size() > 0) {
                         checkpointTimes.pollLast();
+                    }
                 }
             case 'B':
                 checkpointTimes.clear();
-                
+
         }
-        if (tasActive)
+        if (tasActive) {
             return;
-        if(player.charState != CharacterState.NORMAL)
+        }
+        if(player.charState != CharacterState.NORMAL) {
             return;
-        switch(evt.getKeyCode()) {
-            case RIGHT_KEY_PRESS: 
+        }
+        switch (evt.getKeyCode()) {
+            case RIGHT_KEY_PRESS:
             case 'D':
                 if (player.xPosition == player.level.blocks[0].length - 1)
                     return;
@@ -608,7 +586,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                     return;
                 player.xPosition++;
                 break;
-            case LEFT_KEY_PRESS: 
+            case LEFT_KEY_PRESS:
             case 'A':
                 if (player.xPosition == 0)
                     return;
@@ -616,7 +594,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                     return;
                 player.xPosition--;
                 break;
-            case DOWN_KEY_PRESS: 
+            case DOWN_KEY_PRESS:
             case 'S':
                 if (player.yPosition == player.level.blocks.length - 1)
                     return;
@@ -624,7 +602,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                     return;
                 player.yPosition++;
                 break;
-            case UP_KEY_PRESS: 
+            case UP_KEY_PRESS:
             case 'W':
                 if (player.yPosition == 0)
                     return;
@@ -674,9 +652,9 @@ public class MainRunningThing extends javax.swing.JFrame {
                 break;
             }
         }
-        if (hold == -1)
+        if (hold == -1) {
             System.out.println("Not a code.");
-        else {
+        } else {
             holdLevelIndex = hold;
             levelFinished();
         }
@@ -701,7 +679,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel1MouseClicked
 
     private void jSpinner_LevelPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSpinner_LevelPropertyChange
-        
+
     }//GEN-LAST:event_jSpinner_LevelPropertyChange
 
     private void jSpinner_LevelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSpinner_LevelMouseClicked
@@ -713,12 +691,12 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     private void jSpinner_LevelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_LevelStateChanged
         // TODO add your handling code here:
-        int requested = Integer.parseInt(jSpinner_Level.getValue().toString());
+        int requested = Integer.parseInt(jSpinner_Level.getValue().toString()) - 1;
         if (requested <= maxLevelIndex && currentLevelIndex != requested) {
-            holdLevelIndex = requested - 1;
+            holdLevelIndex = requested;
             levelFinished();
         } else {
-            jSpinner_Level.setValue(Integer.valueOf(currentLevelIndex));
+            jSpinner_Level.setValue(currentLevelIndex + 1);
         }
     }//GEN-LAST:event_jSpinner_LevelStateChanged
 
@@ -754,7 +732,6 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-                
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -765,7 +742,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     
     // Loads player.level.blocks
     public void loadLevel() {
-        
+
         tasActive = false;
         checkpointTimes.clear();
         timestamp = 0;
@@ -773,12 +750,13 @@ public class MainRunningThing extends javax.swing.JFrame {
         Level currentLevel = player.level;
         
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
-            if (isPracticeMode && checkpointTimes.size() > 0)
+            if (isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
-            else
+            } else {
                 timestamp = bossTestStartTime;
+            }
         }
-            
+
         String[][] currentLevelDesign = currentLevel.design;
         
         // Set up currentLevel.blocks - the design of the level in Blocks
@@ -793,7 +771,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.xCoordinates = player.xTarg;
         player.yCoordinates = player.yTarg;
         bossClip.close();
-            
+
         if (currentLevel instanceof Level.BossLevel) {
             currentLevelHealth = ((Level.BossLevel) currentLevel).levelHP;
             if (musicOn) {
@@ -801,7 +779,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clip.stop();
                 try {
                     bossClip.open(bossMusicStream);
-                    bossClip.setMicrosecondPosition(timestamp * bossClip.getMicrosecondLength() / 1556 );
+                    bossClip.setMicrosecondPosition(timestamp * bossClip.getMicrosecondLength() / 1556);
                     bossClip.start();
                 } catch (LineUnavailableException ex) {
                     Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -816,19 +794,21 @@ public class MainRunningThing extends javax.swing.JFrame {
                     clip.loop(Clip.LOOP_CONTINUOUSLY);
                     clip.start();
                 }
-                if (bossClip.isActive())
+                if (bossClip.isActive()) {
                     bossClip.stop();
+                }
             }
         }
         currentHP = currentLevelHealth;
         isPracticeMode = toggle_practice.isSelected();
-        if (isPracticeMode)
+        if (isPracticeMode) {
             currentHP = PRACTICE_MODE_LIVES;
+        }
         iframeStart = 0;
         isIFrame = false;
         lineExplosions.clear();
     }
-    
+
     // Resets the level without reloading
     public void resetLevel() {
         player.charState = CharacterState.RESTARTING;
@@ -843,49 +823,52 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.yCoordinates = player.yTarg;
         timestamp = 0;
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
-            if (isPracticeMode && checkpointTimes.size() > 0)
+            if (isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
-            else
+            } else {
                 timestamp = bossTestStartTime;
+            }
         }
         blasts.clear();
         lineExplosions.clear();
-        
+
         isIFrame = false;
         iframeStart = 0;
         currentHP = currentLevelHealth;
         isPracticeMode = toggle_practice.isSelected();
-        if (isPracticeMode)
+        if (isPracticeMode) {
             currentHP = PRACTICE_MODE_LIVES;
+        }
         if (levels[currentLevelIndex] instanceof SJBossFight && musicOn) {
             bossClip.stop();
             bossClip.setMicrosecondPosition(timestamp * bossClip.getMicrosecondLength() / 1556);
             bossClip.start();
         }
     }
-    
+
     public void levelFinished() {
-        if (currentLevelIndex >= levels.length - 1)
+        if (currentLevelIndex >= levels.length - 1) {
             return;
+        }
         player.charState = CharacterState.WINE;
         isSwitching = true;
         opacity = 10;
         transitioning = new Color(255, 255, 255);
         repaint();
     }
-    
+
     public void ouch() {
         if (!isIFrame && (player.charState == CharacterState.NORMAL || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING)) {
             currentHP--;
-            if (currentHP <= 0)
+            if (currentHP <= 0) {
                 death();
-            else {
+            } else {
                 isIFrame = true;
                 iframeStart = timestamp;
             }
         }
     }
-    
+
     public void death() {
         if (player.charState == CharacterState.NORMAL || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING){
             player.charState = CharacterState.DEAD;
@@ -897,12 +880,12 @@ public class MainRunningThing extends javax.swing.JFrame {
             repaint();
         }
     }
-    
+
     public void landChecker() {
          if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.blocks[0].length || player.yPosition >= player.level.blocks.length) {
             death();
-        } else if (player.level.blocks[player.yPosition][player.xPosition] instanceof Block.LauncherBlock) {
-            switch(((Block.LauncherBlock) player.level.blocks[player.yPosition][player.xPosition]).direction) {
+        } else if (player.level.blocks[player.yPosition][player.xPosition] instanceof LauncherBlock) {
+            switch(((LauncherBlock) player.level.blocks[player.yPosition][player.xPosition]).getDirection()) {
                 case UP :
                     while(player.yPosition > 0 && (player.level.blocks[player.yPosition - 1][player.xPosition] != null && !player.level.blocks[player.yPosition - 1][player.xPosition].stepable
                             || player.level.blocks[player.yPosition - 1][player.xPosition] == null))
@@ -940,7 +923,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             shouldRepaint = true;
         }
     }
-    
+
     @Override
     public void paint(Graphics g) {
         clipholder = new Area();
@@ -967,22 +950,23 @@ public class MainRunningThing extends javax.swing.JFrame {
             startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         }
-        
+
         if (isSwitching) {
-            if (opacity < 240)
+            if (opacity < 240) {
                 opacity += 48;
-            else {
+            } else {
                 isSwitching = false;
                 switch (player.charState) {
                     case WINE:
-                        if (holdLevelIndex != currentLevelIndex)
+                        if (holdLevelIndex != currentLevelIndex) {
                             currentLevelIndex = holdLevelIndex;
-                        else { 
+                        } else { 
                             holdLevelIndex = ++currentLevelIndex;
                             player.level = levels[currentLevelIndex]; // Fuck.
                         }
-                        if (currentLevelIndex > maxLevelIndex)
+                        if (currentLevelIndex > maxLevelIndex) {
                             maxLevelIndex = currentLevelIndex;
+                        }
                         loadLevel();
                         break;
                     case RESTARTING:
@@ -1001,53 +985,48 @@ public class MainRunningThing extends javax.swing.JFrame {
                 player.charState = CharacterState.NORMAL;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
-        
-        
+
         BlastCalculator bc = new BlastCalculator();
         bc.start();
-        
-        
-        
-        
-        
-        
-        
+
         /// Levelspecific testing
-        
-        
         if (levels[currentLevelIndex].levelLabel.equals("0")) {
-            if (timestamp % 30 == 10)
-                lineExplosions.add(new LineExploderTester(timestamp, 20, Math.PI, 
-                    startx + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, starty - 80 + SPACING_BETWEEN_BLOCKS * 6));
+            if (timestamp % 30 == 10) {
+                lineExplosions.add(new LineExploderTester(timestamp, 20, Math.PI,
+                        startx + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, starty - 80 + SPACING_BETWEEN_BLOCKS * 6));
+            }
 
-            if (timestamp % 30 == 5)
-                lineExplosions.add(new LineExploderTester(timestamp, 20, 0, 
+            if (timestamp % 30 == 5) {
+                lineExplosions.add(new LineExploderTester(timestamp, 20, 0,
                         startx + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, starty - 80));
+            }
 
-            if (timestamp % 15 == 10)
-                lineExplosions.add(new LineExploderTester(timestamp, 20, 0, 
+            if (timestamp % 15 == 10) {
+                lineExplosions.add(new LineExploderTester(timestamp, 20, 0,
                         startx + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, starty - 80));
+            }
 
-            if (timestamp % 15 == 5)
-                lineExplosions.add(new LineExploderTester(timestamp, 20, Math.PI * .5, 
+            if (timestamp % 15 == 5) {
+                lineExplosions.add(new LineExploderTester(timestamp, 20, Math.PI * .5,
                         startx + SPACING_BETWEEN_BLOCKS * 4 + 2 * STANDARD_ICON_WIDTH, starty - 80 + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 5) + 1)));
-        
+            }
+
         }
-        
+
         if (levels[currentLevelIndex].levelLabel.equals("-1")) {
-             
+
             if (timestamp % 12 == 1) {
                 blasts.add(new SJBossFight.FlyingBone(0, 20));
                 blasts.get(blasts.size() - 1).setCoords(startx, starty + 100);
                 blasts.add(new SJBossFight.FlyingBone(0, 20));
                 blasts.get(blasts.size() - 1).setCoords(startx, starty + 100 + SPACING_BETWEEN_BLOCKS * 3);
             }
-            
+
             if (timestamp % 30 == 8) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
                 blasts.get(blasts.size() - 1).setCoords(endx, starty + 40);
             }
-            
+
             if (timestamp % 30 == 5) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
                 blasts.get(blasts.size() - 1).setCoords(endx, starty + 40 + SPACING_BETWEEN_BLOCKS * 3);
@@ -1056,7 +1035,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
                 blasts.get(blasts.size() - 1).setCoords(endx, starty + 40 + SPACING_BETWEEN_BLOCKS * 4);
             }
-            
+
             if (timestamp % 12 == 5) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI / 2, 20));
                 blasts.get(blasts.size() - 1).setCoords(startx + 100, starty);
@@ -1064,108 +1043,104 @@ public class MainRunningThing extends javax.swing.JFrame {
                 blasts.get(blasts.size() - 1).setCoords(startx + 100 + SPACING_BETWEEN_BLOCKS * 3, starty);
             }
         }
-          
-        
+
         if (levels[currentLevelIndex].levelLabel.equals("-2")) {
-            
+
             if (timestamp % 30 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, 40, 0, -4, 0));
                 blasts.get(blasts.size() - 1).setCoords(startx, starty + 40);
             }
-            
+
             if (timestamp % 20 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, -20, 0, -3, 0));
                 blasts.get(blasts.size() - 1).setCoords(endx, starty + 40);
             }
-            
+
             if (timestamp % 20 == 14) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, -20, 0, -3, 0));
                 blasts.get(blasts.size() - 1).setCoords(endx, starty + 40 + SPACING_BETWEEN_BLOCKS);
             }
-            
+
             if (timestamp % 25 == 2) {
                 blasts.add(new SJBossFight.ArcingBone(0, 0, 20, 0, 3));
                 blasts.get(blasts.size() - 1).setCoords(startx + 40 + SPACING_BETWEEN_BLOCKS, starty);
             }
-            
+
             if (timestamp % 30 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(3 * Math.PI / 4, 30, 30, -2, -2));
                 blasts.get(blasts.size() - 1).setCoords(startx + 2, starty);
             }
-            
+
             if (timestamp % 30 == 20) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, -28, -28, 0, 0, 0.4));
                 blasts.get(blasts.size() - 1).setCoords(endx, endy);
             }
-            
+
             if (timestamp % 30 == 20) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, 28, 0, 2, 0, 0.4));
                 blasts.get(blasts.size() - 1).setCoords(startx, endy - STANDARD_ICON_WIDTH / 2);
             }
-            
+
             if (timestamp % 30 == 5) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, 28, 0, 2, 0, 0.4));
                 blasts.get(blasts.size() - 1).setCoords(startx, endy - STANDARD_ICON_WIDTH / 2 - SPACING_BETWEEN_BLOCKS);
             }
-            
+
         }
-        
+
         if (levels[currentLevelIndex].levelLabel.equals("-3")) {
             if (timestamp % 30 == 5) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 0, 2, .4, STANDARD_ICON_WIDTH));
                 blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), starty - 8);
             }
-            
+
             if (timestamp % 30 == 20) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 0, -2, .4, STANDARD_ICON_WIDTH));
                 blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), endy + 8);
             }
-            
+
             if (timestamp % 30 == 13) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 2, 0, .4, STANDARD_ICON_WIDTH));
                 blasts.get(blasts.size() - 1).setCoords(startx - 8, starty + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
             }
-            
+
             if (timestamp % 30 == 28) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, -2, 0, .4, STANDARD_ICON_WIDTH));
                 blasts.get(blasts.size() - 1).setCoords(endx + 8, starty + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
             }
-            
+
             if (timestamp % 20 == 10) {
                 double ang = getAngle(player.xCoordinates - middlex, player.yCoordinates - middley);
                 blasts.add(new SJBossFight.ArcingBone(ang + Math.PI / 2, -20 * Math.cos(ang), -20 * Math.sin(ang),  5 * Math.cos(ang), 5 * Math.sin(ang)));
                 blasts.get(blasts.size() - 1).setCoords(middlex, middley);
             }
         }
-        
-        
+
         if (levels[currentLevelIndex].levelLabel.equals("-4")) {
             if (timestamp == 2) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, 0, 0, 0, -.055));
                 blasts.get(blasts.size() - 1).setCoords(middlex, middley);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(500, 30);
             }
-            
+
             if (timestamp % 20 == 2) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, -3, 0, -2, 0.1));
                 blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 5 / 2, endy);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(200, 30);
             }
-            
+
             if (timestamp % 20 == 4) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, 3, 0, 2, -0.1));
                 blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 9 / 2, starty);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(200, 30);
             }
         }
-        
-        
+
         if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             lineExplosions.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateLines(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
             
         }
-        
-        
+
         if (timestamp == 1200 && timestart != null) {
             timeend = Instant.now();
             System.out.println(Duration.between(timestart, timeend).toMillis());
@@ -1180,8 +1155,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             Level.BossLevel.LineExploder currentLineExplosion = lineExplosions.get(i);
             Area ouchyline = currentLineExplosion.xplosionOuchArea(timestamp);
             Rectangle rect = ouchyline.getBounds();
-            if (rect.getMinX() <= charXRight && rect.getMaxX() >= charXLeft && rect.getMinY() <= charYUpper && rect.getMaxY() >= charYLower)
+            if (rect.getMinX() <= charXRight && rect.getMaxX() >= charXLeft && rect.getMinY() <= charYUpper && rect.getMaxY() >= charYLower) {
                 ouchArea.add(currentLineExplosion.xplosionOuchArea(timestamp));
+            }
         }
         
         if (tasActive && levels[currentLevelIndex] instanceof SJBossFight) {
@@ -1238,9 +1214,9 @@ public class MainRunningThing extends javax.swing.JFrame {
                 opacity = 10;
                 transitioning = new Color(180, 180, 180);
                 repaint();
-            }
-            else
+            } else {
                 levelFinished();
+            }
         }
         
         if (levels[currentLevelIndex] instanceof Level.BossLevel && ((Level.BossLevel) levels[currentLevelIndex]).endtime <= timestamp && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
@@ -1253,13 +1229,11 @@ public class MainRunningThing extends javax.swing.JFrame {
                 opacity = 10;
                 transitioning = new Color(180, 180, 180);
                 repaint();
-            }
-            else
+            } else {
                 levelFinished();
+            }
         }
-        
-        
-        
+
         try {
             bc.join();
         } catch (InterruptedException ex) {
@@ -1272,21 +1246,21 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (ouchArea.intersects(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
             ouch();
         }
-        
+
         // Setting clip
         if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
             //clipholder.add(((Level.BossLevel)levels[currentLevelIndex]).getBackgroundClip(timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
             //clipholder.add(((Level.BossLevel)levels[currentLevelIndex]).getForegroundClip(timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
-        }
-        else {
-            for (int i = 0; i < blasts.size(); i ++) {
-                Block.BlasterBlock.Blast bla = blasts.get(i);
+        } else {
+            for (int i = 0; i < blasts.size(); i++) {
+                BlasterBlock.Blast bla = blasts.get(i);
                 clipholder.add(bla.getClip());
             }
 
-            if (opacity > 15)
+            if (opacity > 15) {
                 clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
+            }
 
             if (isIFrame && iframeStart + iframeTime >= timestamp) {
                 clipholder.add(new Area(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH)));
@@ -1295,30 +1269,32 @@ public class MainRunningThing extends javax.swing.JFrame {
             for (int i = 0; i < lineExplosions.size(); i++) {
                 clipholder.add(lineExplosions.get(i).xplosionClipArea(timestamp));
             }
-            
-            if (timestamp >= 314 && timestamp <= 335)
+
+            if (timestamp >= 314 && timestamp <= 335) {
                 clipholder.add(new Area(new Rectangle(0, 0, PIEPNG.getIconWidth(), PIEPNG.getIconHeight())));
-            
+            }
+
         }
-        
+
         ///PAINTINGG!!!
         jPanel1.setBackground(Color.white);
         Graphics currG = jPanel1.getGraphics();
         currG.setClip(clipholder);
-        if (levels[currentLevelIndex] instanceof Level.BossLevel)
+        if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             ((Graphics2D) currG).setBackground(((Level.BossLevel) levels[currentLevelIndex]).getBackgroundColor(timestamp));
-        else
+        } else {
             ((Graphics2D) currG).setBackground(Color.white);
-        
+        }
+
         currG.clearRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
-        
-        if (levels[currentLevelIndex] instanceof Level.BossLevel)
+
+        if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             ((Level.BossLevel) levels[currentLevelIndex]).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
         
         for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
             for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
                 if (player.level.blocks[rowNumber][columnNumber] != null)
-                    player.level.blocks[rowNumber][columnNumber].icon.paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
+                    player.level.blocks[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
         
         characterIconAlive.paintIcon(jPanel1, currG, player.xCoordinates, player.yCoordinates);
         
@@ -1329,31 +1305,31 @@ public class MainRunningThing extends javax.swing.JFrame {
                 isIFrame = false;
             }
         }
-        
+
         if (SEE_OVERLAP) {
             currG.setColor(Color.black);
             ((Graphics2D) currG).draw(ouchArea);
             currG.setColor(Color.red);
             ((Graphics2D) currG).draw(clipholder);
         }
-        
-        
+
         for (int i = 0; i < blasts.size(); i++) {
-            Block.BlasterBlock.Blast bla = blasts.get(i);
-            
+            BlasterBlock.Blast bla = blasts.get(i);
+
             if (bla.xcoord < startx - 10 || bla.ycoord < starty - 10 || bla.xcoord > endx + 10 || bla.ycoord > endy + 10) {
 
-                if (bla instanceof Block.HighExplosion) {
+                if (bla instanceof HighExplosion) {
                     double holdangle = 0;
-                    if (bla.xcoord > endx + 10) 
+                    if (bla.xcoord > endx + 10) {
                         holdangle = Math.PI / 2;
-                    else if (bla.xcoord < startx - 10)
+                    } else if (bla.xcoord < startx - 10) {
                         holdangle = 3 * Math.PI / 2;
-                    else if (bla.ycoord > endy + 10)
+                    } else if (bla.ycoord > endy + 10) {
                         holdangle = Math.PI;
-                    else
+                    } else {
                         holdangle = 0;
-                    lineExplosions.add(((Block.HighExplosion) bla).getLineExplosion(timestamp, holdangle, bla.xcoord, bla.ycoord));
+                    }
+                    lineExplosions.add(((HighExplosion) bla).getLineExplosion(timestamp, holdangle, bla.xcoord, bla.ycoord));
                 }
 
                 blasts.remove(i);
@@ -1363,28 +1339,29 @@ public class MainRunningThing extends javax.swing.JFrame {
                 bla.draw(currG, jPanel1);
             }
         }
-        
+
         for (int i = 0; i < lineExplosions.size(); i++) {
             Level.BossLevel.LineExploder le = lineExplosions.get(i);
             le.drawXPlosion(jPanel1, currG, timestamp);
-            if (le.starttime + le.timelength <= timestamp)
+            if (le.starttime + le.timelength <= timestamp) {
                 lineExplosions.remove(i);
+            }
         }
-        
-        
-        
+
         // Does the fading animations
         if (opacity > 15) {
             currG.setColor(new Color(transitioning.getRed(), transitioning.getGreen(), transitioning.getBlue(), opacity));
             currG.fillRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
         }
-        
-        if (levels[currentLevelIndex] instanceof Level.BossLevel)
+
+        if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             ((Level.BossLevel) levels[currentLevelIndex]).drawForeground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
-        
-        if (timestamp >= 314 && timestamp <= 334)
+        }
+
+        if (timestamp >= 314 && timestamp <= 334) {
             PIEPNG.paintIcon(jPanel1, currG, 10, 10);
-        
+        }
+
         g.setColor(new Color(207, 226, 243));
         g.fillRect(0, 0, this.getWidth(), 120);
         g.setColor(Color.BLACK);
@@ -1404,13 +1381,15 @@ public class MainRunningThing extends javax.swing.JFrame {
             g.drawString(String.format("Millis: %d", Duration.between(timestart, Instant.now()).toMillis()), 10, 50);
         if (timestart != null && timeend != null && timestamp > 1200)
             g.drawString(String.format("Millis: %d", Duration.between(timestart, timeend).toMillis()), 10, 50);*/
-        if (isLeaGif)
+        if (isLeaGif) {
             LEAGIF.paintIcon(this, g, 0, 30);
-        
+        }
+
         // Gets the blocks to show up on first run
         if (opacity > 15 || player.xCoordinates != player.xTarg || player.yCoordinates != player.yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || levels[currentLevelIndex] instanceof Level.BossLevel) {
             if (letsseeifthisworks)
                 letsseeifthisworks = false;
+            }
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException ex) {
@@ -1419,11 +1398,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             shouldRepaint = false;
             repaint();
         }
-        
-        
-            
+
     }
-    
+
     public double getAngle(int xdif, int ydif) {
         return Math.PI / 2 - Math.atan2(xdif, ydif);
     }
@@ -1444,18 +1421,19 @@ public class MainRunningThing extends javax.swing.JFrame {
             for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) {
                 for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) {
                     Block currBlock = player.level.blocks[rowNumber][columnNumber];
-                    if (currBlock == null)
+                    if (currBlock == null) {
                         continue;
-                    
+                    }
+
                     //Generates blasts at correct time
                     if (!(player.charState == CharacterState.DEAD) && !(player.charState == CharacterState.RESTARTING) && !(player.charState == CharacterState.WINE)) {
-                        
-                        if (currBlock instanceof Block.BlasterBlock) { 
 
-                            if (timestamp % ((Block.BlasterBlock) currBlock).period == ((Block.BlasterBlock) currBlock).delay){
-                                blasts.add(new Block.BlasterBlock.Blast(((Block.BlasterBlock) currBlock).direction, ((Block.BlasterBlock) currBlock).blastSpeed));
+                        if (currBlock instanceof BlasterBlock) {
 
-                                switch(((Block.BlasterBlock) currBlock).direction) {
+                            if (timestamp % ((BlasterBlock) currBlock).period == ((BlasterBlock) currBlock).delay) {
+                                blasts.add(new BlasterBlock.Blast(((BlasterBlock) currBlock).direction, ((BlasterBlock) currBlock).blastSpeed));
+
+                                switch (((BlasterBlock) currBlock).direction) {
                                     case UP:
                                         blasts.get(blasts.size() - 1).setCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS + 32, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
                                         break;
@@ -1470,139 +1448,47 @@ public class MainRunningThing extends javax.swing.JFrame {
                                         break;
                                 }
 
-                                ((Block.BlasterBlock) currBlock).primed = false;
+                                ((BlasterBlock) currBlock).primed = false;
                             }
                         }
-                        
-                        
-                        if (currBlock instanceof Block.CannonBlock) {
-                            if (timestamp % ((Block.CannonBlock) currBlock).period == ((Block.CannonBlock) currBlock).delay) {
+
+                        if (currBlock instanceof CannonBlock) {
+                            if (timestamp % ((CannonBlock) currBlock).period == ((CannonBlock) currBlock).delay) {
                                 int xcenter = startx + columnNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
                                 int ycenter = starty + rowNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
-                                blasts.add(new Block.CannonBlock.Cannonball(((Block.CannonBlock) currBlock).cannonballSpeed, 
+                                blasts.add(new CannonBlock.Cannonball(((CannonBlock) currBlock).cannonballSpeed, 
                                         getAngle(player.xCoordinates + CHARACTER_WIDTH / 2 - xcenter, player.yCoordinates + CHARACTER_WIDTH / 2 - ycenter)));
                                 blasts.get(blasts.size() - 1).setCoords(xcenter, ycenter);
                             }
                         }
-                        
+
                     }
-                    
+
                 }
             }
-            
+
             if (levels[currentLevelIndex] instanceof Level.BossLevel) {
                 blasts.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateBlasts(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
             }
 
-            
             // Calculates where the blasts would be
             int charYUpper = player.yCoordinates;
             int charXLeft = player.xCoordinates;
             int charYLower = player.yCoordinates + CHARACTER_WIDTH;
             int charXRight = player.xCoordinates + CHARACTER_WIDTH;
             for (int i = 0; i < blasts.size(); i++) {
-                Block.BlasterBlock.Blast bla = blasts.get(i);
+                BlasterBlock.Blast bla = blasts.get(i);
                 bla.move();
                 Area blaouch = bla.getOuchArea();
                 Rectangle bound = blaouch.getBounds();
-                if (bound.getX() > charXRight || bound.getX() + bound.width < charXLeft || bound.getY() > charYLower || bound.getY() + bound.height < charYUpper) {}
-                else
-                    ouchArea.add(blaouch);
-            }
-        }
-        
-    }
-    
-    
-    
-    /*
-    public class MainPanelPainter extends JPanel {
-        
-        public MainPanelPainter() {
-            super();
-        }
-        
-        @Override
-        public void paintComponent(Graphics currG) {
-        
-            currG.setClip(clipholder);
-            if (levels[currentLevelIndex] instanceof Level.BossLevel)
-                ((Graphics2D) currG).setBackground(((Level.BossLevel) levels[currentLevelIndex]).getBackgroundColor(timestamp));
-            else
-                ((Graphics2D) currG).setBackground(Color.white);
-
-            currG.clearRect(0, 0, this.getWidth(), this.getHeight());
-
-            if (levels[currentLevelIndex] instanceof Level.BossLevel)
-                ((Level.BossLevel) levels[currentLevelIndex]).drawBackground(currG, timestamp, this, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
-
-            for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
-                for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
-                    if (player.level.blocks[rowNumber][columnNumber] != null)
-                        player.level.blocks[rowNumber][columnNumber].icon.paintIcon(this, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
-
-            characterIconAlive.paintIcon(this, currG, player.xCoordinates, player.yCoordinates);
-
-            if (isIFrame && iframeStart + iframeTime >= timestamp) {
-                currG.setColor(new Color(0, 0, 255, timestamp % 2 == 0 ? 50 : 100));
-                currG.fillRect(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);
-                if (iframeStart + iframeTime <= timestamp) {
-                    isIFrame = false;
-                }
-            }
-
-            if (SEE_OVERLAP) {
-                currG.setColor(Color.black);
-                ((Graphics2D) currG).draw(ouchArea);
-                currG.setColor(Color.red);
-                ((Graphics2D) currG).draw(clipholder);
-            }
-
-
-            for (int i = 0; i < blasts.size(); i++) {
-                Block.BlasterBlock.Blast bla = blasts.get(i);
-
-                if (bla.xcoord < startx - 10 || bla.ycoord < starty - 10 || bla.xcoord > endx + 10 || bla.ycoord > endy + 10) {
-
-                    if (bla instanceof Block.HighExplosion) {
-                        double holdangle = 0;
-                        if (bla.xcoord > endx + 10) 
-                            holdangle = Math.PI / 2;
-                        else if (bla.xcoord < startx - 10)
-                            holdangle = 3 * Math.PI / 2;
-                        else if (bla.ycoord > endy + 10)
-                            holdangle = Math.PI;
-                        else
-                            holdangle = 0;
-                        lineExplosions.add(((Block.HighExplosion) bla).getLineExplosion(timestamp, holdangle, bla.xcoord, bla.ycoord));
-                    }
-
-                    blasts.remove(i);
-                    i--;
-                    letsseeifthisworks = true;
+                if (bound.getX() > charXRight || bound.getX() + bound.width < charXLeft || bound.getY() > charYLower || bound.getY() + bound.height < charYUpper) {
                 } else {
-                    bla.draw(currG, this);
+                    ouchArea.add(blaouch);
                 }
             }
-
-            for (int i = 0; i < lineExplosions.size(); i++) {
-                Level.BossLevel.LineExploder le = lineExplosions.get(i);
-                le.drawXPlosion(this, currG, timestamp);
-                if (le.starttime + le.timelength <= timestamp)
-                    lineExplosions.remove(i);
-            }
-
-
-
-            // Does the fading animations
-            if (opacity > 15) {
-                currG.setColor(new Color(transitioning.getRed(), transitioning.getGreen(), transitioning.getBlue(), opacity));
-                currG.fillRect(0, 0, this.getWidth(), this.getHeight());
-            }
-
-            if (levels[currentLevelIndex] instanceof Level.BossLevel)
-                ((Level.BossLevel) levels[currentLevelIndex]).drawForeground(currG, timestamp, this, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
         }
-    }*/
-    
+
+
+    }
+
 }

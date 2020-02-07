@@ -22,12 +22,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import squares.api.ResourceLocator;
+import squares.block.*;
 
 /**
  *
  * @author piercelai
  */
-public class SJBossFight extends Level.BossLevel{
+public class SJBossFight extends Level.BossLevel {
     
     public static int FIRST_BOSS_TIME = 840;
     public static int SECOND_BOSS_TIME = 720;
@@ -42,7 +43,7 @@ public class SJBossFight extends Level.BossLevel{
     public static final char LINE_EXPLODER_TESTER_CHAR = 'L';
     public static final char SERIOUS_EXPLODER_CHAR = 'S';
     
-    HashMap<Integer, ArrayList<Block.BlasterBlock.Blast>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
+    HashMap<Integer, ArrayList<BlasterBlock.Blast>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
                                                                                           // adjusted on generate(); formula: 0 is center of 1st block, every 2 equals one spacing
     HashMap<Integer, ArrayList<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
     
@@ -87,7 +88,7 @@ public class SJBossFight extends Level.BossLevel{
         for (String control : controls) {
             String[] splitted = control.trim().split(" ");
             int time = Integer.parseInt(splitted[0]);
-            Block.BlasterBlock.Blast hold;
+            BlasterBlock.Blast hold;
             
             switch(splitted[1].charAt(0)) {
                 case FLYING_BONE_CHAR:
@@ -153,27 +154,23 @@ public class SJBossFight extends Level.BossLevel{
     
 
     @Override
-    public ArrayList<Block.BlasterBlock.Blast> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
-        ArrayList<Block.BlasterBlock.Blast> temp = timeToBlasts.get(timestamp);
-        ArrayList<Block.BlasterBlock.Blast> hold = new ArrayList<>();
+    public ArrayList<BlasterBlock.Blast> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+        ArrayList<BlasterBlock.Blast> temp = timeToBlasts.get(timestamp);
+        ArrayList<BlasterBlock.Blast> hold = new ArrayList<>();
         if (temp == null)
             return hold;
-        for (Block.BlasterBlock.Blast bla : temp) {
-            try {
-                Block.BlasterBlock.Blast kin = bla.clone();
-                kin.setCoords(startx + SPACING_BETWEEN_BLOCKS * bla.xcoord / 2 + STANDARD_ICON_WIDTH / 2, starty + SPACING_BETWEEN_BLOCKS * bla.ycoord / 2 + STANDARD_ICON_WIDTH / 2);
-                if (kin instanceof ArcingBone && ((ArcingBone) kin).angle > 900) {
-                    ((ArcingBone) kin).angle = Math.atan2(xCoordinates - kin.xcoord, yCoordinates - kin.ycoord);
-                    ((ArcingBone) kin).xvelocity = kin.blastSpeed * Math.sin(((ArcingBone) kin).angle);
-                    ((ArcingBone) kin).yvelocity = kin.blastSpeed * Math.cos(((ArcingBone) kin).angle);
-                    ((ArcingBone) kin).angle *= -1;
-                    ((ArcingBone) kin).tx = new AffineTransform();
-                    ((ArcingBone) kin).tx.rotate(((ArcingBone) kin).angle);
-                }
-                hold.add(kin);
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(SJBossFight.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        for (BlasterBlock.Blast bla : temp) {
+            BlasterBlock.Blast kin = bla.clone();
+            kin.setCoords(startx + SPACING_BETWEEN_BLOCKS * bla.xcoord / 2 + STANDARD_ICON_WIDTH / 2, starty + SPACING_BETWEEN_BLOCKS * bla.ycoord / 2 + STANDARD_ICON_WIDTH / 2);
+            if (kin instanceof ArcingBone && ((ArcingBone) kin).angle > 900) {
+                ((ArcingBone) kin).angle = Math.atan2(xCoordinates - kin.xcoord, yCoordinates - kin.ycoord);
+                ((ArcingBone) kin).xvelocity = kin.blastSpeed * Math.sin(((ArcingBone) kin).angle);
+                ((ArcingBone) kin).yvelocity = kin.blastSpeed * Math.cos(((ArcingBone) kin).angle);
+                ((ArcingBone) kin).angle *= -1;
+                ((ArcingBone) kin).tx = new AffineTransform();
+                ((ArcingBone) kin).tx.rotate(((ArcingBone) kin).angle);
             }
+            hold.add(kin);
         }
         return hold;
     }
@@ -338,7 +335,7 @@ public class SJBossFight extends Level.BossLevel{
     }
 
     
-    public static class FlyingBone extends Block.BlasterBlock.Blast {
+    public static class FlyingBone extends BlasterBlock.Blast {
         public static final Image bonypict = new ImageIcon("Pics/bonepic.png", "bonepic").getImage();
         public static final Image orangeBony = new ImageIcon("Pics/orangebone.png", "orangebone").getImage();
         public static final Image blueBony = new ImageIcon("Pics/bluebone.png", "bluebone").getImage();
@@ -419,7 +416,7 @@ public class SJBossFight extends Level.BossLevel{
         }
         
         @Override
-        public FlyingBone clone() throws CloneNotSupportedException {
+        public FlyingBone clone() {
             FlyingBone fb = new FlyingBone(angle, blastSpeed, bonepic.getImage());
             fb.setDimensions(picwidth, picheight);
             return fb;
@@ -469,7 +466,7 @@ public class SJBossFight extends Level.BossLevel{
         }
         
         @Override
-        public ArcingBone clone() throws CloneNotSupportedException {
+        public ArcingBone clone() {
             ArcingBone ab = new ArcingBone(angle, xvelocity, yvelocity, xaccel, yaccel, bonepic.getImage());
             ab.setDimensions(picwidth, picheight);
             return ab;
@@ -504,7 +501,7 @@ public class SJBossFight extends Level.BossLevel{
         
     }
     
-    public static class BoneExploder extends RotatingBone implements Block.HighExplosion {
+    public static class BoneExploder extends RotatingBone implements HighExplosion {
         
         public int explosionWidth;
         

@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import squares.api.ResourceLocator;
+import squares.api.Direction;
+import squares.block.*;
 
 /**
  *
@@ -77,26 +79,26 @@ public class Level {
                 switch(in[rowNumber][columnNumber].charAt(0)) {
                     case START_CHAR:
                     case NORMAL_BLOCK_CHAR:
-                        hold = new Block.NormalBlock();
+                        hold = new NormalBlock();
                         break;
                         
                     case END_CHAR:
-                        hold = new Block.EndingBlock();
+                        hold = new EndingBlock();
                         break;
                         
                     case LAUNCHER_BLOCK_CHAR:
                         switch(in[rowNumber][columnNumber].charAt(1)) {
                             case '^':
-                                hold = new Block.LauncherBlock(Block.Direction.UP);
+                                hold = new LauncherBlock(Direction.UP);
                                 break;
                             case '>':
-                                hold = new Block.LauncherBlock(Block.Direction.RIGHT);
+                                hold = new LauncherBlock(Direction.RIGHT);
                                 break;
                             case 'v':
-                                hold = new Block.LauncherBlock(Block.Direction.DOWN);
+                                hold = new LauncherBlock(Direction.DOWN);
                                 break;
                             case '<':
-                                hold = new Block.LauncherBlock(Block.Direction.LEFT);
+                                hold = new LauncherBlock(Direction.LEFT);
                                 break;
                         }
                         break;
@@ -110,16 +112,16 @@ public class Level {
                         
                         switch(in[rowNumber][columnNumber].charAt(1)) {
                             case '^':
-                                hold = new Block.BlasterBlock(Block.Direction.UP, dbs, fbs, delay);
+                                hold = new BlasterBlock(Direction.UP, dbs, fbs, delay);
                                 break;
                             case '>':
-                                hold = new Block.BlasterBlock(Block.Direction.RIGHT, dbs, fbs, delay);
+                                hold = new BlasterBlock(Direction.RIGHT, dbs, fbs, delay);
                                 break;
                             case 'v':
-                                hold = new Block.BlasterBlock(Block.Direction.DOWN, dbs, fbs, delay);
+                                hold = new BlasterBlock(Direction.DOWN, dbs, fbs, delay);
                                 break;
                             case '<':
-                                hold = new Block.BlasterBlock(Block.Direction.LEFT, dbs, fbs, delay);
+                                hold = new BlasterBlock(Direction.LEFT, dbs, fbs, delay);
                                 break;
                         }
                         break;
@@ -131,7 +133,7 @@ public class Level {
                         if (in[rowNumber][columnNumber].length() > 5)
                             delay = Integer.parseInt(in[rowNumber][columnNumber].substring(5, 7));
                         
-                        hold = new Block.CannonBlock(dbs, fbs, delay);
+                        hold = new CannonBlock(dbs, fbs, delay);
                         
                         break;
                 }
@@ -227,7 +229,7 @@ public class Level {
         
         public abstract void drawForeground(Graphics g, int timestamp, Component c, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
         
-        public abstract java.util.ArrayList<Block.BlasterBlock.Blast> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
+        public abstract java.util.ArrayList<BlasterBlock.Blast> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
         
         public abstract java.util.ArrayList<LineExploder> generateLines(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
         

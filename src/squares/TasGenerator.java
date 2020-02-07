@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import squares.api.CharacterState;
 import squares.api.ResourceLocator;
+import squares.block.Block;
 
 import static squares.api.RenderingConstants.*;
 
