@@ -12,12 +12,13 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+
+import squares.api.ResourceLocator;
 
 /**
  *
@@ -174,8 +175,7 @@ public class Level {
         }
         
         public BossLevel(String[][] in, String label, int hp, String... controls) {
-            super(in, label);
-            this.controls = controls;
+            this(in, label, controls);
             levelHP = hp;
         }
         
@@ -185,17 +185,15 @@ public class Level {
             levelHP = hp;
         }
         
-        public BossLevel(String[][] in, String label, File input) {
+        public BossLevel(String[][] in, String label, ResourceLocator input) {
             super(in, label);
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(input));
+            try (BufferedReader br = input.asBufferedReader()) {
                 String hold = "";
                 while(br.ready()) 
                     hold = hold.concat(br.readLine());
                 controls = hold.split(",");
                 for (int i = 0; i < controls.length; i++)
                     controls[i] = controls[i].trim();
-                br.close();
             } catch (FileNotFoundException fnfe) {
                 System.out.println(fnfe);
             } catch (IOException ioe) {
@@ -203,17 +201,15 @@ public class Level {
             }
         }
         
-        public BossLevel(String[][] in, String label, String code, File input) {
+        public BossLevel(String[][] in, String label, String code, ResourceLocator input) {
             super(in, label, code);
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(input));
+            try (BufferedReader br = input.asBufferedReader()) {
                 String hold = "";
                 while(br.ready()) 
                     hold = hold.concat(br.readLine());
                 controls = hold.split(",");
                 for (int i = 0; i < controls.length; i++)
                     controls[i] = controls[i].trim();
-                br.close();
             } catch (FileNotFoundException fnfe) {
                 System.out.println(fnfe);
             } catch (IOException ioe) {

@@ -14,13 +14,14 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform; 
 import java.awt.geom.Area;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+
+import squares.api.ResourceLocator;
 
 /**
  *
@@ -63,14 +64,14 @@ public class SJBossFight extends Level.BossLevel{
         levelHP = hp;
     }
     
-    public SJBossFight(String[][] in, String label, int hp, File input){
+    public SJBossFight(String[][] in, String label, int hp, ResourceLocator input){
         super(in, label, input);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
         generateHashMaps();
         levelHP = hp;
     }     
     
-    public SJBossFight(String[][] in, String label, int hp, File input, String code){
+    public SJBossFight(String[][] in, String label, int hp, ResourceLocator input, String code){
         super(in, label, code, input);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
         generateHashMaps();

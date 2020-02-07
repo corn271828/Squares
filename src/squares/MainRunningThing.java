@@ -12,7 +12,6 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.io.IOException;
-import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.swing.ImageIcon;
 
 import squares.api.CharacterState;
+import squares.api.ResourceLocator;
 
 import static squares.api.RenderingConstants.*;
 
@@ -95,7 +95,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
-    public TasGenerator sjbossTas = new TasGenerator(new File("sjbossscript.txt"));
+    public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("sjbossscript.txt"));
     
     // Easter eggs
     public static final String KONAMI_CODE = "uuddlrlrba";
@@ -270,7 +270,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             new String[] {  "", "",  "",     "",    "",    "",   "", "", ""},
             new String[] {  "", "", "",     "",    "",    "",   "", "", ""}
         }
-        , "BOSS", 20, new File("sjbossfight_easy.txt"), "YoUJ0snKi"),
+        , "BOSS", 20, new ResourceLocator("sjbossfight_easy.txt"), "YoUJ0snKi"),
         
         new Level(new String[][] {
             new String[] {  "", "",     "",    "",    "",   "", ""},
@@ -337,7 +337,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             new String[] {  "", "",  "",     "",    "",    "",   "", "", ""},
             new String[] {  "", "", "",     "",    "",    "",   "", "", ""}
         }
-        , "BOSS", 10, new File("sjbossfight.txt"), "wHThvIdn"),
+        , "BOSS", 10, new ResourceLocator("sjbossfight.txt"), "wHThvIdn"),
 
         new Level(new String[][] {
             new String[] {  "Lv",    "N",    "",    "L<",    "N"},
@@ -367,11 +367,11 @@ public class MainRunningThing extends javax.swing.JFrame {
         middley = jPanel1.getHeight() / 2;
         try {
             if (musicOn) {
-                backgroundStream = AudioSystem.getAudioInputStream(new File("Sounds/Canon_in_D_Swing.ogg"));
+                backgroundStream = new ResourceLocator("Sounds/Canon_in_D_Swing.ogg").asAudioStream();
                 clip = AudioSystem.getClip();
                 clip.open(backgroundStream);
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
-                bossMusicStream = AudioSystem.getAudioInputStream(new File("Sounds/Megalovania_Swing.wav"));
+                bossMusicStream = new ResourceLocator("Sounds/Megalovania_Swing.wav").asAudioStream();
                 bossClip = AudioSystem.getClip();
                 bossClip.loop(Clip.LOOP_CONTINUOUSLY);
             }
