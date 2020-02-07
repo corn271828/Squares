@@ -22,7 +22,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import squares.api.ResourceLocator;
-import squares.block.*;
+import squares.block.HighExplosion;
+import squares.block.BlasterBlock;
 
 /**
  *
