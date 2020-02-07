@@ -41,9 +41,9 @@ public class BlasterBlock extends Block implements DirectedBlock {
     }
 
     private static ImageIcon getIconByDirection(Direction d) {
-	int i = d.ordinal();
-	if(blasterBlocks[i] == null)
-		blasterBlocks[i] = new ImageIcon(String.format("Pics/Blaster Block %s.png", d.name), "Blaster Block Image");
+        int i = d.ordinal();
+        if(blasterBlocks[i] == null)
+            blasterBlocks[i] = new ImageIcon(String.format("Pics/Blaster Block %s.png", d.name), "Blaster Block Image");
         return blasterBlocks[i];
     }
 

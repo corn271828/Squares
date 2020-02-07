@@ -15,7 +15,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -69,7 +68,6 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int endx; //Border of block drawings; used to determine when ammunition disappears
     public int endy;
 
-    public int iframeTime = 10;
     public int currentLevelHealth = 1;
 
     public Area clipholder;

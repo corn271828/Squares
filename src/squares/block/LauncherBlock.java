@@ -24,9 +24,9 @@ public class LauncherBlock extends Block implements DirectedBlock {
     }
 
     private static ImageIcon getIconByDirection(Direction d) {
-	int i = d.ordinal();
-	if(launcherBlocks[i] == null)
-		launcherBlocks[i] = new ImageIcon(String.format("Pics/Launcher Block %s.png", d.name), "Launcher Block Image");
+        int i = d.ordinal();
+        if(launcherBlocks[i] == null)
+            launcherBlocks[i] = new ImageIcon(String.format("Pics/Launcher Block %s.png", d.name), "Launcher Block Image");
         return launcherBlocks[i];
     }
 
