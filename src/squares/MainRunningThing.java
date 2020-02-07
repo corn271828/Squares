@@ -327,7 +327,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         middlex = jPanel1.getWidth() / 2;
         middley = jPanel1.getHeight() / 2;
         player = new Player();
-        player.level = levels[currentLevelIndex];
+        player.level = levels[0];
 
         if (musicOn) {
             audio.addClip("normal", new ResourceLocator("bgm", "Canon_in_D_Swing.wav"))
@@ -507,13 +507,13 @@ public class MainRunningThing extends javax.swing.JFrame {
     @SuppressWarnings("fallthrough")
     private void jPanel1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyReleased
         // TODO add your handling code here:
-        if (player.level.block.length == 0) {
+        if (player.level.blocks.length == 0) {
             return;
         }
 
         switch (evt.getKeyCode()) {
             case 'T': // toggles autoplay
-                if (levels[currentLevelIndex] instanceof SJBossFight) {
+                if (player.level instanceof SJBossFight) {
                     tasActive = !tasActive;
                 } else {
                     break;
@@ -534,12 +534,12 @@ public class MainRunningThing extends javax.swing.JFrame {
                 levelFinished();
                 break;
             case 'C': // add checkpoint
-                if (levels[currentLevelIndex] instanceof Level.BossLevel && player.isPracticeMode) {
+                if (player.level instanceof Level.BossLevel && player.isPracticeMode) {
                     checkpointTimes.add(timestamp);
                 }
                 break;
             case 'V': // remove checkpoint
-                if (levels[currentLevelIndex] instanceof Level.BossLevel && player.isPracticeMode) {
+                if (player.level instanceof Level.BossLevel && player.isPracticeMode) {
                     if (checkpointTimes.size() > 0) {
                         checkpointTimes.pollLast();
                     }
@@ -557,9 +557,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         switch (evt.getKeyCode()) { // move
             case RIGHT_KEY_PRESS:
             case 'D':
-                if (player.xPosition == player.level.block[0].length - 1)
+                if (player.xPosition == player.level.blocks[0].length - 1)
                     return;
-                if (player.level.block[player.yPosition][player.xPosition + 1] == null || !player.level.block[player.yPosition][player.xPosition + 1].stepable)
+                if (player.level.blocks[player.yPosition][player.xPosition + 1] == null || !player.level.blocks[player.yPosition][player.xPosition + 1].stepable)
                     return;
                 player.xPosition++;
                 break;
@@ -567,15 +567,15 @@ public class MainRunningThing extends javax.swing.JFrame {
             case 'A':
                 if (player.xPosition == 0)
                     return;
-                if (player.level.block[player.yPosition][player.xPosition - 1] == null || !player.level.block[player.yPosition][player.xPosition - 1].stepable)
+                if (player.level.blocks[player.yPosition][player.xPosition - 1] == null || !player.level.blocks[player.yPosition][player.xPosition - 1].stepable)
                     return;
                 player.xPosition--;
                 break;
             case DOWN_KEY_PRESS:
             case 'S':
-                if (player.yPosition == player.level.block.length - 1)
+                if (player.yPosition == player.level.blocks.length - 1)
                     return;
-                if (player.level.block[player.yPosition + 1][player.xPosition] == null || !player.level.block[player.yPosition + 1][player.xPosition].stepable)
+                if (player.level.blocks[player.yPosition + 1][player.xPosition] == null || !player.level.blocks[player.yPosition + 1][player.xPosition].stepable)
                     return;
                 player.yPosition++;
                 break;
@@ -583,7 +583,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             case 'W':
                 if (player.yPosition == 0)
                     return;
-                if (player.level.block[player.yPosition - 1][player.xPosition] == null || !player.level.block[player.yPosition - 1][player.xPosition].stepable)
+                if (player.level.blocks[player.yPosition - 1][player.xPosition] == null || !player.level.blocks[player.yPosition - 1][player.xPosition].stepable)
                     return;
                 player.yPosition--;
                 break;
@@ -591,7 +591,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         if (player.charState == CharacterState.NORMAL) {
-            if (levels[currentLevelIndex] instanceof Level.BossLevel) 
+            if (player.level instanceof Level.BossLevel) 
                 player.charState = CharacterState.FASTMOVING;
             else
                 player.charState = CharacterState.MOVING;
@@ -717,7 +717,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         });
     }
 
-    // Loads player.level.block
+    // Loads player.level.blocks
     public void loadLevel() {
 
         tasActive = false;
@@ -726,7 +726,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         blasts.clear();
         Level currentLevel = player.level;
 
-        if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
+        if (player.level instanceof Level.BossLevel && !tasActive) {
             if (player.isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
             } else {
@@ -739,8 +739,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         // Set up currentLevel.block - the design of the level in Blocks
         player.xPosition = currentLevel.startPosCol;
         player.yPosition = currentLevel.startPosRow;
-        startx = middlex - (currentLevel.block[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-        starty = middley - (currentLevel.block.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        startx = middlex - (currentLevel.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        starty = middley - (currentLevel.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         endx = 2 * middlex - startx;
         endy = 2 * middley - starty;
         player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
@@ -771,17 +771,17 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Resets the level without reloading
     public void resetLevel() {
         player.charState = CharacterState.RESTARTING;
-        for (Block[] row : player.level.block)
+        for (Block[] row : player.level.blocks)
             for (Block cell : row)
                 if (cell != null) cell.reset();
-        player.xPosition = levels[currentLevelIndex].startPosCol;
-        player.yPosition = levels[currentLevelIndex].startPosRow;
+        player.xPosition = player.level.startPosCol;
+        player.yPosition = player.level.startPosRow;
         player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         player.xCoordinates = player.xTarg;
         player.yCoordinates = player.yTarg;
         timestamp = 0;
-        if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
+        if (player.level instanceof Level.BossLevel && !tasActive) {
             if (player.isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
             } else {
@@ -797,7 +797,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.isPracticeMode) {
             player.hp = Player.PRACTICE_MODE_LIVES;
         }
-        if (levels[currentLevelIndex] instanceof SJBossFight && musicOn) {
+        if (player.level instanceof SJBossFight && musicOn) {
             audio.setPlaying("boss", timestamp * audio.getClip("boss").getMicrosecondLength() / 1556);
         }
     }
@@ -839,35 +839,35 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     //  checks the character when the character lands at its destination
     public void landChecker() {
-         if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.block[0].length || player.yPosition >= player.level.block.length) {
+         if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.blocks[0].length || player.yPosition >= player.level.blocks.length) {
             death();
-        } else if (player.level.block[player.yPosition][player.xPosition] instanceof LauncherBlock) {
-            switch(((LauncherBlock) player.level.block[player.yPosition][player.xPosition]).getDirection()) {
+        } else if (player.level.blocks[player.yPosition][player.xPosition] instanceof LauncherBlock) {
+            switch(((LauncherBlock) player.level.blocks[player.yPosition][player.xPosition]).getDirection()) {
                 case UP :
-                    while(player.yPosition > 0 && (player.level.block[player.yPosition - 1][player.xPosition] != null && !player.level.block[player.yPosition - 1][player.xPosition].stepable
-                            || player.level.block[player.yPosition - 1][player.xPosition] == null))
+                    while(player.yPosition > 0 && (player.level.blocks[player.yPosition - 1][player.xPosition] != null && !player.level.blocks[player.yPosition - 1][player.xPosition].stepable
+                            || player.level.blocks[player.yPosition - 1][player.xPosition] == null))
                         player.yPosition--;
                     player.yPosition--;
                     player.charState = CharacterState.FASTMOVING;
                     break;
                 case RIGHT :
-                    while(player.xPosition < player.level.block[0].length && (player.level.block[player.yPosition][player.xPosition + 1] != null &&
-                            !player.level.block[player.yPosition][player.xPosition + 1].stepable || player.level.block[player.yPosition][player.xPosition + 1] == null )) {
+                    while(player.xPosition < player.level.blocks[0].length && (player.level.blocks[player.yPosition][player.xPosition + 1] != null &&
+                            !player.level.blocks[player.yPosition][player.xPosition + 1].stepable || player.level.blocks[player.yPosition][player.xPosition + 1] == null )) {
                          player.xPosition++;
                     }
                     player.xPosition++;
                     player.charState = CharacterState.FASTMOVING;
                     break;
                 case DOWN :
-                    while(player.yPosition < player.level.block.length && (player.level.block[player.yPosition + 1][player.xPosition] != null && 
-                            !player.level.block[player.yPosition + 1][player.xPosition].stepable  || player.level.block[player.yPosition + 1][player.xPosition] == null))
+                    while(player.yPosition < player.level.blocks.length && (player.level.blocks[player.yPosition + 1][player.xPosition] != null && 
+                            !player.level.blocks[player.yPosition + 1][player.xPosition].stepable  || player.level.blocks[player.yPosition + 1][player.xPosition] == null))
                         player.yPosition++;
                     player.yPosition++;
                     player.charState = CharacterState.FASTMOVING;
                     break;
                 case LEFT :
-                    while(player.xPosition > 0 && (player.level.block[player.yPosition][player.xPosition - 1] != null 
-                            && !player.level.block[player.yPosition][player.xPosition - 1].stepable  || player.level.block[player.yPosition][player.xPosition - 1] == null ))
+                    while(player.xPosition > 0 && (player.level.blocks[player.yPosition][player.xPosition - 1] != null 
+                            && !player.level.blocks[player.yPosition][player.xPosition - 1].stepable  || player.level.blocks[player.yPosition][player.xPosition - 1] == null ))
                         player.xPosition--;
                     player.xPosition--;
                     player.charState = CharacterState.FASTMOVING;
@@ -887,25 +887,25 @@ public class MainRunningThing extends javax.swing.JFrame {
         ouchArea = new Area();
         if (middlex != jPanel1.getWidth() / 2) {
             middlex = jPanel1.getWidth() / 2;
-            startx = middlex - (player.level.block[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             endx = middlex * 2 - startx;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
         if (middley != jPanel1.getHeight() / 2) {
             middley = jPanel1.getHeight() / 2;
-            starty = middley - (player.level.block.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             endx = middlex * 2 - startx;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        if (player.level.block.length == 0) {
-            System.out.println("Instantiate player.level.block!");
+        if (player.level.blocks.length == 0) {
+            System.out.println("Instantiate player.level.blocks!");
             loadLevel();
             player.charState = CharacterState.NORMAL;
         }
         if (startx == 0 || starty == 0) {
-            startx = middlex - (player.level.block[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-            starty = middley - (player.level.block.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         }
 
         // Does the level switching / restarting stuff
@@ -918,6 +918,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                     case WINE:
                         if (holdLevelIndex != currentLevelIndex) {
                             currentLevelIndex = holdLevelIndex;
+                            player.level = levels[currentLevelIndex]; // Fuck.
                         } else { 
                             holdLevelIndex = ++currentLevelIndex;
                             player.level = levels[currentLevelIndex]; // Fuck.
@@ -948,7 +949,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         bc.start();
 
         /// Levelspecific testing
-        if (levels[currentLevelIndex].levelLabel.equals("0")) {
+        if (player.level.levelLabel.equals("0")) {
             if (timestamp % 30 == 10) {
                 lineExplosions.add(new LineExploderTester(timestamp, 20, Math.PI,
                         startx + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, starty - 80 + SPACING_BETWEEN_BLOCKS * 6));
@@ -971,7 +972,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         }
 
-        if (levels[currentLevelIndex].levelLabel.equals("-1")) {
+        if (player.level.levelLabel.equals("-1")) {
 
             if (timestamp % 12 == 1) {
                 blasts.add(new SJBossFight.FlyingBone(0, 20));
@@ -1002,7 +1003,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-        if (levels[currentLevelIndex].levelLabel.equals("-2")) {
+        if (player.level.levelLabel.equals("-2")) {
 
             if (timestamp % 30 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, 40, 0, -4, 0));
@@ -1046,7 +1047,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         }
 
-        if (levels[currentLevelIndex].levelLabel.equals("-3")) {
+        if (player.level.levelLabel.equals("-3")) {
             if (timestamp % 30 == 5) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 0, 2, .4, STANDARD_ICON_WIDTH));
                 blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), starty - 8);
@@ -1074,7 +1075,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-        if (levels[currentLevelIndex].levelLabel.equals("-4")) {
+        if (player.level.levelLabel.equals("-4")) {
             if (timestamp == 2) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, 0, 0, 0, -.055));
                 blasts.get(blasts.size() - 1).setCoords(middlex, middley);
@@ -1094,8 +1095,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-        if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-            lineExplosions.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateLines(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+        if (player.level instanceof Level.BossLevel) {
+            lineExplosions.addAll(((Level.BossLevel) player.level).generateLines(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
         }
 
         if (timestamp == 1200 && timestart != null) {
@@ -1117,7 +1118,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-        if (tasActive && levels[currentLevelIndex] instanceof SJBossFight) {
+        if (tasActive && player.level instanceof SJBossFight) {
             if(sjbossTas.doTasStuff(startx, starty, timestamp, player))
                 repaint();
         }
@@ -1164,7 +1165,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                     CHARACTER_WIDTH + 2 * CHARACTER_FASTSPEED,  CHARACTER_WIDTH + 2 * CHARACTER_FASTSPEED)));
         }
 
-        if (player.xPosition == levels[currentLevelIndex].endPosCol && player.yPosition == levels[currentLevelIndex].endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
+        if (player.xPosition == player.level.endPosCol && player.yPosition == player.level.endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (player.isPracticeMode) {
                 player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
@@ -1176,7 +1177,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-        if (levels[currentLevelIndex] instanceof Level.BossLevel && ((Level.BossLevel) levels[currentLevelIndex]).endtime <= timestamp && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
+        if (player.level instanceof Level.BossLevel && ((Level.BossLevel) player.level).endtime <= timestamp && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             System.out.println("Hey times up");
             if (tasActive || player.isPracticeMode) {
                 tasActive = false;
@@ -1204,7 +1205,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         // Setting clip
-        if (levels[currentLevelIndex] instanceof Level.BossLevel) {
+        if (player.level instanceof Level.BossLevel) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
         } else {
             for (int i = 0; i < blasts.size(); i++) {
@@ -1236,21 +1237,21 @@ public class MainRunningThing extends javax.swing.JFrame {
         jPanel1.setBackground(Color.white);
         Graphics currG = jPanel1.getGraphics();
         currG.setClip(clipholder);
-        if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-            ((Graphics2D) currG).setBackground(((Level.BossLevel) levels[currentLevelIndex]).getBackgroundColor(timestamp));
+        if (player.level instanceof Level.BossLevel) {
+            ((Graphics2D) currG).setBackground(((Level.BossLevel) player.level).getBackgroundColor(timestamp));
         } else {
             ((Graphics2D) currG).setBackground(Color.white);
         }
 
         currG.clearRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
 
-        if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-            ((Level.BossLevel) levels[currentLevelIndex]).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
+        if (player.level instanceof Level.BossLevel) {
+            ((Level.BossLevel) player.level).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
 
-        for (int rowNumber = 0; rowNumber < player.level.block.length; rowNumber++) 
-            for (int columnNumber = 0; columnNumber < player.level.block[0].length; columnNumber++) 
-                if (player.level.block[rowNumber][columnNumber] != null)
-                    player.level.block[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
+        for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
+            for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
+                if (player.level.blocks[rowNumber][columnNumber] != null)
+                    player.level.blocks[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
 
         characterIconAlive.paintIcon(jPanel1, currG, player.xCoordinates, player.yCoordinates);
 
@@ -1310,8 +1311,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             currG.fillRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
         }
 
-        if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-            ((Level.BossLevel) levels[currentLevelIndex]).drawForeground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
+        if (player.level instanceof Level.BossLevel) {
+            ((Level.BossLevel) player.level).drawForeground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
         }
 
         // Draws the pie at frame 314
@@ -1328,13 +1329,13 @@ public class MainRunningThing extends javax.swing.JFrame {
         g.fillRect(this.getWidth() / 2 - 25, 50, 50, 50);
         g.setColor(Color.BLACK);
         g.setFont(g.getFont().deriveFont(18f));
-        g.drawString(levels[currentLevelIndex].levelLabel, this.getWidth() / 2 - 20, 70);
+        g.drawString(player.level.levelLabel, this.getWidth() / 2 - 20, 70);
         g.drawString(String.format("TimeStamp: %d", timestamp), this.getWidth() - 300, 80);
         g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
         g.drawString(String.format("Death Count (Total): %d", totalDeathCount), 300, 50);
         g.drawString(String.format("Death Count (Level): %d", deathCount[currentLevelIndex]), 300, 70);
         g.drawString(String.format("Health: %d", player.hp), 300, 90);
-        g.drawString(String.format("Level Code: %s", levels[currentLevelIndex].getCode()), 300, 110);
+        g.drawString(String.format("Level Code: %s", player.level.getCode()), 300, 110);
         
         // Draws Lea
         if (isLeaGif) {
@@ -1342,7 +1343,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         // Gets the block to show up on first run
-        if (opacity > 15 || player.xCoordinates != player.xTarg || player.yCoordinates != player.yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || levels[currentLevelIndex] instanceof Level.BossLevel) {
+        if (opacity > 15 || player.xCoordinates != player.xTarg || player.yCoordinates != player.yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || player.level instanceof Level.BossLevel) {
             if (letsseeifthisworks)
                 letsseeifthisworks = false;
             }
@@ -1374,9 +1375,9 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            for (int rowNumber = 0; rowNumber < player.level.block.length; rowNumber++) {
-                for (int columnNumber = 0; columnNumber < player.level.block[0].length; columnNumber++) {
-                    Block currBlock = player.level.block[rowNumber][columnNumber];
+            for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) {
+                for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) {
+                    Block currBlock = player.level.blocks[rowNumber][columnNumber];
                     if (currBlock == null) {
                         continue;
                     }
@@ -1423,8 +1424,8 @@ public class MainRunningThing extends javax.swing.JFrame {
                 }
             }
 
-            if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-                blasts.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateBlasts(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+            if (player.level instanceof Level.BossLevel) {
+                blasts.addAll(((Level.BossLevel) player.level).generateBlasts(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
             }
 
             // Calculates where the blasts would be

@@ -28,7 +28,7 @@ public class TasGenerator {
 
     public boolean doTasStuff(int startx, int starty, int timestamp, Player player) {
         if (script.containsKey(timestamp)) {
-            Block[][] block = player.level.block;
+            Block[][] block = player.level.blocks;
             switch(script.get(timestamp)) {
 
                 case 'D':
