@@ -15,7 +15,7 @@ public class ResourceLocator {
         this.path = String.format(format, namespace, path);
         boolean okay = false;
         for(String prefix: prefices) {
-            stream = getClass().getResourceAsStream(prefix + this.path); 
+            stream = getClass().getClassLoader().getResourceAsStream(prefix + this.path);
             if(stream != null) {
                 stream = new java.io.BufferedInputStream(stream);
                 okay = true;
