@@ -5,6 +5,12 @@
  */
 package squares;
 
+import squares.blocks.LauncherBlock;
+import squares.blocks.Block;
+import squares.blocks.EndingBlock;
+import squares.blocks.BlasterBlock;
+import squares.blocks.CannonBlock;
+import squares.blocks.NormalBlock;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -20,7 +26,6 @@ import java.util.Collections;
 
 import squares.api.ResourceLocator;
 import squares.api.Direction;
-import squares.block.*;
 
 /**
  *

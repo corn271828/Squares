@@ -4,6 +4,7 @@ import squares.api.CharacterState;
 
 public class Player {
     public static final int itime = 10;
+    public static final int PRACTICE_MODE_LIVES = 100;
 
     public CharacterState charState;
     public int xPosition; //Target position of the character in grid coordinates
@@ -15,6 +16,7 @@ public class Player {
 
     public int iftime;
     public int hp;
+    public boolean isPracticeMode;
 
     public boolean isInvincible(int cframe) {
         return iftime + itime >= cframe;

@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import squares.block.NormalBlock;
-import squares.block.Block;
+import squares.blocks.NormalBlock;
+import squares.blocks.Block;
 
 /**
  *

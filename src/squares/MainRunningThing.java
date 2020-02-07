@@ -5,19 +5,20 @@
  */
 package squares;
 
+import squares.blocks.LauncherBlock;
+import squares.blocks.Block;
+import squares.blocks.HighExplosion;
+import squares.blocks.BlasterBlock;
+import squares.blocks.CannonBlock;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.Area;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
@@ -28,7 +29,6 @@ import javax.swing.ImageIcon;
 
 import squares.api.CharacterState;
 import squares.api.ResourceLocator;
-import squares.block.*;
 
 import static squares.api.RenderingConstants.*;
 
@@ -44,12 +44,14 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     public Player player;
 
+    // Music!!
     public AudioInputStream backgroundStream;
     public Clip clip;
     public long clipTimeHolder = 0;
     public AudioInputStream bossMusicStream;
     public Clip bossClip;
 
+    // Level indices
     public int currentLevelIndex = 0; // INDEX of current level (add one to get level number)
     public int maxLevelIndex = currentLevelIndex;
     public int holdLevelIndex = currentLevelIndex;
@@ -83,14 +85,13 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     public static final ImageIcon characterIconAlive = new ImageIcon("Pics/Character.png", "Character image");
 
-    public static final boolean SEE_OVERLAP = false;
-    public boolean musicOn = true;
-    public static final int PRACTICE_MODE_LIVES = 100;
-    public boolean isPracticeMode = false;
-
+    // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 100;
+    public static final boolean SEE_OVERLAP = false;
+    public boolean musicOn = true;
 
+    // Checkpoints
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
     public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("data", "sjbossscript.txt"));
@@ -101,8 +102,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     public boolean isLeaGif = false;
     public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 
+    // All the levels. All of them.
     public Level[] levels = new Level[]{
-        // ang,  xvel,  yvel,  xa,  ya,  angvel
 
         new Level(new String[][]{
             new String[]{"X", "N", "O"}
@@ -318,6 +319,7 @@ public class MainRunningThing extends javax.swing.JFrame {
          "CONGRATS!", "tHxF0rPlynG")
     };
 
+    // Deaths
     public int[] deathCount = new int[levels.length];
     public int totalDeathCount = 0;
 
@@ -531,13 +533,11 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.level.blocks.length == 0) {
             return;
         }
-        //System.out.println(evt.getKeyCode());
 
         switch (evt.getKeyCode()) {
-            case 'T':
+            case 'T': // toggles autoplay
                 if (levels[currentLevelIndex] instanceof SJBossFight) {
                     tasActive = !tasActive;
-                    timestart = Instant.now();
                 } else {
                     break;
                 }
@@ -550,24 +550,24 @@ public class MainRunningThing extends javax.swing.JFrame {
                     repaint();
                 }
                 break;
-            case 'P':
+            case 'P': // toggle practice mode
                 toggle_practice.setSelected(!toggle_practice.isSelected());
                 break;
-            case 'K':
+            case 'K': // skip level
                 levelFinished();
                 break;
-            case 'C':
-                if (levels[currentLevelIndex] instanceof Level.BossLevel && isPracticeMode) {
+            case 'C': // add checkpoint
+                if (levels[currentLevelIndex] instanceof Level.BossLevel && player.isPracticeMode) {
                     checkpointTimes.add(timestamp);
                 }
                 break;
-            case 'V':
-                if (levels[currentLevelIndex] instanceof Level.BossLevel && isPracticeMode) {
+            case 'V': // remove checkpoint
+                if (levels[currentLevelIndex] instanceof Level.BossLevel && player.isPracticeMode) {
                     if (checkpointTimes.size() > 0) {
                         checkpointTimes.pollLast();
                     }
                 }
-            case 'B':
+            case 'B': // clear all checkpoints
                 checkpointTimes.clear();
 
         }
@@ -577,7 +577,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if(player.charState != CharacterState.NORMAL) {
             return;
         }
-        switch (evt.getKeyCode()) {
+        switch (evt.getKeyCode()) { // move
             case RIGHT_KEY_PRESS:
             case 'D':
                 if (player.xPosition == player.level.blocks[0].length - 1)
@@ -638,7 +638,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     }//GEN-LAST:event_formPropertyChange
 
     private void jText_levelCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jText_levelCodeActionPerformed
-        // TODO add your handling code here:
+        // This does all of the level code input calculations
         String code = jText_levelCode.getText();
         System.out.println(code);
         if (code.toLowerCase().equals(KONAMI_CODE)) {
@@ -750,7 +750,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         Level currentLevel = player.level;
 
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
-            if (isPracticeMode && checkpointTimes.size() > 0) {
+            if (player.isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
             } else {
                 timestamp = bossTestStartTime;
@@ -800,9 +800,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
         player.hp = currentLevelHealth;
-        isPracticeMode = toggle_practice.isSelected();
-        if (isPracticeMode) {
-            player.hp = PRACTICE_MODE_LIVES;
+        player.isPracticeMode = toggle_practice.isSelected();
+        if (player.isPracticeMode) {
+            player.hp = Player.PRACTICE_MODE_LIVES;
         }
         player.iftime = 0;
         lineExplosions.clear();
@@ -822,7 +822,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.yCoordinates = player.yTarg;
         timestamp = 0;
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
-            if (isPracticeMode && checkpointTimes.size() > 0) {
+            if (player.isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
             } else {
                 timestamp = bossTestStartTime;
@@ -833,9 +833,9 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         player.iftime = 0;
         player.hp = currentLevelHealth;
-        isPracticeMode = toggle_practice.isSelected();
-        if (isPracticeMode) {
-            player.hp = PRACTICE_MODE_LIVES;
+        player.isPracticeMode = toggle_practice.isSelected();
+        if (player.isPracticeMode) {
+            player.hp = Player.PRACTICE_MODE_LIVES;
         }
         if (levels[currentLevelIndex] instanceof SJBossFight && musicOn) {
             bossClip.stop();
@@ -866,6 +866,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
     }
 
+    // on death
     public void death() {
         if (player.charState.vulnerable) {
             player.charState = CharacterState.DEAD;
@@ -878,6 +879,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
     }
 
+    //  checks the character when the character lands at its destination
     public void landChecker() {
          if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.blocks[0].length || player.yPosition >= player.level.blocks.length) {
             death();
@@ -948,6 +950,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         }
 
+        // Does the level switching / restarting stuff
         if (isSwitching) {
             if (opacity < 240) {
                 opacity += 48;
@@ -983,7 +986,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        BlastCalculator bc = new BlastCalculator();
+        BlastCalculator bc = new BlastCalculator(); // opens new thread for blasts
         bc.start();
 
         /// Levelspecific testing
@@ -1204,7 +1207,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         if (player.xPosition == levels[currentLevelIndex].endPosCol && player.yPosition == levels[currentLevelIndex].endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
-            if (isPracticeMode) {
+            if (player.isPracticeMode) {
                 player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
                 opacity = 10;
@@ -1217,7 +1220,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         if (levels[currentLevelIndex] instanceof Level.BossLevel && ((Level.BossLevel) levels[currentLevelIndex]).endtime <= timestamp && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             System.out.println("Hey times up");
-            if (tasActive || isPracticeMode) {
+            if (tasActive || player.isPracticeMode) {
                 tasActive = false;
                 player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
@@ -1245,8 +1248,6 @@ public class MainRunningThing extends javax.swing.JFrame {
         // Setting clip
         if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
-            //clipholder.add(((Level.BossLevel)levels[currentLevelIndex]).getBackgroundClip(timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
-            //clipholder.add(((Level.BossLevel)levels[currentLevelIndex]).getForegroundClip(timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
         } else {
             for (int i = 0; i < blasts.size(); i++) {
                 BlasterBlock.Blast bla = blasts.get(i);
@@ -1265,13 +1266,15 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clipholder.add(lineExplosions.get(i).xplosionClipArea(timestamp));
             }
 
-            if (timestamp >= 314 && timestamp <= 335) {
+            if (timestamp >= 314 && timestamp <= 335) { // Sets clip for the pie
                 clipholder.add(new Area(new Rectangle(0, 0, PIEPNG.getIconWidth(), PIEPNG.getIconHeight())));
             }
 
         }
 
         ///PAINTINGG!!!
+        
+        // Draws the game panel
         jPanel1.setBackground(Color.white);
         Graphics currG = jPanel1.getGraphics();
         currG.setClip(clipholder);
@@ -1298,13 +1301,15 @@ public class MainRunningThing extends javax.swing.JFrame {
             currG.fillRect(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);
         }
 
+        // Dev tool to see ouchArea and the clip
         if (SEE_OVERLAP) {
             currG.setColor(Color.black);
             ((Graphics2D) currG).draw(ouchArea);
             currG.setColor(Color.red);
             ((Graphics2D) currG).draw(clipholder);
         }
-
+        
+        // Draws all the blasts and explosions and stuff
         for (int i = 0; i < blasts.size(); i++) {
             BlasterBlock.Blast bla = blasts.get(i);
 
@@ -1332,6 +1337,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
+        // Gets rid of explosions at correct time
         for (int i = 0; i < lineExplosions.size(); i++) {
             Level.BossLevel.LineExploder le = lineExplosions.get(i);
             le.drawXPlosion(jPanel1, currG, timestamp);
@@ -1350,10 +1356,12 @@ public class MainRunningThing extends javax.swing.JFrame {
             ((Level.BossLevel) levels[currentLevelIndex]).drawForeground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
         }
 
+        // Draws the pie at frame 314
         if (timestamp >= 314 && timestamp <= 334) {
             PIEPNG.paintIcon(jPanel1, currG, 10, 10);
         }
 
+        // Draws the stuff at the top of the screen
         g.setColor(new Color(207, 226, 243));
         g.fillRect(0, 0, this.getWidth(), 120);
         g.setColor(Color.BLACK);
@@ -1364,15 +1372,13 @@ public class MainRunningThing extends javax.swing.JFrame {
         g.setFont(g.getFont().deriveFont(18f));
         g.drawString(levels[currentLevelIndex].levelLabel, this.getWidth() / 2 - 20, 70);
         g.drawString(String.format("TimeStamp: %d", timestamp), this.getWidth() - 300, 80);
-        g.drawString("Practice Mode: ".concat(isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
+        g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
         g.drawString(String.format("Death Count (Total): %d", totalDeathCount), 300, 50);
         g.drawString(String.format("Death Count (Level): %d", deathCount[currentLevelIndex]), 300, 70);
         g.drawString(String.format("Health: %d", player.hp), 300, 90);
         g.drawString(String.format("Level Code: %s", levels[currentLevelIndex].getCode()), 300, 110);
-        /*if (timestart != null && timestamp <= 1200)
-            g.drawString(String.format("Millis: %d", Duration.between(timestart, Instant.now()).toMillis()), 10, 50);
-        if (timestart != null && timeend != null && timestamp > 1200)
-            g.drawString(String.format("Millis: %d", Duration.between(timestart, timeend).toMillis()), 10, 50);*/
+        
+        // Draws Lea
         if (isLeaGif) {
             LEAGIF.paintIcon(this, g, 0, 30);
         }
@@ -1484,4 +1490,3 @@ public class MainRunningThing extends javax.swing.JFrame {
     }
 
 }
-// vim: ts=4

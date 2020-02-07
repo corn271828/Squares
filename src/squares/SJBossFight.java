@@ -22,8 +22,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import squares.api.ResourceLocator;
-import squares.block.HighExplosion;
-import squares.block.BlasterBlock;
+import squares.blocks.HighExplosion;
+import squares.blocks.BlasterBlock;
 
 /**
  *
@@ -285,24 +285,6 @@ public class SJBossFight extends Level.BossLevel {
             warningIcon.paintIcon(c, g, startx + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
                     starty + SPACING_BETWEEN_BLOCKS * 5 + STANDARD_ICON_WIDTH);
         }
-
-        /*/ Words
-        if (timestamp >= 155 && timestamp < 165) {
-            g.setFont(new Font("Comic Sans MS", Font.BOLD, 120));
-            g.setColor(Color.black);
-            g.drawString("Are you", startx + SPACING_BETWEEN_BLOCKS * 2 + (int) (Math.random() * 20), starty + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 20));
-            g.drawString("ready...", startx + SPACING_BETWEEN_BLOCKS * 2 + (int) (Math.random() * 20), starty + SPACING_BETWEEN_BLOCKS * 5 + (int) (Math.random() * 20));
-        }
-
-        if (timestamp >= 165 && timestamp < 175) {
-            g.setFont(new Font("Comic Sans MS", Font.BOLD, 150));
-            g.setColor(Color.white);
-            g.drawString("TO HAVE A", startx + SPACING_BETWEEN_BLOCKS + (int) (Math.random() * 10), starty + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 10));
-            g.drawString("BAD TIME?!", startx + SPACING_BETWEEN_BLOCKS +  (int) (Math.random() * 10), starty + SPACING_BETWEEN_BLOCKS * 5 + (int) (Math.random() * 10));
-            g.setColor(new Color(200, 0, 0));
-            g.drawString("TO HAVE A", startx + SPACING_BETWEEN_BLOCKS +  (int) (Math.random() * 30), starty + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 30));
-            g.drawString("BAD TIME?!", startx + SPACING_BETWEEN_BLOCKS +  (int) (Math.random() * 30), starty + SPACING_BETWEEN_BLOCKS * 5 + (int) (Math.random() * 30));
-        }*/
 
         if (timestamp >= 1100 && timestamp <= 1130){
             g.setFont(new Font("Comic Sans MS", Font.BOLD, 150));
