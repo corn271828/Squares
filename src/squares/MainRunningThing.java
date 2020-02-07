@@ -5,6 +5,11 @@
  */
 package squares;
 
+import squares.blocks.LauncherBlock;
+import squares.blocks.Block;
+import squares.blocks.HighExplosion;
+import squares.blocks.BlasterBlock;
+import squares.blocks.CannonBlock;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -24,7 +29,6 @@ import javax.swing.ImageIcon;
 
 import squares.api.CharacterState;
 import squares.api.ResourceLocator;
-import squares.block.*;
 
 import static squares.api.RenderingConstants.*;
 
