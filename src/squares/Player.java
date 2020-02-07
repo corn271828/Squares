@@ -14,7 +14,7 @@ public class Player {
     public int xCoordinates; //Position of the upper left hand corner of the character pic in panel coordinates
     public int yCoordinates;
 
-    public int iftime = 0;
+    public int iftime = -11;
     public int hp = 1;
     public boolean isPracticeMode = false;
 
