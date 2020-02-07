@@ -5,7 +5,13 @@
  */
 package squares;
 
-import Block.*;
+import Blocks.CannonBlock;
+import Blocks.Block;
+import Blocks.LauncherBlock;
+import Blocks.EndingBlock;
+import Blocks.BlasterBlock;
+import Blocks.NormalBlock;
+import Blocks.HighExplosion;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;

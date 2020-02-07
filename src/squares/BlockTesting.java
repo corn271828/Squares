@@ -5,7 +5,8 @@
  */
 package squares;
 
-import Block.*;
+import Blocks.NormalBlock;
+import Blocks.Block;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.util.logging.Level;

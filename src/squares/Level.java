@@ -5,7 +5,7 @@
  */
 package squares;
 
-import Block.*;
+import Blocks.BlasterBlock;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;

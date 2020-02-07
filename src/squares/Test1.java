@@ -3,15 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Block;
-
-import squares.Level;
+package squares;
 
 /**
  *
  * @author piercelai
  */
+public class Test1 {
+    int joe;
     
-public interface HighExplosion {
-    public Level.BossLevel.LineExploder getLineExplosion(int startime, double ang, int starx, int stary);
+    public Test1() {
+        joe = 0;
+    }
+    
+    public Test1(int k) {
+        joe = k;
+    }
 }

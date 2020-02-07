@@ -3,19 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Block;
+package Blocks;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.geom.Area;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import squares.Level;
 
 /**
  *
@@ -28,6 +18,7 @@ public abstract class Block {
     public abstract void refreshIcon();
     public abstract void reset();
     
+    @Override
     public String toString() {
         return label;
     }
