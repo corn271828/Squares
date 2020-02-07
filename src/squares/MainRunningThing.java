@@ -9,14 +9,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.Area;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
@@ -556,12 +553,12 @@ public class MainRunningThing extends javax.swing.JFrame {
                 levelFinished();
                 break;
             case 'C': // add checkpoint
-                if (levels[currentLevelIndex] instanceof Level.BossLevel && isPracticeMode) {
+                if (levels[currentLevelIndex] instanceof Level.BossLevel && player.isPracticeMode) {
                     checkpointTimes.add(timestamp);
                 }
                 break;
             case 'V': // remove checkpoint
-                if (levels[currentLevelIndex] instanceof Level.BossLevel && isPracticeMode) {
+                if (levels[currentLevelIndex] instanceof Level.BossLevel && player.isPracticeMode) {
                     if (checkpointTimes.size() > 0) {
                         checkpointTimes.pollLast();
                     }
@@ -749,7 +746,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         Level currentLevel = player.level;
         
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
-            if (isPracticeMode && checkpointTimes.size() > 0) {
+            if (player.isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
             } else {
                 timestamp = bossTestStartTime;
@@ -799,9 +796,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
         player.hp = currentLevelHealth;
-        isPracticeMode = toggle_practice.isSelected();
-        if (isPracticeMode) {
-            player.hp = PRACTICE_MODE_LIVES;
+        player.isPracticeMode = toggle_practice.isSelected();
+        if (player.isPracticeMode) {
+            player.hp = Player.PRACTICE_MODE_LIVES;
         }
         player.iftime = 0;
         lineExplosions.clear();
@@ -821,7 +818,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.yCoordinates = player.yTarg;
         timestamp = 0;
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
-            if (isPracticeMode && checkpointTimes.size() > 0) {
+            if (player.isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
             } else {
                 timestamp = bossTestStartTime;
@@ -832,9 +829,9 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         player.iftime = 0;
         player.hp = currentLevelHealth;
-        isPracticeMode = toggle_practice.isSelected();
-        if (isPracticeMode) {
-            player.hp = PRACTICE_MODE_LIVES;
+        player.isPracticeMode = toggle_practice.isSelected();
+        if (player.isPracticeMode) {
+            player.hp = Player.PRACTICE_MODE_LIVES;
         }
         if (levels[currentLevelIndex] instanceof SJBossFight && musicOn) {
             bossClip.stop();
@@ -1207,7 +1204,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         if (player.xPosition == levels[currentLevelIndex].endPosCol && player.yPosition == levels[currentLevelIndex].endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
-            if (isPracticeMode) {
+            if (player.isPracticeMode) {
                 player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
                 opacity = 10;
@@ -1221,7 +1218,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (levels[currentLevelIndex] instanceof Level.BossLevel && ((Level.BossLevel) levels[currentLevelIndex]).endtime <= timestamp && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             
             System.out.println("Hey times up");
-            if (tasActive || isPracticeMode) {
+            if (tasActive || player.isPracticeMode) {
                 tasActive = false;
                 player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
@@ -1373,7 +1370,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         g.setFont(g.getFont().deriveFont(18f));
         g.drawString(levels[currentLevelIndex].levelLabel, this.getWidth() / 2 - 20, 70);
         g.drawString(String.format("TimeStamp: %d", timestamp), this.getWidth() - 300, 80);
-        g.drawString("Practice Mode: ".concat(isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
+        g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
         g.drawString(String.format("Death Count (Total): %d", totalDeathCount), 300, 50);
         g.drawString(String.format("Death Count (Level): %d", deathCount[currentLevelIndex]), 300, 70);
         g.drawString(String.format("Health: %d", player.hp), 300, 90);
