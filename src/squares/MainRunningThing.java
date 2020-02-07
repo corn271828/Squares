@@ -75,11 +75,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int endx; //Border of block drawings; used to determine when ammunition disappears
     public int endy;
 
-    public boolean isIFrame = false;
-    public int iframeStart = 0;
     public int iframeTime = 10;
     public int currentLevelHealth = 1;
-    public int currentHP = 1;
 
     public Area clipholder;
     public Area ouchArea;
@@ -519,7 +516,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if (player.charState == CharacterState.NORMAL || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING) {
+        if (player.charState.vulnerable) {
             player.charState = CharacterState.RESTARTING;
             isSwitching = true;
             opacity = 10;
@@ -545,7 +542,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                     break;
                 }
             case 'R':
-                if (player.charState == CharacterState.NORMAL || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING) {
+                if (player.charState.vulnerable) {
                     player.charState = CharacterState.RESTARTING;
                     isSwitching = true;
                     opacity = 10;
@@ -802,13 +799,12 @@ public class MainRunningThing extends javax.swing.JFrame {
                 }
             }
         }
-        currentHP = currentLevelHealth;
+        player.hp = currentLevelHealth;
         isPracticeMode = toggle_practice.isSelected();
         if (isPracticeMode) {
-            currentHP = PRACTICE_MODE_LIVES;
+            player.hp = PRACTICE_MODE_LIVES;
         }
-        iframeStart = 0;
-        isIFrame = false;
+        player.iftime = 0;
         lineExplosions.clear();
     }
 
@@ -835,12 +831,11 @@ public class MainRunningThing extends javax.swing.JFrame {
         blasts.clear();
         lineExplosions.clear();
 
-        isIFrame = false;
-        iframeStart = 0;
-        currentHP = currentLevelHealth;
+        player.iftime = 0;
+        player.hp = currentLevelHealth;
         isPracticeMode = toggle_practice.isSelected();
         if (isPracticeMode) {
-            currentHP = PRACTICE_MODE_LIVES;
+            player.hp = PRACTICE_MODE_LIVES;
         }
         if (levels[currentLevelIndex] instanceof SJBossFight && musicOn) {
             bossClip.stop();
@@ -861,19 +856,18 @@ public class MainRunningThing extends javax.swing.JFrame {
     }
 
     public void ouch() {
-        if (!isIFrame && (player.charState == CharacterState.NORMAL || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING)) {
-            currentHP--;
-            if (currentHP <= 0) {
+        if (!player.isInvincible(timestamp) && player.charState.vulnerable) {
+            player.hp--;
+            if (player.hp <= 0) {
                 death();
             } else {
-                isIFrame = true;
-                iframeStart = timestamp;
+                player.iftime = timestamp;
             }
         }
     }
 
     public void death() {
-        if (player.charState == CharacterState.NORMAL || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING){
+        if (player.charState.vulnerable) {
             player.charState = CharacterState.DEAD;
             isSwitching = true;
             opacity = 10;
@@ -1265,7 +1259,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
             }
 
-            if (isIFrame && iframeStart + iframeTime >= timestamp) {
+            if (player.isInvincible(timestamp)) {
                 clipholder.add(new Area(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH)));
             }
 
@@ -1301,12 +1295,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         
         characterIconAlive.paintIcon(jPanel1, currG, player.xCoordinates, player.yCoordinates);
         
-        if (isIFrame && iframeStart + iframeTime >= timestamp) {
+        if (player.isInvincible(timestamp)) {
             currG.setColor(new Color(0, 0, 255, timestamp % 2 == 0 ? 50 : 100));
             currG.fillRect(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);
-            if (iframeStart + iframeTime <= timestamp) {
-                isIFrame = false;
-            }
         }
 
         if (SEE_OVERLAP) {
@@ -1378,7 +1369,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         g.drawString("Practice Mode: ".concat(isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
         g.drawString(String.format("Death Count (Total): %d", totalDeathCount), 300, 50);
         g.drawString(String.format("Death Count (Level): %d", deathCount[currentLevelIndex]), 300, 70);
-        g.drawString(String.format("Health: %d", currentHP), 300, 90);
+        g.drawString(String.format("Health: %d", player.hp), 300, 90);
         g.drawString(String.format("Level Code: %s", levels[currentLevelIndex].getCode()), 300, 110);
         /*if (timestart != null && timestamp <= 1200)
             g.drawString(String.format("Millis: %d", Duration.between(timestart, Instant.now()).toMillis()), 10, 50);

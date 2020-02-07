@@ -3,6 +3,7 @@ package squares;
 import squares.api.CharacterState;
 
 public class Player {
+    public static final int itime = 10;
 
     public CharacterState charState;
     public int xPosition; //Target position of the character in grid coordinates
@@ -11,6 +12,14 @@ public class Player {
     public int yTarg;
     public int xCoordinates; //Position of the upper left hand corner of the character pic in panel coordinates
     public int yCoordinates;
-	public Level level;
+
+    public int iftime;
+    public int hp;
+
+    public boolean isInvincible(int cframe) {
+        return iftime + itime >= cframe;
+    }
+
+    public Level level;
     
 }
