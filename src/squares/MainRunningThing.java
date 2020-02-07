@@ -21,10 +21,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
 import javax.swing.ImageIcon;
 
 import squares.api.CharacterState;
@@ -45,11 +41,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public Player player;
 
     // Music!!
-    public AudioInputStream backgroundStream;
-    public Clip clip;
-    public long clipTimeHolder = 0;
-    public AudioInputStream bossMusicStream;
-    public Clip bossClip;
+    public AudioManager audio = new AudioManager();
 
     // Level indices
     public int currentLevelIndex = 0; // INDEX of current level (add one to get level number)
@@ -339,22 +331,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         player = new Player();
         player.level = levels[currentLevelIndex];
 
-        try {
-            if (musicOn) {
-                backgroundStream = new ResourceLocator("bgm", "Canon_in_D_Swing.wav").asAudioStream();
-                clip = AudioSystem.getClip();
-                clip.open(backgroundStream);
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
-                bossMusicStream = new ResourceLocator("bgm", "Megalovania_Swing.wav").asAudioStream();
-                bossClip = AudioSystem.getClip();
-                bossClip.loop(Clip.LOOP_CONTINUOUSLY);
-            }
-        } catch (javax.sound.sampled.UnsupportedAudioFileException ex) {
-            Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (LineUnavailableException ex) {
-            Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        if (musicOn) {
+            audio.addClip("normal", new ResourceLocator("bgm", "Canon_in_D_Swing.wav"))
+                 .addClip("boss",   new ResourceLocator("bgm", "Megalovania_Swing.wav"));
         }
     }
 
@@ -770,33 +749,16 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         player.xCoordinates = player.xTarg;
         player.yCoordinates = player.yTarg;
-        bossClip.close();
 
         if (currentLevel instanceof Level.BossLevel) {
             currentLevelHealth = ((Level.BossLevel) currentLevel).levelHP;
             if (musicOn) {
-                clipTimeHolder = clip.getMicrosecondPosition();
-                clip.stop();
-                try {
-                    bossClip.open(bossMusicStream);
-                    bossClip.setMicrosecondPosition(timestamp * bossClip.getMicrosecondLength() / 1556);
-                    bossClip.start();
-                } catch (LineUnavailableException ex) {
-                    Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
+                audio.setPlaying("boss", timestamp * audio.getClip("boss").getMicrosecondLength() / 1556);
             }
         } else {
             currentLevelHealth = 1;
             if (musicOn) {
-                if (!clip.isActive()) {
-                    clip.loop(Clip.LOOP_CONTINUOUSLY);
-                    clip.start();
-                }
-                if (bossClip.isActive()) {
-                    bossClip.stop();
-                }
+                audio.setPlaying("normal");
             }
         }
         player.hp = currentLevelHealth;
@@ -838,9 +800,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.hp = Player.PRACTICE_MODE_LIVES;
         }
         if (levels[currentLevelIndex] instanceof SJBossFight && musicOn) {
-            bossClip.stop();
-            bossClip.setMicrosecondPosition(timestamp * bossClip.getMicrosecondLength() / 1556);
-            bossClip.start();
+            audio.setPlaying("boss", timestamp * audio.getClip("boss").getMicrosecondLength() / 1556);
         }
     }
 
