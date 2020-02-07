@@ -78,7 +78,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 100;
-    public static final boolean SEE_OVERLAP = true;
+    public static final boolean SEE_OVERLAP = false;
     public boolean musicOn = true;
 
     // Checkpoints
@@ -764,7 +764,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.isPracticeMode) {
             player.hp = Player.PRACTICE_MODE_LIVES;
         }
-        player.iftime = 0;
+        player.iftime = -11;
         lineExplosions.clear();
     }
 
@@ -1245,8 +1245,6 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         currG.clearRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
 
-        System.out.println(player.level.levelLabel);
-        System.out.println(Level.BossLevel.class);
         if (player.level instanceof Level.BossLevel) {
             ((Level.BossLevel) player.level).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
         }
