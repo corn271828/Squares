@@ -5,8 +5,6 @@
  */
 package squares;
 
-import Blocks.HighExplosion;
-import Blocks.BlasterBlock;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -16,7 +14,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform; 
 import java.awt.geom.Area;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,11 +21,15 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import squares.api.ResourceLocator;
+import squares.block.HighExplosion;
+import squares.block.BlasterBlock;
+
 /**
  *
  * @author piercelai
  */
-public class SJBossFight extends Level.BossLevel{
+public class SJBossFight extends Level.BossLevel {
     
     public static int FIRST_BOSS_TIME = 840;
     public static int SECOND_BOSS_TIME = 720;
@@ -65,14 +66,14 @@ public class SJBossFight extends Level.BossLevel{
         levelHP = hp;
     }
     
-    public SJBossFight(String[][] in, String label, int hp, File input){
+    public SJBossFight(String[][] in, String label, int hp, ResourceLocator input){
         super(in, label, input);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
         generateHashMaps();
         levelHP = hp;
     }     
     
-    public SJBossFight(String[][] in, String label, int hp, File input, String code){
+    public SJBossFight(String[][] in, String label, int hp, ResourceLocator input, String code){
         super(in, label, code, input);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
         generateHashMaps();
@@ -160,21 +161,17 @@ public class SJBossFight extends Level.BossLevel{
         if (temp == null)
             return hold;
         for (BlasterBlock.Blast bla : temp) {
-            try {
-                BlasterBlock.Blast kin = bla.clone();
-                kin.setCoords(startx + SPACING_BETWEEN_BLOCKS * bla.xcoord / 2 + STANDARD_ICON_WIDTH / 2, starty + SPACING_BETWEEN_BLOCKS * bla.ycoord / 2 + STANDARD_ICON_WIDTH / 2);
-                if (kin instanceof ArcingBone && ((ArcingBone) kin).angle > 900) {
-                    ((ArcingBone) kin).angle = Math.atan2(xCoordinates - kin.xcoord, yCoordinates - kin.ycoord);
-                    ((ArcingBone) kin).xvelocity = kin.blastSpeed * Math.sin(((ArcingBone) kin).angle);
-                    ((ArcingBone) kin).yvelocity = kin.blastSpeed * Math.cos(((ArcingBone) kin).angle);
-                    ((ArcingBone) kin).angle *= -1;
-                    ((ArcingBone) kin).tx = new AffineTransform();
-                    ((ArcingBone) kin).tx.rotate(((ArcingBone) kin).angle);
-                }
-                hold.add(kin);
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(SJBossFight.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            BlasterBlock.Blast kin = bla.clone();
+            kin.setCoords(startx + SPACING_BETWEEN_BLOCKS * bla.xcoord / 2 + STANDARD_ICON_WIDTH / 2, starty + SPACING_BETWEEN_BLOCKS * bla.ycoord / 2 + STANDARD_ICON_WIDTH / 2);
+            if (kin instanceof ArcingBone && ((ArcingBone) kin).angle > 900) {
+                ((ArcingBone) kin).angle = Math.atan2(xCoordinates - kin.xcoord, yCoordinates - kin.ycoord);
+                ((ArcingBone) kin).xvelocity = kin.blastSpeed * Math.sin(((ArcingBone) kin).angle);
+                ((ArcingBone) kin).yvelocity = kin.blastSpeed * Math.cos(((ArcingBone) kin).angle);
+                ((ArcingBone) kin).angle *= -1;
+                ((ArcingBone) kin).tx = new AffineTransform();
+                ((ArcingBone) kin).tx.rotate(((ArcingBone) kin).angle);
             }
+            hold.add(kin);
         }
         return hold;
     }
@@ -289,24 +286,6 @@ public class SJBossFight extends Level.BossLevel{
                     starty + SPACING_BETWEEN_BLOCKS * 5 + STANDARD_ICON_WIDTH);
         }
         
-        /*/ Words
-        if (timestamp >= 155 && timestamp < 165) {
-            g.setFont(new Font("Comic Sans MS", Font.BOLD, 120));
-            g.setColor(Color.black);
-            g.drawString("Are you", startx + SPACING_BETWEEN_BLOCKS * 2 + (int) (Math.random() * 20), starty + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 20));
-            g.drawString("ready...", startx + SPACING_BETWEEN_BLOCKS * 2 + (int) (Math.random() * 20), starty + SPACING_BETWEEN_BLOCKS * 5 + (int) (Math.random() * 20));
-        }
-        
-        if (timestamp >= 165 && timestamp < 175) {
-            g.setFont(new Font("Comic Sans MS", Font.BOLD, 150));
-            g.setColor(Color.white);
-            g.drawString("TO HAVE A", startx + SPACING_BETWEEN_BLOCKS + (int) (Math.random() * 10), starty + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 10));
-            g.drawString("BAD TIME?!", startx + SPACING_BETWEEN_BLOCKS +  (int) (Math.random() * 10), starty + SPACING_BETWEEN_BLOCKS * 5 + (int) (Math.random() * 10));
-            g.setColor(new Color(200, 0, 0));
-            g.drawString("TO HAVE A", startx + SPACING_BETWEEN_BLOCKS +  (int) (Math.random() * 30), starty + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 30));
-            g.drawString("BAD TIME?!", startx + SPACING_BETWEEN_BLOCKS +  (int) (Math.random() * 30), starty + SPACING_BETWEEN_BLOCKS * 5 + (int) (Math.random() * 30));
-        }*/
-        
         if (timestamp >= 1100 && timestamp <= 1130){
             g.setFont(new Font("Comic Sans MS", Font.BOLD, 150));
             g.setColor(Color.white);
@@ -420,7 +399,7 @@ public class SJBossFight extends Level.BossLevel{
         }
         
         @Override
-        public FlyingBone clone() throws CloneNotSupportedException {
+        public FlyingBone clone() {
             FlyingBone fb = new FlyingBone(angle, blastSpeed, bonepic.getImage());
             fb.setDimensions(picwidth, picheight);
             return fb;
@@ -470,7 +449,7 @@ public class SJBossFight extends Level.BossLevel{
         }
         
         @Override
-        public ArcingBone clone() throws CloneNotSupportedException {
+        public ArcingBone clone() {
             ArcingBone ab = new ArcingBone(angle, xvelocity, yvelocity, xaccel, yaccel, bonepic.getImage());
             ab.setDimensions(picwidth, picheight);
             return ab;

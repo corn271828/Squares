@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Blocks;
+package squares.block;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -12,45 +12,45 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import squares.api.Direction;
+import squares.api.DirectedBlock;
+
 /**
  *
  * @author piercelai
  */
-public class BlasterBlock extends Block {
-    public Block.Direction direction;
+public class BlasterBlock extends Block implements DirectedBlock {
+    public Direction direction;
     public int period; //In units of timestamp
     public int blastSpeed; //pixels per timestamp
     public boolean primed;
     public int delay;
 
-    public BlasterBlock(Block.Direction d, int p, int bs) {
-        direction = d;
-        period = p;
-        blastSpeed = bs;
-        stepable = false;
-        icon = new ImageIcon("Pics/Blaster Block " + direction + ".png", "Blaster Block Image");
-        primed = false;
-        delay = 1;
+    protected static final ImageIcon blasterBlockRight = new ImageIcon("Pics/Blaster Block Right.png", "Blaster Block Image");
+    protected static final ImageIcon blasterBlockLeft = new ImageIcon("Pics/Blaster Block Left.png", "Blaster Block Image");
+    protected static final ImageIcon blasterBlockDown = new ImageIcon("Pics/Blaster Block Down.png", "Blaster Block Image");
+    protected static final ImageIcon blasterBlockUp = new ImageIcon("Pics/Blaster Block Up.png", "Blaster Block Image");
+
+    public BlasterBlock(Direction d, int p, int bs) {
+        this(d, p, bs, 1);
     }
 
-    public BlasterBlock(Block.Direction d, int p, int bs, int delay) {
-        direction = d;
+    public BlasterBlock(Direction d, int p, int bs, int delay) {
+        super(getIconByDirection(d), null, false);
         period = p;
         blastSpeed = bs;
-        stepable = false;
-        icon = new ImageIcon("Pics/Blaster Block " + direction + ".png", "Blaster Block Image");
         primed = false;
         this.delay = delay;
     }
 
-    @Override
-    public void reset() {
-
-    }
-
-    @Override
-    public void refreshIcon() {
-
+    private static ImageIcon getIconByDirection(Direction d) {
+        switch (d) {
+            case UP:    return blasterBlockUp;
+            case DOWN:  return blasterBlockDown;
+            case LEFT:  return blasterBlockLeft;
+            case RIGHT: return blasterBlockRight;
+        }
+        return null;
     }
 
     public void prime() {
@@ -63,7 +63,7 @@ public class BlasterBlock extends Block {
     }
 
     public static class Blast {
-        public Block.Direction direction;
+        public Direction direction;
         public int blastSpeed;
         public Icon icon;
         public int xcoord;
@@ -75,13 +75,13 @@ public class BlasterBlock extends Block {
             icon = null;
         }
 
-        public Blast(Block.Direction d, int bs) {
+        public Blast(Direction d, int bs) {
             direction = d;
             blastSpeed = bs;
             icon = new ImageIcon("Pics/Slow Blast " + direction + ".png", "Blaster Block Image");
         }
 
-        public Blast(Block.Direction d, int bs, ImageIcon imgicn) {
+        public Blast(Direction d, int bs, ImageIcon imgicn) {
             direction = d;
             blastSpeed = bs;
             icon = imgicn;
@@ -153,11 +153,14 @@ public class BlasterBlock extends Block {
             icon.paintIcon(jp, g, xcoord, ycoord);
         }
 
-
         @Override
-        public Blast clone() throws CloneNotSupportedException {
+        public Blast clone() {
             return new Blast(this);
         }
 
+    }
+    @Override
+    public Direction getDirection() {
+        return direction;
     }
 }

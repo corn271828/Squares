@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Blocks;
+package squares.block;
 
 import javax.swing.Icon;
 
@@ -12,27 +12,26 @@ import javax.swing.Icon;
  * @author lai_889937
  */
 public abstract class Block {
-    protected Icon icon;
-    protected String label;
-    protected boolean stepable; // Represents whether or not one can step on this type of block
-    public abstract void refreshIcon();
-    public abstract void reset();
+    public final Icon icon;
+    public final String label;
+    public final boolean stepable; // Represents whether or not one can step on this type of block
+
+    public Block(Icon i, String l, boolean s) {
+            icon = i;
+            label = l;
+            stepable = s;
+    }
+
+    public void refreshIcon() {}
+    public void reset() {}
     
     @Override
     public String toString() {
         return label;
     }
     
-    public static enum Direction {
-        UP, DOWN, RIGHT, LEFT;
-    }
-    
     public Icon getIcon() {
         return icon;
-    }
-    
-    public boolean getStepable() {
-        return stepable;
     }
 }
 

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Blocks;
+package squares.block;
 
 import javax.swing.ImageIcon;
 
@@ -13,22 +13,10 @@ import javax.swing.ImageIcon;
  */
 
 public class EndingBlock extends Block {
-    public static final ImageIcon endingBlockIcon = new ImageIcon("Pics/Ending Block.png", "End Block Image");;
+    public static final ImageIcon endingBlockIcon = new ImageIcon("Pics/Ending Block.png", "End Block Image");
 
     public EndingBlock() {
-        stepable = true;
-        label = "End Block";
-        icon = endingBlockIcon;
-    }
-
-    @Override
-    public void refreshIcon() {
-
-    }
-
-    @Override
-    public void reset() {
-
+        super(endingBlockIcon, "End Block", true);
     }
 
 }

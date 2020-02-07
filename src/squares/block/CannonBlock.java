@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Blocks;
+package squares.block;
 
 import java.awt.Rectangle;
 import java.awt.geom.Area;
@@ -20,21 +20,10 @@ public class CannonBlock extends Block {
     public static final ImageIcon cannonBlockIcon = new ImageIcon("Pics/Aiming Cannon Base.png", "Cannon Block Image");
 
     public CannonBlock(int p, int bs, int d) {
+        super(cannonBlockIcon, null, false);
         period = p;
         cannonballSpeed = bs;
-        stepable = false;
-        icon = cannonBlockIcon;
         delay = d;
-    }
-
-    @Override
-    public void refreshIcon() {
-
-    }
-
-    @Override
-    public void reset() {
-
     }
 
     public void setDelay(int d) {

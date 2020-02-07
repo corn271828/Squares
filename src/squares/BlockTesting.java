@@ -5,12 +5,13 @@
  */
 package squares;
 
-import Blocks.NormalBlock;
-import Blocks.Block;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import squares.block.NormalBlock;
+import squares.block.Block;
 
 /**
  *

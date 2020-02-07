@@ -5,25 +5,15 @@
  */
 package squares;
 
-import Blocks.CannonBlock;
-import Blocks.Block;
-import Blocks.LauncherBlock;
-import Blocks.EndingBlock;
-import Blocks.BlasterBlock;
-import Blocks.NormalBlock;
-import Blocks.HighExplosion;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import static java.lang.Thread.sleep;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -33,26 +23,25 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
+
+import squares.api.CharacterState;
+import squares.api.ResourceLocator;
+import squares.block.*;
+
+import static squares.api.RenderingConstants.*;
 
 /**
  *
  * @author lai_889937
  */
 public class MainRunningThing extends javax.swing.JFrame {
+    private static final long serialVersionUID = 3017531681090479808L;
+    
+    Instant timestart;
+    Instant timeend;
 
-    public static enum CharacterState {
-        NORMAL, DEAD, MOVING, LOCKED, WINE, RESTARTING, FASTMOVING;
-    }
-
-    public CharacterState charState;
-    public int xPosition; //Target position of the character in grid coordinates
-    public int yPosition;
-    public int xTarg; // Target position of the character in panel coordinates
-    public int yTarg;
-    public int xCoordinates; //Position of the upper left hand corner of the character pic in panel coordinates
-    public int yCoordinates;
+    public Player player;
 
     // Music!!
     public AudioInputStream backgroundStream;
@@ -65,21 +54,12 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int currentLevelIndex = 0; // INDEX of current level (add one to get level number)
     public int maxLevelIndex = currentLevelIndex;
     public int holdLevelIndex = currentLevelIndex;
-    public Block[][] levelBlocks = new Block[0][0];
 
-    public static final int STANDARD_ICON_WIDTH = 81; // Constants
-    public static final int SPACING_BETWEEN_BLOCKS = 120;
-    public static final int BORDER_WIDTH = 16;
-    public static final int CHARACTER_WIDTH = STANDARD_ICON_WIDTH - 2 * BORDER_WIDTH;
     public static final int RIGHT_KEY_PRESS = 39;
     public static final int LEFT_KEY_PRESS = 37;
     public static final int DOWN_KEY_PRESS = 40;
     public static final int UP_KEY_PRESS = 38;
-    public static final int FRAME_WIDTH = 1100;
-    public static final int FRAME_HEIGHT = 780;
-    public static final int CHARACTER_SPEED = 30;
-    public static final int CHARACTER_FASTSPEED = 60;
-
+    
     public ArrayList<BlasterBlock.Blast> blasts = new ArrayList<>();
     public ArrayList<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
 
@@ -96,14 +76,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int endx; //Border of block drawings; used to determine when ammunition disappears
     public int endy;
 
-    // Iframes and health
-    public boolean isIFrame = false;
-    public int iframeStart = 0;
     public int iframeTime = 10;
     public int currentLevelHealth = 1;
-    public int currentHP = 1;
-    public static final int PRACTICE_MODE_LIVES = 100;
-    public boolean isPracticeMode = false;
 
     public Area clipholder;
     public Area ouchArea;
@@ -119,8 +93,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Checkpoints
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
-    public TasGenerator sjbossTas = new TasGenerator(new File("sjbossscript.txt"));
-
+    public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("data", "sjbossscript.txt"));
+    
     // Easter eggs
     public static final String KONAMI_CODE = "uuddlrlrba";
     public static final ImageIcon LEAGIF = new ImageIcon("Pics/lea.gif");
@@ -273,7 +247,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             new String[]{"", "", "", "", "", "", "", "", ""},
             new String[]{"", "", "", "", "", "", "", "", ""}
         },
-         "BOSS", 20, new File("sjbossfight_easy.txt"), "YoUJ0snKi"),
+         "BOSS", 20, new ResourceLocator("data", "sjbossfight_easy.txt"), "YoUJ0snKi"),
         new Level(new String[][]{
             new String[]{"", "", "", "", "", "", ""},
             new String[]{"", "X", "N", "N", "N", "N", ""},
@@ -333,7 +307,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             new String[]{"", "", "", "", "", "", "", "", ""},
             new String[]{"", "", "", "", "", "", "", "", ""}
         },
-         "BOSS", 10, new File("sjbossfight.txt"), "wHThvIdn"),
+         "BOSS", 10, new ResourceLocator("data", "sjbossfight.txt"), "wHThvIdn"),
         new Level(new String[][]{
             new String[]{"Lv", "N", "", "L<", "N"},
             new String[]{"", "Lv", "N", "N", "N"},
@@ -361,17 +335,20 @@ public class MainRunningThing extends javax.swing.JFrame {
         jButton1.setVisible(true);
         middlex = jPanel1.getWidth() / 2;
         middley = jPanel1.getHeight() / 2;
+		player = new Player();
+		player.level = levels[currentLevelIndex];
+		
         try {
             if (musicOn) {
-                backgroundStream = AudioSystem.getAudioInputStream(new File("Sounds/Canon_in_D_Swing.wav"));
+                backgroundStream = new ResourceLocator("bgm", "Canon_in_D_Swing.wav").asAudioStream();
                 clip = AudioSystem.getClip();
                 clip.open(backgroundStream);
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
-                bossMusicStream = AudioSystem.getAudioInputStream(new File("Sounds/Megalovania_Swing.wav"));
+                bossMusicStream = new ResourceLocator("bgm", "Megalovania_Swing.wav").asAudioStream();
                 bossClip = AudioSystem.getClip();
                 bossClip.loop(Clip.LOOP_CONTINUOUSLY);
             }
-        } catch (UnsupportedAudioFileException ex) {
+        } catch (javax.sound.sampled.UnsupportedAudioFileException ex) {
             Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -540,8 +517,8 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if (charState == CharacterState.NORMAL || charState == CharacterState.MOVING || charState == CharacterState.FASTMOVING) {
-            charState = CharacterState.RESTARTING;
+        if (player.charState.vulnerable) {
+            player.charState = CharacterState.RESTARTING;
             isSwitching = true;
             opacity = 10;
             transitioning = new Color(180, 180, 180);
@@ -549,9 +526,10 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    @SuppressWarnings("fallthrough")
     private void jPanel1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyReleased
         // TODO add your handling code here:
-        if (levelBlocks.length == 0) {
+        if (player.level.blocks.length == 0) {
             return;
         }
 
@@ -562,9 +540,9 @@ public class MainRunningThing extends javax.swing.JFrame {
                 } else {
                     break;
                 }
-            case 'R': // restart level
-                if (charState == CharacterState.NORMAL || charState == CharacterState.MOVING || charState == CharacterState.FASTMOVING) {
-                    charState = CharacterState.RESTARTING;
+            case 'R':
+                if (player.charState.vulnerable) {
+                    player.charState = CharacterState.RESTARTING;
                     isSwitching = true;
                     opacity = 10;
                     transitioning = new Color(180, 180, 180);
@@ -595,59 +573,50 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (tasActive) {
             return;
         }
-        if (charState != CharacterState.NORMAL) {
+        if(player.charState != CharacterState.NORMAL) {
             return;
         }
         switch (evt.getKeyCode()) { // move
             case RIGHT_KEY_PRESS:
             case 'D':
-                if (xPosition == levelBlocks[0].length - 1) {
+                if (player.xPosition == player.level.blocks[0].length - 1)
                     return;
-                }
-                if (levelBlocks[yPosition][xPosition + 1] == null || !levelBlocks[yPosition][xPosition + 1].getStepable()) {
+                if (player.level.blocks[player.yPosition][player.xPosition + 1] == null || !player.level.blocks[player.yPosition][player.xPosition + 1].stepable)
                     return;
-                }
-                xPosition++;
+                player.xPosition++;
                 break;
             case LEFT_KEY_PRESS:
             case 'A':
-                if (xPosition == 0) {
+                if (player.xPosition == 0)
                     return;
-                }
-                if (levelBlocks[yPosition][xPosition - 1] == null || !levelBlocks[yPosition][xPosition - 1].getStepable()) {
+                if (player.level.blocks[player.yPosition][player.xPosition - 1] == null || !player.level.blocks[player.yPosition][player.xPosition - 1].stepable)
                     return;
-                }
-                xPosition--;
+                player.xPosition--;
                 break;
             case DOWN_KEY_PRESS:
             case 'S':
-                if (yPosition == levelBlocks.length - 1) {
+                if (player.yPosition == player.level.blocks.length - 1)
                     return;
-                }
-                if (levelBlocks[yPosition + 1][xPosition] == null || !levelBlocks[yPosition + 1][xPosition].getStepable()) {
+                if (player.level.blocks[player.yPosition + 1][player.xPosition] == null || !player.level.blocks[player.yPosition + 1][player.xPosition].stepable)
                     return;
-                }
-                yPosition++;
+                player.yPosition++;
                 break;
             case UP_KEY_PRESS:
             case 'W':
-                if (yPosition == 0) {
+                if (player.yPosition == 0)
                     return;
-                }
-                if (levelBlocks[yPosition - 1][xPosition] == null || !levelBlocks[yPosition - 1][xPosition].getStepable()) {
+                if (player.level.blocks[player.yPosition - 1][player.xPosition] == null || !player.level.blocks[player.yPosition - 1][player.xPosition].stepable)
                     return;
-                }
-                yPosition--;
+                player.yPosition--;
                 break;
         }
-        xTarg = startx + xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        yTarg = starty + yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        if (charState == CharacterState.NORMAL) {
-            if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-                charState = CharacterState.FASTMOVING;
-            } else {
-                charState = CharacterState.MOVING;
-            }
+        player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        if (player.charState == CharacterState.NORMAL) {
+            if (levels[currentLevelIndex] instanceof Level.BossLevel) 
+                player.charState = CharacterState.FASTMOVING;
+            else
+                player.charState = CharacterState.MOVING;
         }
         repaint();
     }//GEN-LAST:event_jPanel1KeyReleased
@@ -769,16 +738,16 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         });
     }
-
-    // Loads levelBlocks
+    
+    // Loads player.level.blocks
     public void loadLevel() {
 
         tasActive = false;
         checkpointTimes.clear();
         timestamp = 0;
         blasts.clear();
-        Level currentLevel = levels[currentLevelIndex];
-
+        Level currentLevel = player.level;
+        
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
             if (isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
@@ -788,98 +757,18 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         String[][] currentLevelDesign = currentLevel.design;
-
-        levelBlocks = new Block[currentLevelDesign.length][currentLevelDesign[0].length];
-
-        // Set up levelBlocks - the design of the level in Blocks
-        for (int rowNumber = 0; rowNumber < currentLevelDesign.length; rowNumber++) {
-            for (int columnNumber = 0; columnNumber < currentLevelDesign[0].length; columnNumber++) {
-
-                Block hold = null;
-                if (currentLevelDesign[rowNumber][columnNumber] == null
-                        || "".equals(currentLevelDesign[rowNumber][columnNumber])) {
-                    continue;
-                }
-                switch (currentLevelDesign[rowNumber][columnNumber].charAt(0)) {
-                    case Level.START_CHAR:
-                        hold = new NormalBlock();
-                        break;
-
-                    case Level.END_CHAR:
-                        hold = new EndingBlock();
-                        break;
-
-                    case Level.NORMAL_BLOCK_CHAR:
-                        hold = new NormalBlock();
-                        break;
-
-                    case Level.LAUNCHER_BLOCK_CHAR:
-                        switch (currentLevelDesign[rowNumber][columnNumber].charAt(1)) {
-                            case '^':
-                                hold = new LauncherBlock(Block.Direction.UP);
-                                break;
-                            case '>':
-                                hold = new LauncherBlock(Block.Direction.RIGHT);
-                                break;
-                            case 'v':
-                                hold = new LauncherBlock(Block.Direction.DOWN);
-                                break;
-                            case '<':
-                                hold = new LauncherBlock(Block.Direction.LEFT);
-                                break;
-                        }
-                        break;
-
-                    case Level.BLASTER_BLOCK_CHAR:
-                        int dbs = Integer.parseInt(currentLevelDesign[rowNumber][columnNumber].substring(2, 4));
-                        int fbs = Integer.parseInt(currentLevelDesign[rowNumber][columnNumber].substring(4, 6));
-                        int delay = 1;
-                        if (currentLevelDesign[rowNumber][columnNumber].length() > 6) {
-                            delay = Integer.parseInt(currentLevelDesign[rowNumber][columnNumber].substring(6, 8));
-                        }
-
-                        switch (currentLevelDesign[rowNumber][columnNumber].charAt(1)) {
-                            case '^':
-                                hold = new BlasterBlock(Block.Direction.UP, dbs, fbs, delay);
-                                break;
-                            case '>':
-                                hold = new BlasterBlock(Block.Direction.RIGHT, dbs, fbs, delay);
-                                break;
-                            case 'v':
-                                hold = new BlasterBlock(Block.Direction.DOWN, dbs, fbs, delay);
-                                break;
-                            case '<':
-                                hold = new BlasterBlock(Block.Direction.LEFT, dbs, fbs, delay);
-                                break;
-                        }
-                        break;
-
-                    case Level.CANNON_BLOCK_CHAR:
-                        dbs = Integer.parseInt(currentLevelDesign[rowNumber][columnNumber].substring(1, 3));
-                        fbs = Integer.parseInt(currentLevelDesign[rowNumber][columnNumber].substring(3, 5));
-                        delay = 1;
-                        if (currentLevelDesign[rowNumber][columnNumber].length() > 5) {
-                            delay = Integer.parseInt(currentLevelDesign[rowNumber][columnNumber].substring(5, 7));
-                        }
-
-                        hold = new CannonBlock(dbs, fbs, delay);
-
-                        break;
-                }
-                levelBlocks[rowNumber][columnNumber] = hold;
-            }
-
-        }
-        xPosition = currentLevel.startPosCol;
-        yPosition = currentLevel.startPosRow;
-        startx = middlex - (levelBlocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-        starty = middley - (levelBlocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        
+        // Set up currentLevel.blocks - the design of the level in Blocks
+        player.xPosition = currentLevel.startPosCol;
+        player.yPosition = currentLevel.startPosRow;
+        startx = middlex - (currentLevel.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        starty = middley - (currentLevel.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         endx = 2 * middlex - startx;
         endy = 2 * middley - starty;
-        xTarg = startx + xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        yTarg = starty + yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        xCoordinates = xTarg;
-        yCoordinates = yTarg;
+        player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.xCoordinates = player.xTarg;
+        player.yCoordinates = player.yTarg;
         bossClip.close();
 
         if (currentLevel instanceof Level.BossLevel) {
@@ -909,32 +798,27 @@ public class MainRunningThing extends javax.swing.JFrame {
                 }
             }
         }
-        currentHP = currentLevelHealth;
+        player.hp = currentLevelHealth;
         isPracticeMode = toggle_practice.isSelected();
         if (isPracticeMode) {
-            currentHP = PRACTICE_MODE_LIVES;
+            player.hp = PRACTICE_MODE_LIVES;
         }
-        iframeStart = 0;
-        isIFrame = false;
+        player.iftime = 0;
         lineExplosions.clear();
     }
 
     // Resets the level without reloading
     public void resetLevel() {
-        charState = CharacterState.RESTARTING;
-        for (Block[] row : levelBlocks) {
-            for (Block cell : row) {
-                if (cell != null) {
-                    cell.reset();
-                }
-            }
-        }
-        xPosition = levels[currentLevelIndex].startPosCol;
-        yPosition = levels[currentLevelIndex].startPosRow;
-        xTarg = startx + xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        yTarg = starty + yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        xCoordinates = xTarg;
-        yCoordinates = yTarg;
+        player.charState = CharacterState.RESTARTING;
+        for (Block[] row : player.level.blocks)
+            for (Block cell : row)
+                if (cell != null) cell.reset();
+        player.xPosition = levels[currentLevelIndex].startPosCol;
+        player.yPosition = levels[currentLevelIndex].startPosRow;
+        player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.xCoordinates = player.xTarg;
+        player.yCoordinates = player.yTarg;
         timestamp = 0;
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
             if (isPracticeMode && checkpointTimes.size() > 0) {
@@ -946,12 +830,11 @@ public class MainRunningThing extends javax.swing.JFrame {
         blasts.clear();
         lineExplosions.clear();
 
-        isIFrame = false;
-        iframeStart = 0;
-        currentHP = currentLevelHealth;
+        player.iftime = 0;
+        player.hp = currentLevelHealth;
         isPracticeMode = toggle_practice.isSelected();
         if (isPracticeMode) {
-            currentHP = PRACTICE_MODE_LIVES;
+            player.hp = PRACTICE_MODE_LIVES;
         }
         if (levels[currentLevelIndex] instanceof SJBossFight && musicOn) {
             bossClip.stop();
@@ -964,7 +847,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (currentLevelIndex >= levels.length - 1) {
             return;
         }
-        charState = CharacterState.WINE;
+        player.charState = CharacterState.WINE;
         isSwitching = true;
         opacity = 10;
         transitioning = new Color(255, 255, 255);
@@ -972,21 +855,20 @@ public class MainRunningThing extends javax.swing.JFrame {
     }
 
     public void ouch() {
-        if (!isIFrame && (charState == CharacterState.NORMAL || charState == CharacterState.MOVING || charState == CharacterState.FASTMOVING)) {
-            currentHP--;
-            if (currentHP <= 0) {
+        if (!player.isInvincible(timestamp) && player.charState.vulnerable) {
+            player.hp--;
+            if (player.hp <= 0) {
                 death();
             } else {
-                isIFrame = true;
-                iframeStart = timestamp;
+                player.iftime = timestamp;
             }
         }
     }
 
     // on death
     public void death() {
-        if (charState == CharacterState.NORMAL || charState == CharacterState.MOVING || charState == CharacterState.FASTMOVING) {
-            charState = CharacterState.DEAD;
+        if (player.charState.vulnerable) {
+            player.charState = CharacterState.DEAD;
             isSwitching = true;
             opacity = 10;
             transitioning = new Color(0, 0, 0);
@@ -998,47 +880,44 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     //  checks the character when the character lands at its destination
     public void landChecker() {
-        if (xPosition < 0 || yPosition < 0 || xPosition >= levelBlocks[0].length || yPosition >= levelBlocks.length) {
+         if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.blocks[0].length || player.yPosition >= player.level.blocks.length) {
             death();
-        } else if (levelBlocks[yPosition][xPosition] instanceof LauncherBlock) {
-            switch (((LauncherBlock) levelBlocks[yPosition][xPosition]).getDirection()) {
-                case UP:
-                    while (yPosition > 0 && (levelBlocks[yPosition - 1][xPosition] != null && !levelBlocks[yPosition - 1][xPosition].getStepable()
-                            || levelBlocks[yPosition - 1][xPosition] == null)) {
-                        yPosition--;
-                    }
-                    yPosition--;
-                    charState = CharacterState.FASTMOVING;
+        } else if (player.level.blocks[player.yPosition][player.xPosition] instanceof LauncherBlock) {
+            switch(((LauncherBlock) player.level.blocks[player.yPosition][player.xPosition]).getDirection()) {
+                case UP :
+                    while(player.yPosition > 0 && (player.level.blocks[player.yPosition - 1][player.xPosition] != null && !player.level.blocks[player.yPosition - 1][player.xPosition].stepable
+                            || player.level.blocks[player.yPosition - 1][player.xPosition] == null))
+                        player.yPosition--;
+                    player.yPosition--;
+                    player.charState = CharacterState.FASTMOVING;
                     break;
-                case RIGHT:
-                    while (xPosition < levelBlocks[0].length && (levelBlocks[yPosition][xPosition + 1] != null
-                            && !levelBlocks[yPosition][xPosition + 1].getStepable() || levelBlocks[yPosition][xPosition + 1] == null)) {
-                        xPosition++;
+                case RIGHT :
+                    while(player.xPosition < player.level.blocks[0].length && (player.level.blocks[player.yPosition][player.xPosition + 1] != null &&
+                            !player.level.blocks[player.yPosition][player.xPosition + 1].stepable || player.level.blocks[player.yPosition][player.xPosition + 1] == null )) {
+                         player.xPosition++;
                     }
-                    xPosition++;
-                    charState = CharacterState.FASTMOVING;
+                    player.xPosition++;
+                    player.charState = CharacterState.FASTMOVING;
                     break;
-                case DOWN:
-                    while (yPosition < levelBlocks.length && (levelBlocks[yPosition + 1][xPosition] != null
-                            && !levelBlocks[yPosition + 1][xPosition].getStepable() || levelBlocks[yPosition + 1][xPosition] == null)) {
-                        yPosition++;
-                    }
-                    yPosition++;
-                    charState = CharacterState.FASTMOVING;
+                case DOWN :
+                    while(player.yPosition < player.level.blocks.length && (player.level.blocks[player.yPosition + 1][player.xPosition] != null && 
+                            !player.level.blocks[player.yPosition + 1][player.xPosition].stepable  || player.level.blocks[player.yPosition + 1][player.xPosition] == null))
+                        player.yPosition++;
+                    player.yPosition++;
+                    player.charState = CharacterState.FASTMOVING;
                     break;
-                case LEFT:
-                    while (xPosition > 0 && (levelBlocks[yPosition][xPosition - 1] != null
-                            && !levelBlocks[yPosition][xPosition - 1].getStepable() || levelBlocks[yPosition][xPosition - 1] == null)) {
-                        xPosition--;
-                    }
-                    xPosition--;
-                    charState = CharacterState.FASTMOVING;
+                case LEFT :
+                    while(player.xPosition > 0 && (player.level.blocks[player.yPosition][player.xPosition - 1] != null 
+                            && !player.level.blocks[player.yPosition][player.xPosition - 1].stepable  || player.level.blocks[player.yPosition][player.xPosition - 1] == null ))
+                        player.xPosition--;
+                    player.xPosition--;
+                    player.charState = CharacterState.FASTMOVING;
                     break;
             }
-            xTarg = startx + xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-            yTarg = starty + yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         } else {
-            charState = CharacterState.NORMAL;
+            player.charState = CharacterState.NORMAL;
             shouldRepaint = true;
         }
     }
@@ -1049,25 +928,25 @@ public class MainRunningThing extends javax.swing.JFrame {
         ouchArea = new Area();
         if (middlex != jPanel1.getWidth() / 2) {
             middlex = jPanel1.getWidth() / 2;
-            startx = middlex - (levelBlocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             endx = middlex * 2 - startx;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
         if (middley != jPanel1.getHeight() / 2) {
             middley = jPanel1.getHeight() / 2;
-            starty = middley - (levelBlocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             endx = middlex * 2 - startx;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
-
-        if (levelBlocks.length == 0) {
-            System.out.println("Instantiate levelBlocks!");
+        
+        if (player.level.blocks.length == 0) {
+            System.out.println("Instantiate player.level.blocks!");
             loadLevel();
-            charState = CharacterState.NORMAL;
+            player.charState = CharacterState.NORMAL;
         }
         if (startx == 0 || starty == 0) {
-            startx = middlex - (levelBlocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-            starty = middley - (levelBlocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         }
 
         // Does the level switching / restarting stuff
@@ -1076,12 +955,13 @@ public class MainRunningThing extends javax.swing.JFrame {
                 opacity += 48;
             } else {
                 isSwitching = false;
-                switch (charState) {
+                switch (player.charState) {
                     case WINE:
                         if (holdLevelIndex != currentLevelIndex) {
                             currentLevelIndex = holdLevelIndex;
-                        } else {
+                        } else { 
                             holdLevelIndex = ++currentLevelIndex;
+                            player.level = levels[currentLevelIndex]; // Fuck.
                         }
                         if (currentLevelIndex > maxLevelIndex) {
                             maxLevelIndex = currentLevelIndex;
@@ -1095,14 +975,13 @@ public class MainRunningThing extends javax.swing.JFrame {
                         resetLevel();
                         break;
                 }
-                System.out.println(charState);
+                System.out.println(player.charState);
                 isLeaGif = false;
             }
         } else if (opacity > 15) {
             opacity -= 48;
-            if (opacity < 15) {
-                charState = CharacterState.NORMAL;
-            }
+            if (opacity < 15)
+                player.charState = CharacterState.NORMAL;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
@@ -1230,8 +1109,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
 
             if (timestamp % 20 == 10) {
-                double ang = getAngle(xCoordinates - middlex, yCoordinates - middley);
-                blasts.add(new SJBossFight.ArcingBone(ang + Math.PI / 2, -20 * Math.cos(ang), -20 * Math.sin(ang), 5 * Math.cos(ang), 5 * Math.sin(ang)));
+                double ang = getAngle(player.xCoordinates - middlex, player.yCoordinates - middley);
+                blasts.add(new SJBossFight.ArcingBone(ang + Math.PI / 2, -20 * Math.cos(ang), -20 * Math.sin(ang),  5 * Math.cos(ang), 5 * Math.sin(ang)));
                 blasts.get(blasts.size() - 1).setCoords(middlex, middley);
             }
         }
@@ -1257,15 +1136,20 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-            lineExplosions.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateLines(timestamp, xCoordinates, yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
-
+            lineExplosions.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateLines(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+            
         }
 
-        // collision trimming
-        int charYUpper = yCoordinates;
-        int charXLeft = xCoordinates;
-        int charYLower = yCoordinates + CHARACTER_WIDTH;
-        int charXRight = xCoordinates + CHARACTER_WIDTH;
+        if (timestamp == 1200 && timestart != null) {
+            timeend = Instant.now();
+            System.out.println(Duration.between(timestart, timeend).toMillis());
+        }
+        
+        
+        int charYUpper = player.yCoordinates;
+        int charXLeft = player.xCoordinates;
+        int charYLower = player.yCoordinates + CHARACTER_WIDTH;
+        int charXRight = player.xCoordinates + CHARACTER_WIDTH;
         for (int i = 0; i < lineExplosions.size(); i++) {
             Level.BossLevel.LineExploder currentLineExplosion = lineExplosions.get(i);
             Area ouchyline = currentLineExplosion.xplosionOuchArea(timestamp);
@@ -1274,61 +1158,57 @@ public class MainRunningThing extends javax.swing.JFrame {
                 ouchArea.add(currentLineExplosion.xplosionOuchArea(timestamp));
             }
         }
-
-        // Autoplay
+        
         if (tasActive && levels[currentLevelIndex] instanceof SJBossFight) {
-            sjbossTas.doTasStuff(timestamp);
+            if(sjbossTas.doTasStuff(startx, starty, timestamp, player))
+                repaint();
         }
-
+        
         // Checks to see if the character is still moving
-        if (charState == CharacterState.MOVING) {
-            if (xCoordinates != xTarg) {
-                if (Math.abs(xCoordinates - xTarg) <= CHARACTER_SPEED) {
-                    xCoordinates = xTarg;
-                } else {
-                    xCoordinates += xCoordinates > xTarg ? -CHARACTER_SPEED : CHARACTER_SPEED;
-                }
+        if (player.charState == CharacterState.MOVING) {
+            if (player.xCoordinates != player.xTarg) {
+                if (Math.abs(player.xCoordinates - player.xTarg) <= CHARACTER_SPEED) {
+                    player.xCoordinates = player.xTarg;
+                } else 
+                    player.xCoordinates += player.xCoordinates > player.xTarg ? -CHARACTER_SPEED : CHARACTER_SPEED;
             }
-            if (yCoordinates != yTarg) {
-                if (Math.abs(yCoordinates - yTarg) <= CHARACTER_SPEED) {
-                    yCoordinates = yTarg;
-                } else {
-                    yCoordinates += yCoordinates > yTarg ? -CHARACTER_SPEED : CHARACTER_SPEED;
-                }
+            if (player.yCoordinates != player.yTarg) {
+                if (Math.abs(player.yCoordinates - player.yTarg) <= CHARACTER_SPEED) {
+                    player.yCoordinates = player.yTarg;
+                } else 
+                    player.yCoordinates += player.yCoordinates > player.yTarg ? -CHARACTER_SPEED : CHARACTER_SPEED;
             }
-            if (xCoordinates == xTarg && yCoordinates == yTarg) {
+            if (player.xCoordinates == player.xTarg && player.yCoordinates == player.yTarg) {
                 landChecker();
             }
-            clipholder.add(new Area(new Rectangle(xCoordinates - CHARACTER_SPEED, yCoordinates - CHARACTER_SPEED,
-                    CHARACTER_WIDTH + 2 * CHARACTER_SPEED, CHARACTER_WIDTH + 2 * CHARACTER_SPEED)));
+            clipholder.add(new Area(new Rectangle(player.xCoordinates - CHARACTER_SPEED, player.yCoordinates - CHARACTER_SPEED, 
+                    CHARACTER_WIDTH + 2 * CHARACTER_SPEED,  CHARACTER_WIDTH + 2 * CHARACTER_SPEED)));
         }
 
         // Checks to see if the character is fastmoving
-        if (charState == CharacterState.FASTMOVING) {
-            if (xCoordinates != xTarg) {
-                if (Math.abs(xCoordinates - xTarg) <= CHARACTER_FASTSPEED) {
-                    xCoordinates = xTarg;
-                } else {
-                    xCoordinates += xCoordinates > xTarg ? -CHARACTER_FASTSPEED : CHARACTER_FASTSPEED;
-                }
+        if (player.charState == CharacterState.FASTMOVING) {
+            if (player.xCoordinates != player.xTarg) {
+                if (Math.abs(player.xCoordinates - player.xTarg) <= CHARACTER_FASTSPEED) {
+                    player.xCoordinates = player.xTarg;
+                } else 
+                    player.xCoordinates += player.xCoordinates > player.xTarg ? -CHARACTER_FASTSPEED : CHARACTER_FASTSPEED;
             }
-            if (yCoordinates != yTarg) {
-                if (Math.abs(yCoordinates - yTarg) <= CHARACTER_FASTSPEED) {
-                    yCoordinates = yTarg;
-                } else {
-                    yCoordinates += yCoordinates > yTarg ? -CHARACTER_FASTSPEED : CHARACTER_FASTSPEED;
-                }
+            if (player.yCoordinates != player.yTarg) {
+                if (Math.abs(player.yCoordinates - player.yTarg) <= CHARACTER_FASTSPEED) {
+                    player.yCoordinates = player.yTarg;
+                } else 
+                    player.yCoordinates += player.yCoordinates > player.yTarg ? -CHARACTER_FASTSPEED : CHARACTER_FASTSPEED;
             }
-            if (xCoordinates == xTarg && yCoordinates == yTarg) {
+            if (player.xCoordinates == player.xTarg && player.yCoordinates == player.yTarg) {
                 landChecker();
             }
-            clipholder.add(new Area(new Rectangle(xCoordinates - CHARACTER_FASTSPEED, yCoordinates - CHARACTER_FASTSPEED,
-                    CHARACTER_WIDTH + 2 * CHARACTER_FASTSPEED, CHARACTER_WIDTH + 2 * CHARACTER_FASTSPEED)));
+            clipholder.add(new Area(new Rectangle(player.xCoordinates - CHARACTER_FASTSPEED, player.yCoordinates - CHARACTER_FASTSPEED, 
+                    CHARACTER_WIDTH + 2 * CHARACTER_FASTSPEED,  CHARACTER_WIDTH + 2 * CHARACTER_FASTSPEED)));
         }
 
-        if (xPosition == levels[currentLevelIndex].endPosCol && yPosition == levels[currentLevelIndex].endPosRow && !isSwitching && !(opacity > 15) && charState == CharacterState.NORMAL) {
+        if (player.xPosition == levels[currentLevelIndex].endPosCol && player.yPosition == levels[currentLevelIndex].endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (isPracticeMode) {
-                charState = CharacterState.RESTARTING;
+                player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
                 opacity = 10;
                 transitioning = new Color(180, 180, 180);
@@ -1337,13 +1217,13 @@ public class MainRunningThing extends javax.swing.JFrame {
                 levelFinished();
             }
         }
-
-        if (levels[currentLevelIndex] instanceof Level.BossLevel && ((Level.BossLevel) levels[currentLevelIndex]).endtime <= timestamp && !isSwitching && !(opacity > 15) && charState == CharacterState.NORMAL) {
-
+        
+        if (levels[currentLevelIndex] instanceof Level.BossLevel && ((Level.BossLevel) levels[currentLevelIndex]).endtime <= timestamp && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
+            
             System.out.println("Hey times up");
             if (tasActive || isPracticeMode) {
                 tasActive = false;
-                charState = CharacterState.RESTARTING;
+                player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
                 opacity = 10;
                 transitioning = new Color(180, 180, 180);
@@ -1358,12 +1238,11 @@ public class MainRunningThing extends javax.swing.JFrame {
         } catch (InterruptedException ex) {
             Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
-        if (opacity < 15 || charState == CharacterState.DEAD || (charState == CharacterState.WINE || charState == CharacterState.RESTARTING) && isSwitching) {
+        
+        if (opacity < 15 || player.charState == CharacterState.DEAD || (player.charState == CharacterState.WINE || player.charState == CharacterState.RESTARTING) && isSwitching)
             timestamp += 1;
-        }
-
-        if (ouchArea.intersects(new Rectangle(xCoordinates, yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
+        
+        if (ouchArea.intersects(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
             ouch();
         }
 
@@ -1380,8 +1259,8 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
             }
 
-            if (isIFrame && iframeStart + iframeTime >= timestamp) {
-                clipholder.add(new Area(new Rectangle(xCoordinates, yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH)));
+            if (player.isInvincible(timestamp)) {
+                clipholder.add(new Area(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH)));
             }
 
             for (int i = 0; i < lineExplosions.size(); i++) {
@@ -1410,27 +1289,17 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             ((Level.BossLevel) levels[currentLevelIndex]).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
-        }
-
-        // Draws the grid of squares
-        for (int rowNumber = 0; rowNumber < levelBlocks.length; rowNumber++) {
-            for (int columnNumber = 0; columnNumber < levelBlocks[0].length; columnNumber++) {
-                if (levelBlocks[rowNumber][columnNumber] != null) {
-                    levelBlocks[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
-                }
-            }
-        }
-
-        // Draws the character
-        characterIconAlive.paintIcon(jPanel1, currG, xCoordinates, yCoordinates);
-
-        // Draws the flashing i-frame
-        if (isIFrame && iframeStart + iframeTime >= timestamp) {
+        
+        for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
+            for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
+                if (player.level.blocks[rowNumber][columnNumber] != null)
+                    player.level.blocks[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
+        
+        characterIconAlive.paintIcon(jPanel1, currG, player.xCoordinates, player.yCoordinates);
+        
+        if (player.isInvincible(timestamp)) {
             currG.setColor(new Color(0, 0, 255, timestamp % 2 == 0 ? 50 : 100));
-            currG.fillRect(xCoordinates, yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);
-            if (iframeStart + iframeTime <= timestamp) {
-                isIFrame = false;
-            }
+            currG.fillRect(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);
         }
 
         // Dev tool to see ouchArea and the clip
@@ -1507,7 +1376,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         g.drawString("Practice Mode: ".concat(isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
         g.drawString(String.format("Death Count (Total): %d", totalDeathCount), 300, 50);
         g.drawString(String.format("Death Count (Level): %d", deathCount[currentLevelIndex]), 300, 70);
-        g.drawString(String.format("Health: %d", currentHP), 300, 90);
+        g.drawString(String.format("Health: %d", player.hp), 300, 90);
         g.drawString(String.format("Level Code: %s", levels[currentLevelIndex].getCode()), 300, 110);
         
         // Draws Lea
@@ -1516,12 +1385,12 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         // Gets the blocks to show up on first run
-        if (opacity > 15 || xCoordinates != xTarg || yCoordinates != yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || levels[currentLevelIndex] instanceof Level.BossLevel) {
-            if (letsseeifthisworks) {
+        if (opacity > 15 || player.xCoordinates != player.xTarg || player.yCoordinates != player.yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || levels[currentLevelIndex] instanceof Level.BossLevel) {
+            if (letsseeifthisworks)
                 letsseeifthisworks = false;
             }
             try {
-                sleep(sleepTime);
+                Thread.sleep(sleepTime);
             } catch (InterruptedException ex) {
                 Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
@@ -1548,15 +1417,15 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            for (int rowNumber = 0; rowNumber < levelBlocks.length; rowNumber++) {
-                for (int columnNumber = 0; columnNumber < levelBlocks[0].length; columnNumber++) {
-                    Block currBlock = levelBlocks[rowNumber][columnNumber];
+            for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) {
+                for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) {
+                    Block currBlock = player.level.blocks[rowNumber][columnNumber];
                     if (currBlock == null) {
                         continue;
                     }
 
                     //Generates blasts at correct time
-                    if (!(charState == CharacterState.DEAD) && !(charState == CharacterState.RESTARTING) && !(charState == CharacterState.WINE)) {
+                    if (!(player.charState == CharacterState.DEAD) && !(player.charState == CharacterState.RESTARTING) && !(player.charState == CharacterState.WINE)) {
 
                         if (currBlock instanceof BlasterBlock) {
 
@@ -1586,8 +1455,8 @@ public class MainRunningThing extends javax.swing.JFrame {
                             if (timestamp % ((CannonBlock) currBlock).period == ((CannonBlock) currBlock).delay) {
                                 int xcenter = startx + columnNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
                                 int ycenter = starty + rowNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
-                                blasts.add(new CannonBlock.Cannonball(((CannonBlock) currBlock).cannonballSpeed,
-                                        getAngle(xCoordinates + CHARACTER_WIDTH / 2 - xcenter, yCoordinates + CHARACTER_WIDTH / 2 - ycenter)));
+                                blasts.add(new CannonBlock.Cannonball(((CannonBlock) currBlock).cannonballSpeed, 
+                                        getAngle(player.xCoordinates + CHARACTER_WIDTH / 2 - xcenter, player.yCoordinates + CHARACTER_WIDTH / 2 - ycenter)));
                                 blasts.get(blasts.size() - 1).setCoords(xcenter, ycenter);
                             }
                         }
@@ -1598,14 +1467,14 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
 
             if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-                blasts.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateBlasts(timestamp, xCoordinates, yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+                blasts.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateBlasts(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
             }
 
             // Calculates where the blasts would be
-            int charYUpper = yCoordinates;
-            int charXLeft = xCoordinates;
-            int charYLower = yCoordinates + CHARACTER_WIDTH;
-            int charXRight = xCoordinates + CHARACTER_WIDTH;
+            int charYUpper = player.yCoordinates;
+            int charXLeft = player.xCoordinates;
+            int charYLower = player.yCoordinates + CHARACTER_WIDTH;
+            int charXRight = player.xCoordinates + CHARACTER_WIDTH;
             for (int i = 0; i < blasts.size(); i++) {
                 BlasterBlock.Blast bla = blasts.get(i);
                 bla.move();
@@ -1618,80 +1487,6 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-    }
-
-    public class TasGenerator {
-
-        HashMap<Integer, Character> script;
-
-        public TasGenerator(File in) {
-            script = new HashMap<>();
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(in));
-                while (br.ready()) {
-                    StringTokenizer st = new StringTokenizer(br.readLine());
-                    script.put(Integer.parseInt(st.nextToken()), st.nextToken().charAt(0));
-                }
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
-        }
-
-        public void doTasStuff(int timestamp) {
-            if (script.containsKey(timestamp)) {
-                switch (script.get(timestamp)) {
-
-                    case 'D':
-                        if (xPosition == levelBlocks[0].length - 1) {
-                            return;
-                        }
-                        if (levelBlocks[yPosition][xPosition + 1] == null || !levelBlocks[yPosition][xPosition + 1].getStepable()) {
-                            return;
-                        }
-                        xPosition++;
-                        break;
-                    case 'A':
-                        if (xPosition == 0) {
-                            return;
-                        }
-                        if (levelBlocks[yPosition][xPosition - 1] == null || !levelBlocks[yPosition][xPosition - 1].getStepable()) {
-                            return;
-                        }
-                        xPosition--;
-                        break;
-                    case 'S':
-                        if (yPosition == levelBlocks.length - 1) {
-                            return;
-                        }
-                        if (levelBlocks[yPosition + 1][xPosition] == null || !levelBlocks[yPosition + 1][xPosition].getStepable()) {
-                            return;
-                        }
-                        yPosition++;
-                        break;
-                    case 'W':
-                        if (yPosition == 0) {
-                            return;
-                        }
-                        if (levelBlocks[yPosition - 1][xPosition] == null || !levelBlocks[yPosition - 1][xPosition].getStepable()) {
-                            return;
-                        }
-                        yPosition--;
-                        break;
-                }
-                xTarg = startx + xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-                yTarg = starty + yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-                if (charState == CharacterState.NORMAL) {
-                    if (levels[currentLevelIndex] instanceof Level.BossLevel) {
-                        charState = CharacterState.FASTMOVING;
-                    } else {
-                        charState = CharacterState.MOVING;
-                    }
-                }
-                repaint();
-            }
-        }
 
     }
 
