@@ -29,37 +29,7 @@ public class TasGenerator {
     public boolean doTasStuff(int startx, int starty, int timestamp, Player player) {
         if (script.containsKey(timestamp)) {
             Block[][] block = player.level.blocks;
-            switch(script.get(timestamp)) {
-
-                case 'D':
-                    if (player.xPosition == block[0].length - 1)
-                        return false;
-                    if (block[player.yPosition][player.xPosition + 1] == null || !block[player.yPosition][player.xPosition + 1].stepable)
-                        return false;
-                    player.xPosition++;
-                    break;
-                case 'A':
-                    if (player.xPosition == 0)
-                        return false;
-                    if (block[player.yPosition][player.xPosition - 1] == null || !block[player.yPosition][player.xPosition - 1].stepable)
-                        return false;
-                    player.xPosition--;
-                    break;
-                case 'S':
-                    if (player.yPosition == block.length - 1)
-                        return false;
-                    if (block[player.yPosition + 1][player.xPosition] == null || !block[player.yPosition + 1][player.xPosition].stepable)
-                        return false;
-                    player.yPosition++;
-                    break;
-                case 'W':
-                    if (player.yPosition == 0)
-                        return false;
-                    if (block[player.yPosition - 1][player.xPosition] == null || !block[player.yPosition - 1][player.xPosition].stepable)
-                        return false;
-                    player.yPosition--;
-                    break;
-            }
+            player.callMove(script.get(timestamp));
             player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             if (player.charState == CharacterState.NORMAL) {
