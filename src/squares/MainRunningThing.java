@@ -96,7 +96,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
-    public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("sjbossscript.txt"));
+    public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("data", "sjbossscript.txt"));
     
     // Easter eggs
     public static final String KONAMI_CODE = "uuddlrlrba";
@@ -250,7 +250,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             new String[]{"", "", "", "", "", "", "", "", ""},
             new String[]{"", "", "", "", "", "", "", "", ""}
         },
-         "BOSS", 20, new ResourceLocator("sjbossfight_easy.txt"), "YoUJ0snKi"),
+         "BOSS", 20, new ResourceLocator("data", "sjbossfight_easy.txt"), "YoUJ0snKi"),
         new Level(new String[][]{
             new String[]{"", "", "", "", "", "", ""},
             new String[]{"", "X", "N", "N", "N", "N", ""},
@@ -310,7 +310,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             new String[]{"", "", "", "", "", "", "", "", ""},
             new String[]{"", "", "", "", "", "", "", "", ""}
         },
-         "BOSS", 10, new ResourceLocator("sjbossfight.txt"), "wHThvIdn"),
+         "BOSS", 10, new ResourceLocator("data", "sjbossfight.txt"), "wHThvIdn"),
         new Level(new String[][]{
             new String[]{"Lv", "N", "", "L<", "N"},
             new String[]{"", "Lv", "N", "N", "N"},
@@ -337,13 +337,16 @@ public class MainRunningThing extends javax.swing.JFrame {
         jButton1.setVisible(true);
         middlex = jPanel1.getWidth() / 2;
         middley = jPanel1.getHeight() / 2;
+		player = new Player();
+		player.level = levels[currentLevelIndex];
+		
         try {
             if (musicOn) {
-                backgroundStream = new ResourceLocator("Sounds/Canon_in_D_Swing.ogg").asAudioStream();
+                backgroundStream = new ResourceLocator("bgm", "Canon_in_D_Swing.wav").asAudioStream();
                 clip = AudioSystem.getClip();
                 clip.open(backgroundStream);
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
-                bossMusicStream = new ResourceLocator("Sounds/Megalovania_Swing.wav").asAudioStream();
+                bossMusicStream = new ResourceLocator("bgm", "Megalovania_Swing.wav").asAudioStream();
                 bossClip = AudioSystem.getClip();
                 bossClip.loop(Clip.LOOP_CONTINUOUSLY);
             }
@@ -1492,3 +1495,4 @@ public class MainRunningThing extends javax.swing.JFrame {
     }
 
 }
+// vim: ts=4
