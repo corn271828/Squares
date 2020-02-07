@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import squares.api.CharacterState;
 import squares.api.ResourceLocator;
-import squares.blocks.Block;
+import squares.block.Block;
 
 import static squares.api.RenderingConstants.*;
 
@@ -28,34 +28,34 @@ public class TasGenerator {
 
     public boolean doTasStuff(int startx, int starty, int timestamp, Player player) {
         if (script.containsKey(timestamp)) {
-            Block[][] blocks = player.level.blocks;
+            Block[][] block = player.level.block;
             switch(script.get(timestamp)) {
 
                 case 'D':
-                    if (player.xPosition == blocks[0].length - 1)
+                    if (player.xPosition == block[0].length - 1)
                         return false;
-                    if (blocks[player.yPosition][player.xPosition + 1] == null || !blocks[player.yPosition][player.xPosition + 1].stepable)
+                    if (block[player.yPosition][player.xPosition + 1] == null || !block[player.yPosition][player.xPosition + 1].stepable)
                         return false;
                     player.xPosition++;
                     break;
                 case 'A':
                     if (player.xPosition == 0)
                         return false;
-                    if (blocks[player.yPosition][player.xPosition - 1] == null || !blocks[player.yPosition][player.xPosition - 1].stepable)
+                    if (block[player.yPosition][player.xPosition - 1] == null || !block[player.yPosition][player.xPosition - 1].stepable)
                         return false;
                     player.xPosition--;
                     break;
                 case 'S':
-                    if (player.yPosition == blocks.length - 1)
+                    if (player.yPosition == block.length - 1)
                         return false;
-                    if (blocks[player.yPosition + 1][player.xPosition] == null || !blocks[player.yPosition + 1][player.xPosition].stepable)
+                    if (block[player.yPosition + 1][player.xPosition] == null || !block[player.yPosition + 1][player.xPosition].stepable)
                         return false;
                     player.yPosition++;
                     break;
                 case 'W':
                     if (player.yPosition == 0)
                         return false;
-                    if (blocks[player.yPosition - 1][player.xPosition] == null || !blocks[player.yPosition - 1][player.xPosition].stepable)
+                    if (block[player.yPosition - 1][player.xPosition] == null || !block[player.yPosition - 1][player.xPosition].stepable)
                         return false;
                     player.yPosition--;
                     break;

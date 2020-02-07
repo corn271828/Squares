@@ -5,11 +5,11 @@
  */
 package squares;
 
-import squares.blocks.LauncherBlock;
-import squares.blocks.Block;
-import squares.blocks.HighExplosion;
-import squares.blocks.BlasterBlock;
-import squares.blocks.CannonBlock;
+import squares.block.LauncherBlock;
+import squares.block.Block;
+import squares.block.HighExplosion;
+import squares.block.BlasterBlock;
+import squares.block.CannonBlock;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -70,7 +70,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public boolean letsseeifthisworks = true;
     public int middlex; // middle of panel
     public int middley;
-    public int startx; // where to start drawing blocks
+    public int startx; // where to start drawing block
     public int starty;
     public boolean shouldRepaint = false;
     public int timestamp;
@@ -530,7 +530,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     @SuppressWarnings("fallthrough")
     private void jPanel1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyReleased
         // TODO add your handling code here:
-        if (player.level.blocks.length == 0) {
+        if (player.level.block.length == 0) {
             return;
         }
 
@@ -580,9 +580,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         switch (evt.getKeyCode()) { // move
             case RIGHT_KEY_PRESS:
             case 'D':
-                if (player.xPosition == player.level.blocks[0].length - 1)
+                if (player.xPosition == player.level.block[0].length - 1)
                     return;
-                if (player.level.blocks[player.yPosition][player.xPosition + 1] == null || !player.level.blocks[player.yPosition][player.xPosition + 1].stepable)
+                if (player.level.block[player.yPosition][player.xPosition + 1] == null || !player.level.block[player.yPosition][player.xPosition + 1].stepable)
                     return;
                 player.xPosition++;
                 break;
@@ -590,15 +590,15 @@ public class MainRunningThing extends javax.swing.JFrame {
             case 'A':
                 if (player.xPosition == 0)
                     return;
-                if (player.level.blocks[player.yPosition][player.xPosition - 1] == null || !player.level.blocks[player.yPosition][player.xPosition - 1].stepable)
+                if (player.level.block[player.yPosition][player.xPosition - 1] == null || !player.level.block[player.yPosition][player.xPosition - 1].stepable)
                     return;
                 player.xPosition--;
                 break;
             case DOWN_KEY_PRESS:
             case 'S':
-                if (player.yPosition == player.level.blocks.length - 1)
+                if (player.yPosition == player.level.block.length - 1)
                     return;
-                if (player.level.blocks[player.yPosition + 1][player.xPosition] == null || !player.level.blocks[player.yPosition + 1][player.xPosition].stepable)
+                if (player.level.block[player.yPosition + 1][player.xPosition] == null || !player.level.block[player.yPosition + 1][player.xPosition].stepable)
                     return;
                 player.yPosition++;
                 break;
@@ -606,7 +606,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             case 'W':
                 if (player.yPosition == 0)
                     return;
-                if (player.level.blocks[player.yPosition - 1][player.xPosition] == null || !player.level.blocks[player.yPosition - 1][player.xPosition].stepable)
+                if (player.level.block[player.yPosition - 1][player.xPosition] == null || !player.level.block[player.yPosition - 1][player.xPosition].stepable)
                     return;
                 player.yPosition--;
                 break;
@@ -740,7 +740,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         });
     }
 
-    // Loads player.level.blocks
+    // Loads player.level.block
     public void loadLevel() {
 
         tasActive = false;
@@ -759,11 +759,11 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         String[][] currentLevelDesign = currentLevel.design;
 
-        // Set up currentLevel.blocks - the design of the level in Blocks
+        // Set up currentLevel.block - the design of the level in Blocks
         player.xPosition = currentLevel.startPosCol;
         player.yPosition = currentLevel.startPosRow;
-        startx = middlex - (currentLevel.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-        starty = middley - (currentLevel.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        startx = middlex - (currentLevel.block[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        starty = middley - (currentLevel.block.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         endx = 2 * middlex - startx;
         endy = 2 * middley - starty;
         player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
@@ -811,7 +811,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Resets the level without reloading
     public void resetLevel() {
         player.charState = CharacterState.RESTARTING;
-        for (Block[] row : player.level.blocks)
+        for (Block[] row : player.level.block)
             for (Block cell : row)
                 if (cell != null) cell.reset();
         player.xPosition = levels[currentLevelIndex].startPosCol;
@@ -881,35 +881,35 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     //  checks the character when the character lands at its destination
     public void landChecker() {
-         if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.blocks[0].length || player.yPosition >= player.level.blocks.length) {
+         if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.block[0].length || player.yPosition >= player.level.block.length) {
             death();
-        } else if (player.level.blocks[player.yPosition][player.xPosition] instanceof LauncherBlock) {
-            switch(((LauncherBlock) player.level.blocks[player.yPosition][player.xPosition]).getDirection()) {
+        } else if (player.level.block[player.yPosition][player.xPosition] instanceof LauncherBlock) {
+            switch(((LauncherBlock) player.level.block[player.yPosition][player.xPosition]).getDirection()) {
                 case UP :
-                    while(player.yPosition > 0 && (player.level.blocks[player.yPosition - 1][player.xPosition] != null && !player.level.blocks[player.yPosition - 1][player.xPosition].stepable
-                            || player.level.blocks[player.yPosition - 1][player.xPosition] == null))
+                    while(player.yPosition > 0 && (player.level.block[player.yPosition - 1][player.xPosition] != null && !player.level.block[player.yPosition - 1][player.xPosition].stepable
+                            || player.level.block[player.yPosition - 1][player.xPosition] == null))
                         player.yPosition--;
                     player.yPosition--;
                     player.charState = CharacterState.FASTMOVING;
                     break;
                 case RIGHT :
-                    while(player.xPosition < player.level.blocks[0].length && (player.level.blocks[player.yPosition][player.xPosition + 1] != null &&
-                            !player.level.blocks[player.yPosition][player.xPosition + 1].stepable || player.level.blocks[player.yPosition][player.xPosition + 1] == null )) {
+                    while(player.xPosition < player.level.block[0].length && (player.level.block[player.yPosition][player.xPosition + 1] != null &&
+                            !player.level.block[player.yPosition][player.xPosition + 1].stepable || player.level.block[player.yPosition][player.xPosition + 1] == null )) {
                          player.xPosition++;
                     }
                     player.xPosition++;
                     player.charState = CharacterState.FASTMOVING;
                     break;
                 case DOWN :
-                    while(player.yPosition < player.level.blocks.length && (player.level.blocks[player.yPosition + 1][player.xPosition] != null && 
-                            !player.level.blocks[player.yPosition + 1][player.xPosition].stepable  || player.level.blocks[player.yPosition + 1][player.xPosition] == null))
+                    while(player.yPosition < player.level.block.length && (player.level.block[player.yPosition + 1][player.xPosition] != null && 
+                            !player.level.block[player.yPosition + 1][player.xPosition].stepable  || player.level.block[player.yPosition + 1][player.xPosition] == null))
                         player.yPosition++;
                     player.yPosition++;
                     player.charState = CharacterState.FASTMOVING;
                     break;
                 case LEFT :
-                    while(player.xPosition > 0 && (player.level.blocks[player.yPosition][player.xPosition - 1] != null 
-                            && !player.level.blocks[player.yPosition][player.xPosition - 1].stepable  || player.level.blocks[player.yPosition][player.xPosition - 1] == null ))
+                    while(player.xPosition > 0 && (player.level.block[player.yPosition][player.xPosition - 1] != null 
+                            && !player.level.block[player.yPosition][player.xPosition - 1].stepable  || player.level.block[player.yPosition][player.xPosition - 1] == null ))
                         player.xPosition--;
                     player.xPosition--;
                     player.charState = CharacterState.FASTMOVING;
@@ -929,25 +929,25 @@ public class MainRunningThing extends javax.swing.JFrame {
         ouchArea = new Area();
         if (middlex != jPanel1.getWidth() / 2) {
             middlex = jPanel1.getWidth() / 2;
-            startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            startx = middlex - (player.level.block[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             endx = middlex * 2 - startx;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
         if (middley != jPanel1.getHeight() / 2) {
             middley = jPanel1.getHeight() / 2;
-            starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            starty = middley - (player.level.block.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             endx = middlex * 2 - startx;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        if (player.level.blocks.length == 0) {
-            System.out.println("Instantiate player.level.blocks!");
+        if (player.level.block.length == 0) {
+            System.out.println("Instantiate player.level.block!");
             loadLevel();
             player.charState = CharacterState.NORMAL;
         }
         if (startx == 0 || starty == 0) {
-            startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-            starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            startx = middlex - (player.level.block[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            starty = middley - (player.level.block.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         }
 
         // Does the level switching / restarting stuff
@@ -1289,10 +1289,10 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             ((Level.BossLevel) levels[currentLevelIndex]).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
 
-        for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
-            for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
-                if (player.level.blocks[rowNumber][columnNumber] != null)
-                    player.level.blocks[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
+        for (int rowNumber = 0; rowNumber < player.level.block.length; rowNumber++) 
+            for (int columnNumber = 0; columnNumber < player.level.block[0].length; columnNumber++) 
+                if (player.level.block[rowNumber][columnNumber] != null)
+                    player.level.block[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
 
         characterIconAlive.paintIcon(jPanel1, currG, player.xCoordinates, player.yCoordinates);
 
@@ -1383,7 +1383,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             LEAGIF.paintIcon(this, g, 0, 30);
         }
 
-        // Gets the blocks to show up on first run
+        // Gets the block to show up on first run
         if (opacity > 15 || player.xCoordinates != player.xTarg || player.yCoordinates != player.yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || levels[currentLevelIndex] instanceof Level.BossLevel) {
             if (letsseeifthisworks)
                 letsseeifthisworks = false;
@@ -1416,9 +1416,9 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) {
-                for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) {
-                    Block currBlock = player.level.blocks[rowNumber][columnNumber];
+            for (int rowNumber = 0; rowNumber < player.level.block.length; rowNumber++) {
+                for (int columnNumber = 0; columnNumber < player.level.block[0].length; columnNumber++) {
+                    Block currBlock = player.level.block[rowNumber][columnNumber];
                     if (currBlock == null) {
                         continue;
                     }
