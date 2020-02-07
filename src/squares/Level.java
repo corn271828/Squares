@@ -5,7 +5,7 @@
  */
 package squares;
 
-import Block.Block;
+import Block.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -175,7 +175,7 @@ public class Level {
         
         public abstract void drawForeground(Graphics g, int timestamp, Component c, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
         
-        public abstract java.util.ArrayList<Block.BlasterBlock.Blast> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
+        public abstract java.util.ArrayList<BlasterBlock.Blast> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
         
         public abstract java.util.ArrayList<LineExploder> generateLines(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
         

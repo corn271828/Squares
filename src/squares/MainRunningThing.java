@@ -78,7 +78,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final int CHARACTER_SPEED = 30;
     public static final int CHARACTER_FASTSPEED = 60;
 
-    public ArrayList<Block.BlasterBlock.Blast> blasts = new ArrayList<>();
+    public ArrayList<BlasterBlock.Blast> blasts = new ArrayList<>();
     public ArrayList<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
 
     public Color transitioning = null;
@@ -799,30 +799,30 @@ public class MainRunningThing extends javax.swing.JFrame {
                 }
                 switch (currentLevelDesign[rowNumber][columnNumber].charAt(0)) {
                     case Level.START_CHAR:
-                        hold = new Block.NormalBlock();
+                        hold = new NormalBlock();
                         break;
 
                     case Level.END_CHAR:
-                        hold = new Block.EndingBlock();
+                        hold = new EndingBlock();
                         break;
 
                     case Level.NORMAL_BLOCK_CHAR:
-                        hold = new Block.NormalBlock();
+                        hold = new NormalBlock();
                         break;
 
                     case Level.LAUNCHER_BLOCK_CHAR:
                         switch (currentLevelDesign[rowNumber][columnNumber].charAt(1)) {
                             case '^':
-                                hold = new Block.LauncherBlock(Block.Direction.UP);
+                                hold = new LauncherBlock(Block.Direction.UP);
                                 break;
                             case '>':
-                                hold = new Block.LauncherBlock(Block.Direction.RIGHT);
+                                hold = new LauncherBlock(Block.Direction.RIGHT);
                                 break;
                             case 'v':
-                                hold = new Block.LauncherBlock(Block.Direction.DOWN);
+                                hold = new LauncherBlock(Block.Direction.DOWN);
                                 break;
                             case '<':
-                                hold = new Block.LauncherBlock(Block.Direction.LEFT);
+                                hold = new LauncherBlock(Block.Direction.LEFT);
                                 break;
                         }
                         break;
@@ -837,16 +837,16 @@ public class MainRunningThing extends javax.swing.JFrame {
 
                         switch (currentLevelDesign[rowNumber][columnNumber].charAt(1)) {
                             case '^':
-                                hold = new Block.BlasterBlock(Block.Direction.UP, dbs, fbs, delay);
+                                hold = new BlasterBlock(Block.Direction.UP, dbs, fbs, delay);
                                 break;
                             case '>':
-                                hold = new Block.BlasterBlock(Block.Direction.RIGHT, dbs, fbs, delay);
+                                hold = new BlasterBlock(Block.Direction.RIGHT, dbs, fbs, delay);
                                 break;
                             case 'v':
-                                hold = new Block.BlasterBlock(Block.Direction.DOWN, dbs, fbs, delay);
+                                hold = new BlasterBlock(Block.Direction.DOWN, dbs, fbs, delay);
                                 break;
                             case '<':
-                                hold = new Block.BlasterBlock(Block.Direction.LEFT, dbs, fbs, delay);
+                                hold = new BlasterBlock(Block.Direction.LEFT, dbs, fbs, delay);
                                 break;
                         }
                         break;
@@ -859,7 +859,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                             delay = Integer.parseInt(currentLevelDesign[rowNumber][columnNumber].substring(5, 7));
                         }
 
-                        hold = new Block.CannonBlock(dbs, fbs, delay);
+                        hold = new CannonBlock(dbs, fbs, delay);
 
                         break;
                 }
@@ -995,8 +995,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     public void landChecker() {
         if (xPosition < 0 || yPosition < 0 || xPosition >= levelBlocks[0].length || yPosition >= levelBlocks.length) {
             death();
-        } else if (levelBlocks[yPosition][xPosition] instanceof Block.LauncherBlock) {
-            switch (((Block.LauncherBlock) levelBlocks[yPosition][xPosition]).getDirection()) {
+        } else if (levelBlocks[yPosition][xPosition] instanceof LauncherBlock) {
+            switch (((LauncherBlock) levelBlocks[yPosition][xPosition]).getDirection()) {
                 case UP:
                     while (yPosition > 0 && (levelBlocks[yPosition - 1][xPosition] != null && !levelBlocks[yPosition - 1][xPosition].getStepable()
                             || levelBlocks[yPosition - 1][xPosition] == null)) {
@@ -1371,7 +1371,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             //clipholder.add(((Level.BossLevel)levels[currentLevelIndex]).getForegroundClip(timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
         } else {
             for (int i = 0; i < blasts.size(); i++) {
-                Block.BlasterBlock.Blast bla = blasts.get(i);
+                BlasterBlock.Blast bla = blasts.get(i);
                 clipholder.add(bla.getClip());
             }
 
@@ -1435,11 +1435,11 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         for (int i = 0; i < blasts.size(); i++) {
-            Block.BlasterBlock.Blast bla = blasts.get(i);
+            BlasterBlock.Blast bla = blasts.get(i);
 
             if (bla.xcoord < startx - 10 || bla.ycoord < starty - 10 || bla.xcoord > endx + 10 || bla.ycoord > endy + 10) {
 
-                if (bla instanceof Block.HighExplosion) {
+                if (bla instanceof HighExplosion) {
                     double holdangle = 0;
                     if (bla.xcoord > endx + 10) {
                         holdangle = Math.PI / 2;
@@ -1450,7 +1450,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                     } else {
                         holdangle = 0;
                     }
-                    lineExplosions.add(((Block.HighExplosion) bla).getLineExplosion(timestamp, holdangle, bla.xcoord, bla.ycoord));
+                    lineExplosions.add(((HighExplosion) bla).getLineExplosion(timestamp, holdangle, bla.xcoord, bla.ycoord));
                 }
 
                 blasts.remove(i);
@@ -1549,12 +1549,12 @@ public class MainRunningThing extends javax.swing.JFrame {
                     //Generates blasts at correct time
                     if (!(charState == CharacterState.DEAD) && !(charState == CharacterState.RESTARTING) && !(charState == CharacterState.WINE)) {
 
-                        if (currBlock instanceof Block.BlasterBlock) {
+                        if (currBlock instanceof BlasterBlock) {
 
-                            if (timestamp % ((Block.BlasterBlock) currBlock).period == ((Block.BlasterBlock) currBlock).delay) {
-                                blasts.add(new Block.BlasterBlock.Blast(((Block.BlasterBlock) currBlock).direction, ((Block.BlasterBlock) currBlock).blastSpeed));
+                            if (timestamp % ((BlasterBlock) currBlock).period == ((BlasterBlock) currBlock).delay) {
+                                blasts.add(new BlasterBlock.Blast(((BlasterBlock) currBlock).direction, ((BlasterBlock) currBlock).blastSpeed));
 
-                                switch (((Block.BlasterBlock) currBlock).direction) {
+                                switch (((BlasterBlock) currBlock).direction) {
                                     case UP:
                                         blasts.get(blasts.size() - 1).setCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS + 32, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
                                         break;
@@ -1569,15 +1569,15 @@ public class MainRunningThing extends javax.swing.JFrame {
                                         break;
                                 }
 
-                                ((Block.BlasterBlock) currBlock).primed = false;
+                                ((BlasterBlock) currBlock).primed = false;
                             }
                         }
 
-                        if (currBlock instanceof Block.CannonBlock) {
-                            if (timestamp % ((Block.CannonBlock) currBlock).period == ((Block.CannonBlock) currBlock).delay) {
+                        if (currBlock instanceof CannonBlock) {
+                            if (timestamp % ((CannonBlock) currBlock).period == ((CannonBlock) currBlock).delay) {
                                 int xcenter = startx + columnNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
                                 int ycenter = starty + rowNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
-                                blasts.add(new Block.CannonBlock.Cannonball(((Block.CannonBlock) currBlock).cannonballSpeed,
+                                blasts.add(new CannonBlock.Cannonball(((CannonBlock) currBlock).cannonballSpeed,
                                         getAngle(xCoordinates + CHARACTER_WIDTH / 2 - xcenter, yCoordinates + CHARACTER_WIDTH / 2 - ycenter)));
                                 blasts.get(blasts.size() - 1).setCoords(xcenter, ycenter);
                             }
@@ -1598,7 +1598,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             int charYLower = yCoordinates + CHARACTER_WIDTH;
             int charXRight = xCoordinates + CHARACTER_WIDTH;
             for (int i = 0; i < blasts.size(); i++) {
-                Block.BlasterBlock.Blast bla = blasts.get(i);
+                BlasterBlock.Blast bla = blasts.get(i);
                 bla.move();
                 Area blaouch = bla.getOuchArea();
                 Rectangle bound = blaouch.getBounds();
