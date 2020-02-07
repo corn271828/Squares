@@ -78,7 +78,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 100;
-    public static final boolean SEE_OVERLAP = false;
+    public static final boolean SEE_OVERLAP = true;
     public boolean musicOn = true;
 
     // Checkpoints
@@ -1245,8 +1245,11 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         currG.clearRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
 
+        System.out.println(player.level.levelLabel);
+        System.out.println(Level.BossLevel.class);
         if (player.level instanceof Level.BossLevel) {
             ((Level.BossLevel) player.level).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
+        }
 
         for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
             for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
@@ -1344,7 +1347,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         // Gets the block to show up on first run
         if (opacity > 15 || player.xCoordinates != player.xTarg || player.yCoordinates != player.yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || player.level instanceof Level.BossLevel) {
-            if (letsseeifthisworks)
+            if (letsseeifthisworks) {
                 letsseeifthisworks = false;
             }
             try {
