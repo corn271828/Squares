@@ -38,7 +38,7 @@ import static squares.api.RenderingConstants.*;
  */
 public class MainRunningThing extends javax.swing.JFrame {
     private static final long serialVersionUID = 3017531681090479808L;
-    
+
     Instant timestart;
     Instant timeend;
 
@@ -58,7 +58,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final int LEFT_KEY_PRESS = 37;
     public static final int DOWN_KEY_PRESS = 40;
     public static final int UP_KEY_PRESS = 38;
-    
+
     public ArrayList<BlasterBlock.Blast> blasts = new ArrayList<>();
     public ArrayList<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
 
@@ -94,7 +94,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
     public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("data", "sjbossscript.txt"));
-    
+
     // Easter eggs
     public static final String KONAMI_CODE = "uuddlrlrba";
     public static final ImageIcon LEAGIF = new ImageIcon("Pics/lea.gif");
@@ -334,9 +334,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         jButton1.setVisible(true);
         middlex = jPanel1.getWidth() / 2;
         middley = jPanel1.getHeight() / 2;
-		player = new Player();
-		player.level = levels[currentLevelIndex];
-		
+        player = new Player();
+        player.level = levels[currentLevelIndex];
+
         try {
             if (musicOn) {
                 backgroundStream = new ResourceLocator("bgm", "Canon_in_D_Swing.wav").asAudioStream();
@@ -739,7 +739,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // Loads player.level.blocks
     public void loadLevel() {
 
@@ -748,7 +748,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         timestamp = 0;
         blasts.clear();
         Level currentLevel = player.level;
-        
+
         if (levels[currentLevelIndex] instanceof Level.BossLevel && !tasActive) {
             if (isPracticeMode && checkpointTimes.size() > 0) {
                 timestamp = checkpointTimes.last();
@@ -758,7 +758,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         String[][] currentLevelDesign = currentLevel.design;
-        
+
         // Set up currentLevel.blocks - the design of the level in Blocks
         player.xPosition = currentLevel.startPosCol;
         player.yPosition = currentLevel.startPosRow;
@@ -937,7 +937,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             endx = middlex * 2 - startx;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
-        
+
         if (player.level.blocks.length == 0) {
             System.out.println("Instantiate player.level.blocks!");
             loadLevel();
@@ -1135,15 +1135,14 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             lineExplosions.addAll(((Level.BossLevel) levels[currentLevelIndex]).generateLines(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
-            
         }
 
         if (timestamp == 1200 && timestart != null) {
             timeend = Instant.now();
             System.out.println(Duration.between(timestart, timeend).toMillis());
         }
-        
-        
+
+
         int charYUpper = player.yCoordinates;
         int charXLeft = player.xCoordinates;
         int charYLower = player.yCoordinates + CHARACTER_WIDTH;
@@ -1156,12 +1155,12 @@ public class MainRunningThing extends javax.swing.JFrame {
                 ouchArea.add(currentLineExplosion.xplosionOuchArea(timestamp));
             }
         }
-        
+
         if (tasActive && levels[currentLevelIndex] instanceof SJBossFight) {
             if(sjbossTas.doTasStuff(startx, starty, timestamp, player))
                 repaint();
         }
-        
+
         // Checks to see if the character is still moving
         if (player.charState == CharacterState.MOVING) {
             if (player.xCoordinates != player.xTarg) {
@@ -1215,9 +1214,8 @@ public class MainRunningThing extends javax.swing.JFrame {
                 levelFinished();
             }
         }
-        
+
         if (levels[currentLevelIndex] instanceof Level.BossLevel && ((Level.BossLevel) levels[currentLevelIndex]).endtime <= timestamp && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
-            
             System.out.println("Hey times up");
             if (tasActive || isPracticeMode) {
                 tasActive = false;
@@ -1236,10 +1234,10 @@ public class MainRunningThing extends javax.swing.JFrame {
         } catch (InterruptedException ex) {
             Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         if (opacity < 15 || player.charState == CharacterState.DEAD || (player.charState == CharacterState.WINE || player.charState == CharacterState.RESTARTING) && isSwitching)
             timestamp += 1;
-        
+
         if (ouchArea.intersects(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
             ouch();
         }
@@ -1287,14 +1285,14 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         if (levels[currentLevelIndex] instanceof Level.BossLevel) {
             ((Level.BossLevel) levels[currentLevelIndex]).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
-        
+
         for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
             for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
                 if (player.level.blocks[rowNumber][columnNumber] != null)
                     player.level.blocks[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
-        
+
         characterIconAlive.paintIcon(jPanel1, currG, player.xCoordinates, player.yCoordinates);
-        
+
         if (player.isInvincible(timestamp)) {
             currG.setColor(new Color(0, 0, 255, timestamp % 2 == 0 ? 50 : 100));
             currG.fillRect(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);

@@ -84,10 +84,10 @@ public class BlockTesting extends javax.swing.JFrame {
                 new BlockTesting().setVisible(true);
             }
         });
-        
-        
+
+
     }
-    
+
     @Override
     public void paint(Graphics g) {
         Block normalBlock = new NormalBlock();

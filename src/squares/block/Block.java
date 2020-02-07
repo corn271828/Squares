@@ -24,12 +24,12 @@ public abstract class Block {
 
     public void refreshIcon() {}
     public void reset() {}
-    
+
     @Override
     public String toString() {
         return label;
     }
-    
+
     public Icon getIcon() {
         return icon;
     }

@@ -1,7 +1,7 @@
 package squares.api;
 
 public enum CharacterState {
-	NORMAL      (true),
+    NORMAL      (true),
     DEAD        (false),
     MOVING      (true),
     LOCKED      (false),

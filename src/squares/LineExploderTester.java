@@ -22,27 +22,27 @@ public class LineExploderTester extends squares.Level.BossLevel.LineExploder {
     public static final int sans_width = 70;
     public static final int sans_height = 100;
     public static final int[] opacities = new int[] {50, 100, 200, 255, 255, 255, 200, 100, 50};
-    
+
     public static final ImageIcon sansImage = new ImageIcon(new ImageIcon("Pics/sans_thumbnail2.png", "sanspic").getImage().getScaledInstance(sans_width, sans_height, java.awt.Image.SCALE_SMOOTH));
     public static final ImageIcon sansSrous = new ImageIcon(new ImageIcon("Pics/sans_srs.png", "sanssrspic").getImage().getScaledInstance(sans_width, sans_height, java.awt.Image.SCALE_SMOOTH));
     ImageIcon plody;
-    
+
 
     public LineExploderTester(int stt, int tl, double ang, int sxp, int syp) {
         super(stt, tl, ang, sxp, syp);
         plody = sansImage;
     }
-    
+
     public LineExploderTester(int stt, int tl, double ang, int sxp, int syp, ImageIcon ico) {
         super(stt, tl, ang, sxp, syp);
         plody = ico;
     }
-    
+
     @Override
     public void drawXPlosion(Component c, Graphics g, int timestamp) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.rotate(angle);
-        
+
         if (timestamp <= starttime + 10) {
             plody.paintIcon(c, g2d, xregister - sans_width / 2, yregister - sans_height / 2);
         } else if (timestamp < starttime + timelength - 2) {
@@ -73,12 +73,12 @@ public class LineExploderTester extends squares.Level.BossLevel.LineExploder {
             return new Area(tx.createTransformedShape(new Rectangle(xregister - sans_width / 2, yregister - sans_height / 2, sans_width, 1000)));
         }
     }
-    
-    
+
+
     @Override
     public LineExploderTester clone() {
         return new LineExploderTester(starttime, timelength, angle, startxPosition, startyPosition, plody);
     }
-        
-    
+
+
 }

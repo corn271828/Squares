@@ -10,5 +10,5 @@ public final class RenderingConstants {
     public static final int CHARACTER_SPEED = 30;
     public static final int CHARACTER_FASTSPEED = 60;
 
-	private RenderingConstants() {}
+    private RenderingConstants() {}
 }

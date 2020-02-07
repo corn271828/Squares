@@ -11,7 +11,7 @@ import squares.Level;
  *
  * @author piercelai
  */
-    
+
 public interface HighExplosion {
     public Level.BossLevel.LineExploder getLineExplosion(int startime, double ang, int starx, int stary);
 }

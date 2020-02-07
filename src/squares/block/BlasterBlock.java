@@ -26,17 +26,14 @@ public class BlasterBlock extends Block implements DirectedBlock {
     public boolean primed;
     public int delay;
 
-    protected static final ImageIcon blasterBlockRight = new ImageIcon("Pics/Blaster Block Right.png", "Blaster Block Image");
-    protected static final ImageIcon blasterBlockLeft = new ImageIcon("Pics/Blaster Block Left.png", "Blaster Block Image");
-    protected static final ImageIcon blasterBlockDown = new ImageIcon("Pics/Blaster Block Down.png", "Blaster Block Image");
-    protected static final ImageIcon blasterBlockUp = new ImageIcon("Pics/Blaster Block Up.png", "Blaster Block Image");
+    private static final ImageIcon[] blasterBlocks = new ImageIcon[Direction.values().length];
 
     public BlasterBlock(Direction d, int p, int bs) {
         this(d, p, bs, 1);
     }
 
     public BlasterBlock(Direction d, int p, int bs, int delay) {
-        super(getIconByDirection(d), null, false);
+        super(getIconByDirection(d), "Blaster Block", false);
         period = p;
         blastSpeed = bs;
         primed = false;
@@ -44,13 +41,10 @@ public class BlasterBlock extends Block implements DirectedBlock {
     }
 
     private static ImageIcon getIconByDirection(Direction d) {
-        switch (d) {
-            case UP:    return blasterBlockUp;
-            case DOWN:  return blasterBlockDown;
-            case LEFT:  return blasterBlockLeft;
-            case RIGHT: return blasterBlockRight;
-        }
-        return null;
+	int i = d.ordinal();
+	if(blasterBlocks[i] == null)
+		blasterBlocks[i] = new ImageIcon(String.format("Pics/Blaster Block %s.png", d.name), "Blaster Block Image");
+        return blasterBlocks[i];
     }
 
     public void prime() {

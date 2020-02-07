@@ -90,15 +90,15 @@ public class GraphicsTesting extends javax.swing.JFrame {
         g.clearRect(0, 0, 100, 400);
         /*
         g.setColor(Color.RED);
-        
+
         int x = 100;
         int y = 100;
         int width = 50;
         int length = 50;
-        
+
         g.fillRect(x, y, width, length);
         //g.drawString("King of Rectangles", 10, 80);
-        
+
         Graphics2D g2d = (Graphics2D) g;
         double angle = Math.PI / 4;
         g2d.rotate(angle);
@@ -142,7 +142,7 @@ public class GraphicsTesting extends javax.swing.JFrame {
                 new GraphicsTesting().setVisible(true);
             }
         });
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
