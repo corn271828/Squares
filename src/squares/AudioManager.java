@@ -37,15 +37,7 @@ public class AudioManager {
     public AudioManager setPlaying(String name, long mspt) {
         if (clips.get(name).equals(current))
             return this;
-        if(current != null) {
-            current.stop();
-        }
-        current = clips.getOrDefault(name, null);
-        if(current != null) {
-            current.setMicrosecondPosition(mspt);
-            current.start();
-        }
-        return this;
+        return restartPlaying(name, mspt);
     }
     public AudioManager restartPlaying(String name, long mspt) {
         if(current != null) {
