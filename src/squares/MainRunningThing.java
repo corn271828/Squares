@@ -761,7 +761,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.hp = Player.PRACTICE_MODE_LIVES;
         }
         if (player.level instanceof SJBossFight && musicOn) {
-            audio.setPlaying("boss", timestamp * audio.getClip("boss").getMicrosecondLength() / 1556);
+            audio.restartPlaying("boss", timestamp * audio.getClip("boss").getMicrosecondLength() / 1556);
         }
     }
 
