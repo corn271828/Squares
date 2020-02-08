@@ -13,8 +13,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import squares.Player;
 
-import squares.api.Direction;
-import squares.api.DirectedBlock;
 
 /**
  *
