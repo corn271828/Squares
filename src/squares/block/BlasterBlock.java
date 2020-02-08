@@ -38,6 +38,7 @@ public class BlasterBlock extends Block implements DirectedBlock {
         blastSpeed = bs;
         primed = false;
         this.delay = delay;
+        direction = d;
     }
 
     private static ImageIcon getIconByDirection(Direction d) {
