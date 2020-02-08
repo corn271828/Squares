@@ -17,9 +17,9 @@ public abstract class Block {
     public final boolean stepable; // Represents whether or not one can step on this type of block
 
     public Block(Icon i, String l, boolean s) {
-            icon = i;
-            label = l;
-            stepable = s;
+        icon = i;
+        label = l;
+        stepable = s;
     }
 
     public void refreshIcon() {}
