@@ -21,6 +21,7 @@ public class LauncherBlock extends Block implements DirectedBlock {
 
     public LauncherBlock(Direction direction) {
         super(getIconByDirection(direction), "Launcher Block", true);
+        this.direction = direction;
     }
 
     private static ImageIcon getIconByDirection(Direction d) {
