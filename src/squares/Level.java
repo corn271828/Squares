@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import squares.api.ResourceLocator;
-import squares.api.Direction;
+import squares.block.Direction;
 
 /**
  *
