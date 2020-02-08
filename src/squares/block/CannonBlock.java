@@ -8,16 +8,23 @@ package squares.block;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import javax.swing.ImageIcon;
+
 import squares.Player;
+import squares.api.block.FiringBlock;
+import squares.api.block.TargetingBlock;
+
+import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
+import static squares.api.RenderingConstants.CHARACTER_WIDTH;
 
 /**
  *
  * @author piercelai
  */
-public class CannonBlock extends Block {
+public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
     public int period; //In units of timestamp
     public int cannonballSpeed; //pixels per timestamp
     public int delay;
+    public int targetX, targetY;
     public static final ImageIcon cannonBlockIcon = new ImageIcon("Pics/Aiming Cannon Base.png", "Cannon Block Image");
 
     public CannonBlock(int p, int bs, int d) {
@@ -29,6 +36,32 @@ public class CannonBlock extends Block {
 
     public void setDelay(int d) {
         delay = d;
+    }
+
+    @Override
+    public void setTarget(int x, int y) {
+        targetX = x;
+        targetY = y;
+    }
+
+    @Override
+    public int getPeriod() {
+        return period;
+    }
+   
+    @Override
+    public int getPhase() {
+        return delay;
+    }
+
+    @Override
+    public BlasterBlock.Blast createAtCoords(int x, int y) {
+        int xcenter = x + STANDARD_ICON_WIDTH / 2;
+        int ycenter = y + STANDARD_ICON_WIDTH / 2;
+        Cannonball cb = new Cannonball(cannonballSpeed, 
+            Math.atan2(targetY + CHARACTER_WIDTH / 2 - ycenter, targetX + CHARACTER_WIDTH / 2 - xcenter));
+        cb.setCoords(xcenter, ycenter);
+        return cb;
     }
 
     @Override

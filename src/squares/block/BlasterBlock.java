@@ -15,12 +15,14 @@ import squares.Player;
 
 import squares.api.Direction;
 import squares.api.block.DirectedBlock;
+import squares.api.block.FiringBlock;
+import squares.api.block.Projectile;
 
 /**
  *
  * @author piercelai
  */
-public class BlasterBlock extends Block implements DirectedBlock {
+public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
     public Direction direction;
     public int period; //In units of timestamp
     public int blastSpeed; //pixels per timestamp
@@ -56,6 +58,38 @@ public class BlasterBlock extends Block implements DirectedBlock {
 
     public void setDelay(int d) {
         delay = d;
+    }
+
+    @Override
+    public int getPeriod() {
+        return period;
+    }
+   
+    @Override
+    public int getPhase() {
+        return delay;
+    }
+
+    @Override
+    public Blast createAtCoords(int x, int y) {
+            Blast b = new Blast(direction, blastSpeed);
+
+            switch (direction) {
+                case UP:
+                    b.setCoords(x + 32, y);
+                    break;
+                case LEFT:
+                    b.setCoords(x, y + 32);
+                    break;
+                case RIGHT:
+                    b.setCoords(x + 30, y + 32);
+                    break;
+                case DOWN:
+                    b.setCoords(x + 32, y + 30);
+                    break;
+            }
+            primed = false;
+            return b;
     }
 
     @Override
