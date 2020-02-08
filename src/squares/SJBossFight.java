@@ -52,6 +52,10 @@ public class SJBossFight extends Level.BossLevel {
     public static final int wI_HEIGHT = 300;
     public static ImageIcon warningIcon = new ImageIcon(new ImageIcon("Pics/warning750.png").getImage().getScaledInstance(wI_WIDTH, wI_HEIGHT, java.awt.Image.SCALE_SMOOTH));
 
+    public SJBossFight(String[][] in, String[] args) {
+        this(in, args[0], Integer.parseInt(args[1]), new ResourceLocator("bossdata", args[2]), args[3]);
+    }
+
     public SJBossFight(String[][] in, String label, String... controls) {
         super(in, label, controls);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;

@@ -53,12 +53,15 @@ public class Level {
     public static final char BLASTER_BLOCK_CHAR = 'B';
     public static final char CANNON_BLOCK_CHAR = 'C';
 
+    public Level(String[][] in, String[] args) {
+        this(in, args[0], args.length >= 2 ? args[1] : null);
+    }
+
     public Level(String[][] in, String label, String code) {
-        design = new String[in.length][in[0].length];
+        design = in;
         for (int i = 0; i < in.length; i++)
             for (int j = 0; j < in[0].length; j++)
             {
-                design[i][j] = in[i][j];
                 if(in[i][j].length() > 0)
                     switch(in[i][j].charAt(0)) {
                         case START_CHAR:
@@ -141,6 +144,7 @@ public class Level {
                         hold = new CannonBlock(dbs, fbs, delay);
 
                         break;
+                    case '0': break;
                     default: throw new IllegalArgumentException("Unknown ID-char: " + in[rowNumber][columnNumber].charAt(0));
                 }
                 blocks[rowNumber][columnNumber] = hold;

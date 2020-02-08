@@ -32,6 +32,7 @@ import static squares.api.RenderingConstants.*;
  * @author lai_889937
  */
 public class MainRunningThing extends javax.swing.JFrame {
+
     private static final long serialVersionUID = 3017531681090479808L;
 
     Instant timestart;
@@ -80,7 +81,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Checkpoints
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
-    public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("data", "sjbossscript.txt"));
+    public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("bossdata", "sjbossscript.txt"));
 
     // Easter eggs
     public static final String KONAMI_CODE = "uuddlrlrba";
@@ -89,221 +90,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 
     // All the levels. All of them.
-    public Level[] levels = new Level[]{
-
-        new Level(new String[][]{
-            new String[]{"X", "N", "O"}
-        },
-         "1", "Ap_lEs"),
-        new Level(new String[][]{
-            new String[]{"X", "", "N", "O"},
-            new String[]{"N", "", "N", ""},
-            new String[]{"N", "N", "N", ""}
-        },
-         "2", "BaKAr_Na"),
-        new Level(new String[][]{
-            new String[]{"X", "L>", "", "N", "O"}
-        },
-         "3", "P0TaTo_$"),
-        new Level(new String[][]{
-            new String[]{"X", "N", "Lv"},
-            new String[]{"", "", ""},
-            new String[]{"Lv", "N", "N"},
-            new String[]{"", "", ""},
-            new String[]{"N", "N", "O"}
-        },
-         "4", "C_oSsC0dE"),
-        new Level(new String[][]{
-            new String[]{"X", "", "N", "Lv", "N", "O"},
-            new String[]{"N", "", "", "", "", ""},
-            new String[]{"L>", "", "", "", "", "N"},
-            new String[]{"N", "", "", "", "", "L<"},
-            new String[]{"L>", "", "", "", "", "N"},
-            new String[]{"N", "", "", "", "", "L<"},
-            new String[]{"N", "N", "L^", "N", "L^", ""}
-        },
-         "5", "_eLe$tE"),
-        new Level(new String[][]{
-            new String[]{"", "", "L>", "", "Lv"},
-            new String[]{"X", "L>", "", "Lv", ""},
-            new String[]{"", "", "", "", ""},
-            new String[]{"O", "", "", "", "L<"},
-            new String[]{"", "", "L^", "L<", ""},},
-         "6", "UnD_rTAle"),
-        new Level(new String[][]{
-            new String[]{"X", "L>", "Lv", "N", "Lv", "L>", "N"},
-            new String[]{"Lv", "", "", "L^", "", "", "L<"},
-            new String[]{"L>", "", "", "", "", "", "Lv"},
-            new String[]{"N", "L^", "", "", "", "", "N"},
-            new String[]{"L^", "Lv", "", "", "", "", "L<"},
-            new String[]{"L^", "", "", "L<", "L>", "", "Lv"},
-            new String[]{"N", "L<", "L>", "N", "L>", "L^", "O"}
-        },
-         "7", "BoWsEtTe"),
-        new Level(new String[][]{
-            new String[]{"", "", "Bv153005", ""},
-            new String[]{"", "", "", ""},
-            new String[]{"X", "N", "N", "O"}
-        },
-         "8", "0vER_Ord"),
-        new Level(new String[][]{
-            new String[]{"X", "Bv2030", "N", "O"},
-            new String[]{"N", "B>1530", "N", "B<1530"},
-            new String[]{"N", "N", "N", ""}
-        },
-         "9", "KoN0sUb_"),
-        new Level(new String[][]{
-            new String[]{"X", "Bv2540", "N", "O"},
-            new String[]{"Lv", "", "", "B<1530"},
-            new String[]{"", "", "", "B<2025"},
-            new String[]{"N", "N", "L^", ""}
-        },
-         "10", "NGaMeNL_fe"),
-        new Level(new String[][]{
-            new String[]{"X", "", "", ""},
-            new String[]{"N", "N", "B<3020", ""},
-            new String[]{"N", "", "", ""},
-            new String[]{"N", "N", "N", ""},
-            new String[]{"", "", "N", "B<1530"},
-            new String[]{"B^3520", "", "O", ""}
-        },
-         "11", "BonG0cAT"),
-        new Level(new String[][]{
-            new String[]{"X", "Bv2015", "N", "Lv", "N", "O"},
-            new String[]{"N", "Bv3020", "", "", "", ""},
-            new String[]{"L>", "", "", "", "", "N"},
-            new String[]{"N", "", "", "", "", "L<"},
-            new String[]{"L>", "", "", "", "", "N"},
-            new String[]{"N", "", "B>3040", "", "", "L<"},
-            new String[]{"N", "N", "L^", "N", "L^", "B<4015"}
-        },
-         "12", "HyPErfAnG"),
-        new Level(new String[][]{
-            new String[]{"X", "Bv104001", "Bv104002", "Bv104003", ""},
-            new String[]{"N", "", "", "", "B<2015"},
-            new String[]{"N", "", "", "", "B<201503"},
-            new String[]{"N", "", "", "", "B<201505"},
-            new String[]{"L>", "", "", "", "N"},
-            new String[]{"O", "", "", "", "L<"}
-        },
-         "13", "SHaDoWs"),
-        new Level(new String[][]{
-            new String[]{"X", "", "N", "O"},
-            new String[]{"N", "", "N", "B<1520"},
-            new String[]{"N", "N", "N", "B<2525"},
-            new String[]{"", "N", "B^3010", ""}
-        },
-         "14", "SwRDrTnLn"),
-        new Level(new String[][]{
-            new String[]{"", "", "C153005", ""},
-            new String[]{"", "", "", ""},
-            new String[]{"X", "N", "N", "O"}
-        },
-         "15", "L0gHriZn"),
-        new Level(new String[][]{
-            new String[]{"X", "C2020", "N", "O"},
-            new String[]{"N", "C1510", "N", "C1510"},
-            new String[]{"N", "N", "N", ""}
-        },
-         "16", "1PnchMaN"),
-        new Level(new String[][]{
-            new String[]{"B>302505", "X", "C2020", "N", "Lv", "N", "Lv"},
-            new String[]{"B>201505", "Lv", "", "", "", "", ""},
-            new String[]{"O", "", "", "", "", "", "L<"},
-            new String[]{"B>302520", "N", "N", "L^", "N", "L^", "C2020"}
-        },
-         "17", "c6H12o6"),
-        new Level(new String[][]{
-            new String[]{"", "X", "N", "", "", "Bv302025", ""},
-            new String[]{"", "N", "", "C202004", "", "", ""},
-            new String[]{"N", "N", "", "", "", "N", "O"},
-            new String[]{"", "N", "", "", "N", "N", ""},
-            new String[]{"N", "N", "", "", "", "N", "N"},
-            new String[]{"", "N", "N", "N", "N", "N", "B<3020"},
-            new String[]{"", "B^302005", "N", "", "N", "", ""}
-        },
-         "18", "CelsAtwRk"),
-        new SJBossFight(new String[][]{
-            new String[]{"", "", "", "", "", "", "", "", ""},
-            new String[]{"", "", "", "", "", "", "", "", ""},
-            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
-            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
-            new String[]{"", "", "N", "N", "X", "N", "N", "", ""},
-            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
-            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
-            new String[]{"", "", "", "", "", "", "", "", ""},
-            new String[]{"", "", "", "", "", "", "", "", ""}
-        },
-         "BOSS", 20, new ResourceLocator("data", "sjbossfight_easy.txt"), "YoUJ0snKi"),
-        new Level(new String[][]{
-            new String[]{"", "", "", "", "", "", ""},
-            new String[]{"", "X", "N", "N", "N", "N", ""},
-            new String[]{"", "N", "N", "N", "N", "N", ""},
-            new String[]{"", "C201010", "", "", "", "N", ""},
-            new String[]{"", "N", "N", "N", "N", "N", ""},
-            new String[]{"", "O", "N", "N", "N", "N", ""},
-            new String[]{"", "", "", "", "", "", ""}
-        },
-         "-4", "No!n0!i"),
-        new Level(new String[][]{
-            new String[]{"", "", "", "", "", "", ""},
-            new String[]{"", "X", "N", "N", "N", "N", ""},
-            new String[]{"", "N", "N", "N", "N", "N", ""},
-            new String[]{"", "C201010", "", "", "", "N", ""},
-            new String[]{"", "N", "N", "N", "N", "N", ""},
-            new String[]{"", "O", "N", "N", "N", "N", ""},
-            new String[]{"", "", "", "", "", "", ""}
-        },
-         "-3", "foRKnSpO0n"),
-        new Level(new String[][]{
-            new String[]{"X", "N", "N", "N", "N"},
-            new String[]{"N", "N", "N", "N", "N"},
-            new String[]{"C201010", "", "", "", "N"},
-            new String[]{"N", "N", "N", "N", "N"},
-            new String[]{"O", "N", "N", "N", "N"}
-        },
-         "-2", "CppErHeD"),
-        new Level(new String[][]{
-            new String[]{"X", "N", "", "N", "N", "N"},
-            new String[]{"", "N", "N", "N", "", "N"},
-            new String[]{"C201005", "", "", "C201005", "N", "N"},
-            new String[]{"N", "N", "N", "", "N", ""},
-            new String[]{"O", "", "N", "N", "N", ""}
-        },
-         "-1", "ThIsiShaRD"),
-        new Level(new String[][]{
-            new String[]{"X", "N", "N", "N", "N"},
-            new String[]{"N", "N", "N", "N", "N"},
-            new String[]{"C201005", "", "", "", "N"},
-            new String[]{"N", "N", "N", "N", "N"},
-            new String[]{"O", "N", "N", "N", "N"}
-        },
-         "0", "cHaoSchA0s"),
-        new Level(new String[][]{
-            new String[]{"X", "N", "O"}
-        },
-         "1", "soEasyyy"),
-        new SJBossFight(new String[][]{
-            new String[]{"", "", "", "", "", "", "", "", ""},
-            new String[]{"", "", "", "", "", "", "", "", ""},
-            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
-            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
-            new String[]{"", "", "N", "N", "X", "N", "N", "", ""},
-            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
-            new String[]{"", "", "N", "N", "N", "N", "N", "", ""},
-            new String[]{"", "", "", "", "", "", "", "", ""},
-            new String[]{"", "", "", "", "", "", "", "", ""}
-        },
-         "BOSS", 10, new ResourceLocator("data", "sjbossfight.txt"), "wHThvIdn"),
-        new Level(new String[][]{
-            new String[]{"Lv", "N", "", "L<", "N"},
-            new String[]{"", "Lv", "N", "N", "N"},
-            new String[]{"", "", "X", "", ""},
-            new String[]{"N", "N", "N", "L^", ""},
-            new String[]{"N", "L>", "", "N", "L^"}
-        },
-         "CONGRATS!", "tHxF0rPlynG")
-    };
+    public Level[] levels = new LevelLoader(new ResourceLocator("data", "leveldata.txt")).getLevels();
 
     // Deaths
     public int[] deathCount = new int[levels.length];

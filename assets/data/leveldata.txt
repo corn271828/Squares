@@ -1,0 +1,212 @@
+level
+1 Ap_lEs
+X	N	O
+%%
+level
+2 BaKAr_Na
+X	0	N	O
+N	0	N	0
+N	N	N	0
+%%
+level
+3 P0TaTo_$
+X	L>	0	N	O
+%%
+level
+4 C_oSsC0dE
+X	N	Lv
+0	0	0
+Lv	N	N
+0	0	0
+N	N	O
+%%
+level
+5 _eLe$tE
+X	0	N	Lv	N	O
+N	0	0	0	0	0
+L>	0	0	0	0	N
+N	0	0	0	0	L<
+L>	0	0	0	0	N
+N	0	0	0	0	L<
+N	N	L^	N	L^	0
+%%
+level
+6 UnD_rTAle
+0	0	L>	0	Lv
+X	L>	0	Lv	0
+0	0	0	0	0
+O	0	0	0	L<
+0	0	L^	L<	0
+%%
+level
+7 BoWsEtTe
+X	L>	Lv	N	Lv	L>	N
+Lv	0	0	L^	0	0	L<
+L>	0	0	0	0	0	Lv
+N	L^	0	0	0	0	N
+L^	Lv	0	0	0	0	L<
+L^	0	0	L<	L>	0	Lv
+N	L<	L>	N	L>	L^	O
+%%
+level
+8 0vER_Ord
+0	0	Bv153005	0
+0	0	0	0
+X	N	N	O
+%%
+level
+9 KoN0sUb_
+X	Bv2030	N	O
+N	B>1530	N	B<1530
+N	N	N	0
+%%
+level
+10 NGaMeNL_fe
+X	Bv2540	N	O
+Lv	0	0	B<1530
+0	0	0	B<2025
+N	N	L^	0
+%%
+level
+11 BonG0cAT
+X	0	0	0
+N	N	B<3020	0
+N	0	0	0
+N	N	N	0
+0	0	N	B<1530
+B^3520	0	O	0
+%%
+level
+12 HyPErfAnG
+X	Bv2015	N	Lv	N	O
+N	Bv3020	0	0	0	0
+L>	0	0	0	0	N
+N	0	0	0	0	L<
+L>	0	0	0	0	N
+N	0	B>3040	0	0	L<
+N	N	L^	N	L^	B<4015
+%%
+level
+13 SHaDoWs
+X	Bv104001	Bv104002	Bv104003	0
+N	0	0	0	B<2015
+N	0	0	0	B<201503
+N	0	0	0	B<201505
+L>	0	0	0	N
+O	0	0	0	L<
+%%
+level
+14 SwRDrTnLn
+X	0	N	O
+N	0	N	B<1520
+N	N	N	B<2525
+0	N	B^3010	0
+%%
+level
+15 L0gHriZn
+0	0	C153005	0
+0	0	0	0
+X	N	N	O
+%%
+level
+16 1PnchMaN
+X	C2020	N	O
+N	C1510	N	C1510
+N	N	N	0
+%%
+level
+17 c6H12o6
+B>302505	X	C2020	N	Lv	N	Lv
+B>201505	Lv	0	0	0	0	0
+O	0	0	0	0	0	L<
+B>302520	N	N	L^	N	L^	C2020
+%%
+level
+18 CelsAtwRk
+0	X	N	0	0	Bv302025	0
+0	N	0	C202004	0	0	0
+N	N	0	0	0	N	O
+0	N	0	0	N	N	0
+N	N	0	0	0	N	N
+0	N	N	N	N	N	B<3020
+0	B^302005	N	0	N	0	0
+%%
+sjbossfight
+BOSS 20 sjbossfight_easy.txt YoUJ0snKi
+0	0	0	0	0	0	0	0	0
+0	0	0	0	0	0	0	0	0
+0	0	N	N	N	N	N	0	0
+0	0	N	N	N	N	N	0	0
+0	0	N	N	X	N	N	0	0
+0	0	N	N	N	N	N	0	0
+0	0	N	N	N	N	N	0	0
+0	0	0	0	0	0	0	0	0
+0	0	0	0	0	0	0	0	0
+%%
+level
+-4 No!n0!i
+0	0	0	0	0	0	0
+0	X	N	N	N	N	0
+0	N	N	N	N	N	0
+0	C201010	0	0	0	N	0
+0	N	N	N	N	N	0
+0	O	N	N	N	N	0
+0	0	0	0	0	0	0
+%%
+level
+-3 foRKnSpO0n
+0	0	0	0	0	0	0
+0	X	N	N	N	N	0
+0	N	N	N	N	N	0
+0	C201010	0	0	0	N	0
+0	N	N	N	N	N	0
+0	O	N	N	N	N	0
+0	0	0	0	0	0	0
+%%
+level
+-2 CppErHeD
+X	N	N	N	N
+N	N	N	N	N
+C201010	0	0	0	N
+N	N	N	N	N
+O	N	N	N	N
+%%
+level
+-1 ThIsiShaRD
+X	N	0	N	N	N
+0	N	N	N	0	N
+C201005	0	0	C201005	N	N
+N	N	N	0	N	0
+O	0	N	N	N	0
+%%
+level
+0 cHaoSchA0s
+X	N	N	N	N
+N	N	N	N	N
+C201005	0	0	0	N
+N	N	N	N	N
+O	N	N	N	N
+%%
+level
+1 soEasyyy
+X	N	O
+%%
+sjbossfight
+BOSS 10 sjbossfight.txt wHThvIdn
+0	0	0	0	0	0	0	0	0
+0	0	0	0	0	0	0	0	0
+0	0	N	N	N	N	N	0	0
+0	0	N	N	N	N	N	0	0
+0	0	N	N	X	N	N	0	0
+0	0	N	N	N	N	N	0	0
+0	0	N	N	N	N	N	0	0
+0	0	0	0	0	0	0	0	0
+0	0	0	0	0	0	0	0	0
+%%
+level
+CONGRATS! tHxF0rPlynG
+Lv	N	0	L<	N
+0	Lv	N	N	N
+0	0	X	0	0
+N	N	N	L^	0
+N	L>	0	N	L^
