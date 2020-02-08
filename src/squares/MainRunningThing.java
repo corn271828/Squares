@@ -701,7 +701,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        BlastCalculator bc = new BlastCalculator(); // opens new thread for blasts
+        BlastCalculator bc = new BlastCalculator(this); // opens new thread for blasts
         bc.start();
 
         /// Levelspecific testing
@@ -1089,81 +1089,6 @@ public class MainRunningThing extends javax.swing.JFrame {
     private javax.swing.JTextField jText_levelCode;
     private javax.swing.JToggleButton toggle_practice;
     // End of variables declaration//GEN-END:variables
-    public class BlastCalculator extends Thread {
-
-        @Override
-        public void run() {
-            for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) {
-                for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) {
-                    Block currBlock = player.level.blocks[rowNumber][columnNumber];
-                    if (currBlock == null) {
-                        continue;
-                    }
-
-                    //Generates blasts at correct time
-                    if (!(player.charState == CharacterState.DEAD) && !(player.charState == CharacterState.RESTARTING) && !(player.charState == CharacterState.WINE)) {
-
-                        if (currBlock instanceof BlasterBlock) {
-
-                            if (timestamp % ((BlasterBlock) currBlock).period == ((BlasterBlock) currBlock).delay) {
-                                blasts.add(new BlasterBlock.Blast(((BlasterBlock) currBlock).direction, ((BlasterBlock) currBlock).blastSpeed));
-
-                                switch (((BlasterBlock) currBlock).direction) {
-                                    case UP:
-                                        blasts.get(blasts.size() - 1).setCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS + 32, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
-                                        break;
-                                    case LEFT:
-                                        blasts.get(blasts.size() - 1).setCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS + 32);
-                                        break;
-                                    case RIGHT:
-                                        blasts.get(blasts.size() - 1).setCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS + 30, starty + rowNumber * SPACING_BETWEEN_BLOCKS + 32);
-                                        break;
-                                    case DOWN:
-                                        blasts.get(blasts.size() - 1).setCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS + 32, starty + rowNumber * SPACING_BETWEEN_BLOCKS + 30);
-                                        break;
-                                }
-
-                                ((BlasterBlock) currBlock).primed = false;
-                            }
-                        }
-
-                        if (currBlock instanceof CannonBlock) {
-                            if (timestamp % ((CannonBlock) currBlock).period == ((CannonBlock) currBlock).delay) {
-                                int xcenter = startx + columnNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
-                                int ycenter = starty + rowNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
-                                blasts.add(new CannonBlock.Cannonball(((CannonBlock) currBlock).cannonballSpeed, 
-                                        getAngle(player.xCoordinates + CHARACTER_WIDTH / 2 - xcenter, player.yCoordinates + CHARACTER_WIDTH / 2 - ycenter)));
-                                blasts.get(blasts.size() - 1).setCoords(xcenter, ycenter);
-                            }
-                        }
-
-                    }
-
-                }
-            }
-
-            if (player.level instanceof Level.BossLevel) {
-                blasts.addAll(((Level.BossLevel) player.level).generateBlasts(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
-            }
-
-            // Calculates where the blasts would be
-            int charYUpper = player.yCoordinates;
-            int charXLeft = player.xCoordinates;
-            int charYLower = player.yCoordinates + CHARACTER_WIDTH;
-            int charXRight = player.xCoordinates + CHARACTER_WIDTH;
-            for (int i = 0; i < blasts.size(); i++) {
-                BlasterBlock.Blast bla = blasts.get(i);
-                bla.move();
-                Area blaouch = bla.getOuchArea();
-                Rectangle bound = blaouch.getBounds();
-                if (bound.getX() > charXRight || bound.getX() + bound.width < charXLeft || bound.getY() > charYLower || bound.getY() + bound.height < charYUpper) {
-                } else {
-                    ouchArea.add(blaouch);
-                }
-            }
-        }
-
-
-    }
+ 
 
 }
