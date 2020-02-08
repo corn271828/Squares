@@ -922,17 +922,12 @@ public class MainRunningThing extends javax.swing.JFrame {
         jPanel1.setBackground(Color.white);
         Graphics currG = jPanel1.getGraphics();
         currG.setClip(clipholder);
-        if (player.level instanceof Level.BossLevel) {
-            ((Graphics2D) currG).setBackground(((Level.BossLevel) player.level).getBackgroundColor(timestamp));
-        } else {
-            ((Graphics2D) currG).setBackground(Color.white);
-        }
+        
+        ((Graphics2D) currG).setBackground(player.level.getBackgroundColor(timestamp));
 
         currG.clearRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
 
-        if (player.level instanceof Level.BossLevel) {
-            ((Level.BossLevel) player.level).drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
-        }
+        player.level.drawBackground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
 
         for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
             for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
@@ -996,10 +991,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             currG.setColor(new Color(transitioning.getRed(), transitioning.getGreen(), transitioning.getBlue(), opacity));
             currG.fillRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
         }
-
-        if (player.level instanceof Level.BossLevel) {
-            ((Level.BossLevel) player.level).drawForeground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
-        }
+        
+        player.level.drawForeground(currG, timestamp, jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
+        
 
         // Draws the pie at frame 314
         if (timestamp >= 314 && timestamp <= 334) {
