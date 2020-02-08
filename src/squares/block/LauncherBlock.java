@@ -6,11 +6,12 @@
 package squares.block;
 
 import javax.swing.ImageIcon;
+
 import squares.Player;
 import squares.api.CharacterState;
-
 import squares.api.Direction;
 import squares.api.DirectedBlock;
+
 import static squares.api.RenderingConstants.BORDER_WIDTH;
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
 

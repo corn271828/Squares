@@ -3,6 +3,7 @@ package squares;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import squares.api.CharacterState;
+
 import static squares.api.RenderingConstants.CHARACTER_FASTSPEED;
 import static squares.api.RenderingConstants.CHARACTER_SPEED;
 import static squares.api.RenderingConstants.CHARACTER_WIDTH;
