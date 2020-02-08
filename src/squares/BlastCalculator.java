@@ -40,11 +40,12 @@ public class BlastCalculator extends Thread {
                  if (!(mrt.player.charState == CharacterState.DEAD) && !(mrt.player.charState == CharacterState.RESTARTING) && !(mrt.player.charState == CharacterState.WINE)) {
 
                      if (currBlock instanceof BlasterBlock) {
+                         BlasterBlock currBlaBlock = (BlasterBlock) currBlock;
 
-                         if (mrt.timestamp % ((BlasterBlock) currBlock).period == ((BlasterBlock) currBlock).delay) {
-                             mrt.blasts.add(new BlasterBlock.Blast(((BlasterBlock) currBlock).direction, ((BlasterBlock) currBlock).blastSpeed));
+                         if (mrt.timestamp % currBlaBlock.period == currBlaBlock.delay) {
+                             mrt.blasts.add(new BlasterBlock.Blast(currBlaBlock.direction, currBlaBlock.blastSpeed));
 
-                             switch (((BlasterBlock) currBlock).direction) {
+                             switch (currBlaBlock.direction) {
                                  case UP:
                                      mrt.blasts.get(mrt.blasts.size() - 1).setCoords(mrt.startx + columnNumber * SPACING_BETWEEN_BLOCKS + 32, mrt.starty + rowNumber * SPACING_BETWEEN_BLOCKS);
                                      break;
@@ -59,15 +60,16 @@ public class BlastCalculator extends Thread {
                                      break;
                              }
 
-                             ((BlasterBlock) currBlock).primed = false;
+                             currBlaBlock.primed = false;
                          }
                      }
 
                      if (currBlock instanceof CannonBlock) {
-                         if (mrt.timestamp % ((CannonBlock) currBlock).period == ((CannonBlock) currBlock).delay) {
+                         CannonBlock currCanBlock = (CannonBlock) currBlock;
+                         if (mrt.timestamp % currCanBlock.period == currCanBlock.delay) {
                              int xcenter = mrt.startx + columnNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
                              int ycenter = mrt.starty + rowNumber * SPACING_BETWEEN_BLOCKS + STANDARD_ICON_WIDTH / 2;
-                             mrt.blasts.add(new CannonBlock.Cannonball(((CannonBlock) currBlock).cannonballSpeed, 
+                             mrt.blasts.add(new CannonBlock.Cannonball(currCanBlock.cannonballSpeed, 
                                      mrt.getAngle(mrt.player.xCoordinates + CHARACTER_WIDTH / 2 - xcenter, mrt.player.yCoordinates + CHARACTER_WIDTH / 2 - ycenter)));
                              mrt.blasts.get(mrt.blasts.size() - 1).setCoords(xcenter, ycenter);
                          }
