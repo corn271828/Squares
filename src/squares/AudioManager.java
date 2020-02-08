@@ -19,6 +19,7 @@ public class AudioManager {
             clip.open(ais);
             clip.loop(Clip.LOOP_CONTINUOUSLY);
             clips.put(name, clip);
+            clip.stop();
         }
         catch(javax.sound.sampled.UnsupportedAudioFileException
                 | LineUnavailableException
@@ -34,6 +35,8 @@ public class AudioManager {
         return setPlaying(name, 0);
     }
     public AudioManager setPlaying(String name, long mspt) {
+        if (clips.get(name).equals(current))
+            return this;
         if(current != null) {
             current.stop();
         }

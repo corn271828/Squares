@@ -699,8 +699,6 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-        String[][] currentLevelDesign = currentLevel.design;
-
         // Set up currentLevel.block - the design of the level in Blocks
         player.xPosition = currentLevel.startPosCol;
         player.yPosition = currentLevel.startPosRow;
@@ -756,7 +754,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         blasts.clear();
         lineExplosions.clear();
 
-        player.iftime = 0;
+        player.iftime = -11;
         player.hp = currentLevelHealth;
         player.isPracticeMode = toggle_practice.isSelected();
         if (player.isPracticeMode) {
@@ -868,6 +866,12 @@ public class MainRunningThing extends javax.swing.JFrame {
             loadLevel();
             player.charState = CharacterState.NORMAL;
         }
+        
+        if (player.xCoordinates == 0 && player.yCoordinates == 0) {
+            System.out.println("Oi, why's it at zero?");
+            loadLevel();
+        }
+        
         if (startx == 0 || starty == 0) {
             startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
