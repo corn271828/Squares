@@ -1,6 +1,11 @@
 package squares;
 
+import java.awt.Rectangle;
+import java.awt.geom.Area;
 import squares.api.CharacterState;
+import static squares.api.RenderingConstants.CHARACTER_FASTSPEED;
+import static squares.api.RenderingConstants.CHARACTER_SPEED;
+import static squares.api.RenderingConstants.CHARACTER_WIDTH;
 
 public class Player {
     public static final int itime = 10;
@@ -74,6 +79,30 @@ public class Player {
                     yPosition--;
                 break;
         }
+    }
+    
+    public boolean moveAnim(Area clipholder) {
+        // Checks to see if the character is still moving
+        int currSpeed = charState == CharacterState.MOVING ? CHARACTER_SPEED : charState == CharacterState.FASTMOVING ? CHARACTER_FASTSPEED : 0;
+        if (currSpeed == 0)
+            return false;
+        
+        if (xCoordinates != xTarg) {
+            if (Math.abs(xCoordinates - xTarg) <= currSpeed) {
+                xCoordinates = xTarg;
+            } else 
+                xCoordinates += xCoordinates > xTarg ? -currSpeed : currSpeed;
+        }
+        if (yCoordinates != yTarg) {
+            if (Math.abs(yCoordinates - yTarg) <= currSpeed) {
+                yCoordinates = yTarg;
+            } else 
+                yCoordinates += yCoordinates > yTarg ? -currSpeed : currSpeed;
+        }
+        clipholder.add(new Area(new Rectangle(xCoordinates - currSpeed, yCoordinates - currSpeed, 
+                CHARACTER_WIDTH + 2 * currSpeed,  CHARACTER_WIDTH + 2 * currSpeed)));
+        
+        return xCoordinates == xTarg && yCoordinates == yTarg; // for landchecker
     }
     
     public Level level;

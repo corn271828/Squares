@@ -879,47 +879,8 @@ public class MainRunningThing extends javax.swing.JFrame {
                 repaint();
         }
 
-        // Checks to see if the character is still moving
-        if (player.charState == CharacterState.MOVING) {
-            if (player.xCoordinates != player.xTarg) {
-                if (Math.abs(player.xCoordinates - player.xTarg) <= CHARACTER_SPEED) {
-                    player.xCoordinates = player.xTarg;
-                } else 
-                    player.xCoordinates += player.xCoordinates > player.xTarg ? -CHARACTER_SPEED : CHARACTER_SPEED;
-            }
-            if (player.yCoordinates != player.yTarg) {
-                if (Math.abs(player.yCoordinates - player.yTarg) <= CHARACTER_SPEED) {
-                    player.yCoordinates = player.yTarg;
-                } else 
-                    player.yCoordinates += player.yCoordinates > player.yTarg ? -CHARACTER_SPEED : CHARACTER_SPEED;
-            }
-            if (player.xCoordinates == player.xTarg && player.yCoordinates == player.yTarg) {
-                landChecker();
-            }
-            clipholder.add(new Area(new Rectangle(player.xCoordinates - CHARACTER_SPEED, player.yCoordinates - CHARACTER_SPEED, 
-                    CHARACTER_WIDTH + 2 * CHARACTER_SPEED,  CHARACTER_WIDTH + 2 * CHARACTER_SPEED)));
-        }
-
-        // Checks to see if the character is fastmoving
-        if (player.charState == CharacterState.FASTMOVING) {
-            if (player.xCoordinates != player.xTarg) {
-                if (Math.abs(player.xCoordinates - player.xTarg) <= CHARACTER_FASTSPEED) {
-                    player.xCoordinates = player.xTarg;
-                } else 
-                    player.xCoordinates += player.xCoordinates > player.xTarg ? -CHARACTER_FASTSPEED : CHARACTER_FASTSPEED;
-            }
-            if (player.yCoordinates != player.yTarg) {
-                if (Math.abs(player.yCoordinates - player.yTarg) <= CHARACTER_FASTSPEED) {
-                    player.yCoordinates = player.yTarg;
-                } else 
-                    player.yCoordinates += player.yCoordinates > player.yTarg ? -CHARACTER_FASTSPEED : CHARACTER_FASTSPEED;
-            }
-            if (player.xCoordinates == player.xTarg && player.yCoordinates == player.yTarg) {
-                landChecker();
-            }
-            clipholder.add(new Area(new Rectangle(player.xCoordinates - CHARACTER_FASTSPEED, player.yCoordinates - CHARACTER_FASTSPEED, 
-                    CHARACTER_WIDTH + 2 * CHARACTER_FASTSPEED,  CHARACTER_WIDTH + 2 * CHARACTER_FASTSPEED)));
-        }
+        if (player.moveAnim(clipholder))
+            landChecker();
 
         if (player.xPosition == player.level.endPosCol && player.yPosition == player.level.endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (player.isPracticeMode) {
