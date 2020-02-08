@@ -47,4 +47,15 @@ public class AudioManager {
         }
         return this;
     }
+    public AudioManager restartPlaying(String name, long mspt) {
+        if(current != null) {
+            current.stop();
+        }
+        current = clips.getOrDefault(name, null);
+        if(current != null) {
+            current.setMicrosecondPosition(mspt);
+            current.start();
+        }
+        return this;
+    }
 }
