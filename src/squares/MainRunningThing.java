@@ -20,7 +20,6 @@ import javax.swing.ImageIcon;
 import squares.api.CharacterState;
 import squares.api.ResourceLocator;
 import squares.api.AudioManager;
-import squares.LevelLoader;
 import squares.block.BlasterBlock;
 import squares.block.Block;
 import squares.block.CannonBlock;
@@ -92,10 +91,6 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     // All the levels. All of them.
     public LevelLoader levelLoader = new LevelLoader(new ResourceLocator("data", "leveldata.txt"));
-
-    // Deaths
-    public int[] deathCount = new int[levelLoader.getNumLevels()];
-    public int totalDeathCount = 0;
 
     /**
      * Creates new form MainRunningThing
@@ -582,8 +577,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             isSwitching = true;
             opacity = 10;
             transitioning = new Color(0, 0, 0);
-            deathCount[levelLoader.getLevelIndex()]++;
-            totalDeathCount++;
+            player.level.addDeath();
+            player.deaths++;
             repaint();
         }
     }
@@ -1013,8 +1008,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         g.drawString(player.level.levelLabel, this.getWidth() / 2 - 20, 70);
         g.drawString(String.format("TimeStamp: %d", timestamp), this.getWidth() - 300, 80);
         g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
-        g.drawString(String.format("Death Count (Total): %d", totalDeathCount), 300, 50);
-        g.drawString(String.format("Death Count (Level): %d", deathCount[levelLoader.getLevelIndex()]), 300, 70);
+        g.drawString(String.format("Death Count (Total): %d", player.deaths), 300, 50);
+        g.drawString(String.format("Death Count (Level): %d", player.level.getDeaths()), 300, 70);
         g.drawString(String.format("Health: %d", player.hp), 300, 90);
         g.drawString(String.format("Level Code: %s", player.level.getCode()), 300, 110);
         

@@ -21,6 +21,7 @@ public class Player {
     public int yCoordinates;
 
     public int iftime = -11;
+    public int deaths = 0;
     public int hp = 1;
     public boolean isPracticeMode = false;
     
