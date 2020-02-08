@@ -197,13 +197,6 @@ public class SJBossFight extends Level.BossLevel {
     }
 
     @Override
-    public Area getBackgroundClip(int timestamp, Component c, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
-        if (timestamp > 160 && timestamp <= 170 || timestamp > 1460 && timestamp <= 1470)
-            return new Area(new Rectangle(0, 0, c.getWidth(), c.getHeight()));
-        return new Area();
-    }
-
-    @Override
     public Color getBackgroundColor(int timestamp) {
         if (timestamp > 160 && timestamp <= 170) {
             int holdisteij = 255 - (timestamp - 160) * 24;
@@ -226,7 +219,6 @@ public class SJBossFight extends Level.BossLevel {
 
     }
 
-    @Override
     public Area getForegroundClip(int timestamp, Component c, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
         Area ret = new Area();
         if (timestamp >= 165 && timestamp < 177)

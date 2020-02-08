@@ -41,7 +41,9 @@ public class CannonBlock extends Block {
         public double angle; // angle in radians; think reflected unit circle
 
         public Cannonball(int bs, double ang) {
-            super(null, bs, cannonballPic);
+            direction = null;
+            blastSpeed = bs;
+            icon = cannonballPic;
             angle = ang;
         }
 
