@@ -8,12 +8,13 @@ package squares;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import squares.api.CharacterState;
-import static squares.api.RenderingConstants.CHARACTER_WIDTH;
-import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
-import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
 import squares.block.BlasterBlock;
 import squares.block.Block;
 import squares.block.CannonBlock;
+
+import static squares.api.RenderingConstants.CHARACTER_WIDTH;
+import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
+import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
 
 /**
  *
