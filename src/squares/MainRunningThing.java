@@ -5,11 +5,6 @@
  */
 package squares;
 
-import squares.block.LauncherBlock;
-import squares.block.Block;
-import squares.block.HighExplosion;
-import squares.block.BlasterBlock;
-import squares.block.CannonBlock;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -24,6 +19,13 @@ import javax.swing.ImageIcon;
 
 import squares.api.CharacterState;
 import squares.api.ResourceLocator;
+import squares.api.AudioManager;
+import squares.LevelLoader;
+import squares.block.BlasterBlock;
+import squares.block.Block;
+import squares.block.CannonBlock;
+import squares.block.HighExplosion;
+import squares.block.LauncherBlock;
 
 import static squares.api.RenderingConstants.*;
 

@@ -1,4 +1,4 @@
-package squares.api;
+package squares.api.block;
 
 public enum Direction {
     UP("Up"),

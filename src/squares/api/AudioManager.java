@@ -1,4 +1,4 @@
-package squares;
+package squares.api;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class AudioManager {
         catch(javax.sound.sampled.UnsupportedAudioFileException
                 | LineUnavailableException
                 | java.io.IOException ex) {
-            java.util.logging.Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(getClass().getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         return this;
     }

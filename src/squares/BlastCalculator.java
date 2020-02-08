@@ -8,6 +8,7 @@ package squares;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import squares.api.CharacterState;
+import squares.api.block.Direction;
 import squares.block.BlasterBlock;
 import squares.block.Block;
 import squares.block.CannonBlock;

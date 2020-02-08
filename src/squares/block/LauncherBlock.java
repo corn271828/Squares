@@ -9,8 +9,8 @@ import javax.swing.ImageIcon;
 
 import squares.Player;
 import squares.api.CharacterState;
-import squares.api.Direction;
-import squares.api.DirectedBlock;
+import squares.api.block.Direction;
+import squares.api.block.DirectedBlock;
 
 import static squares.api.RenderingConstants.BORDER_WIDTH;
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
