@@ -50,10 +50,19 @@ public class LevelLoader {
     public Level getPrev() {
         return levels[--index];
     }
+    public Level getCurrent() {
+        return levels[index];
+    }
     public int getLevelIndex() {
         return index;
     }
     public int getNumLevels() {
         return levels.length;
+    }
+    public Level getLevel(int index) {
+        return levels[index];
+    }
+    public void setLevelIndex(int ind) {
+        index = ind;
     }
 }

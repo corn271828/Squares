@@ -44,9 +44,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     public AudioManager audio = new AudioManager();
 
     // Level indices
-    public int currentLevelIndex = 0; // INDEX of current level (add one to get level number)
-    public int maxLevelIndex = currentLevelIndex;
-    public int holdLevelIndex = currentLevelIndex;
+    public int maxLevelIndex = 0;
+    public int holdLevelIndex = maxLevelIndex;
 
 
     public ArrayList<BlasterBlock.Blast> blasts = new ArrayList<>();
@@ -90,10 +89,10 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 
     // All the levels. All of them.
-    public Level[] levels = new LevelLoader(new ResourceLocator("data", "leveldata.txt")).getLevels();
+    public LevelLoader levelLoader = new LevelLoader(new ResourceLocator("data", "leveldata.txt"));
 
     // Deaths
-    public int[] deathCount = new int[levels.length];
+    public int[] deathCount = new int[levelLoader.getNumLevels()];
     public int totalDeathCount = 0;
 
     /**
@@ -110,7 +109,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         middlex = jPanel1.getWidth() / 2;
         middley = jPanel1.getHeight() / 2;
         player = new Player();
-        player.level = levels[0];
+        player.level = levelLoader.getCurrent();
 
         if (musicOn) {
             audio.addClip("normal", new ResourceLocator("bgm", "Canon_in_D_Swing.wav"))
@@ -375,8 +374,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             return;
         }
         int hold = -1;
-        for (int i = 0; i < levels.length; i++) {
-            if (code.equals(levels[i].getCode())) {
+        for (int i = 0; i < levelLoader.getNumLevels(); i++) {
+            if (code.equals(levelLoader.getLevel(i).getCode())) {
                 hold = i;
                 break;
             }
@@ -421,11 +420,11 @@ public class MainRunningThing extends javax.swing.JFrame {
     private void jSpinner_LevelStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner_LevelStateChanged
         // TODO add your handling code here:
         int requested = Integer.parseInt(jSpinner_Level.getValue().toString()) - 1;
-        if (requested <= maxLevelIndex && currentLevelIndex != requested) {
+        if (requested <= maxLevelIndex && levelLoader.getLevelIndex() != requested) {
             holdLevelIndex = requested;
             levelFinished();
         } else {
-            jSpinner_Level.setValue(currentLevelIndex + 1);
+            jSpinner_Level.setValue(levelLoader.getLevelIndex() + 1);
         }
     }//GEN-LAST:event_jSpinner_LevelStateChanged
 
@@ -553,7 +552,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     }
 
     public void levelFinished() {
-        if (currentLevelIndex >= levels.length - 1) {
+        if (levelLoader.getLevelIndex() >= levelLoader.getNumLevels() - 1) {
             return;
         }
         player.charState = CharacterState.WINE;
@@ -581,7 +580,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             isSwitching = true;
             opacity = 10;
             transitioning = new Color(0, 0, 0);
-            deathCount[currentLevelIndex]++;
+            deathCount[levelLoader.getLevelIndex()]++;
             totalDeathCount++;
             repaint();
         }
@@ -640,15 +639,15 @@ public class MainRunningThing extends javax.swing.JFrame {
                 isSwitching = false;
                 switch (player.charState) {
                     case WINE:
-                        if (holdLevelIndex != currentLevelIndex) {
-                            currentLevelIndex = holdLevelIndex;
-                            player.level = levels[currentLevelIndex]; // Fuck.
+                        if (holdLevelIndex != levelLoader.getLevelIndex()) {
+                            levelLoader.setLevelIndex(holdLevelIndex);
+                            player.level = levelLoader.getCurrent(); // Fuck. but why?
                         } else { 
-                            holdLevelIndex = ++currentLevelIndex;
-                            player.level = levels[currentLevelIndex]; // Fuck.
+                            player.level = levelLoader.getNext(); // Fuck.
+                            holdLevelIndex = levelLoader.getLevelIndex();
                         }
-                        if (currentLevelIndex > maxLevelIndex) {
-                            maxLevelIndex = currentLevelIndex;
+                        if (levelLoader.getLevelIndex() > maxLevelIndex) {
+                            maxLevelIndex = levelLoader.getLevelIndex();
                         }
                         loadLevel();
                         break;
@@ -1013,7 +1012,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         g.drawString(String.format("TimeStamp: %d", timestamp), this.getWidth() - 300, 80);
         g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
         g.drawString(String.format("Death Count (Total): %d", totalDeathCount), 300, 50);
-        g.drawString(String.format("Death Count (Level): %d", deathCount[currentLevelIndex]), 300, 70);
+        g.drawString(String.format("Death Count (Level): %d", deathCount[levelLoader.getLevelIndex()]), 300, 70);
         g.drawString(String.format("Health: %d", player.hp), 300, 90);
         g.drawString(String.format("Level Code: %s", player.level.getCode()), 300, 110);
         
