@@ -33,5 +33,7 @@ public abstract class Block {
     public Icon getIcon() {
         return icon;
     }
+    
+    public abstract void onLand(squares.Player player);
 }
 

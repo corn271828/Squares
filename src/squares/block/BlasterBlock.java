@@ -11,6 +11,7 @@ import java.awt.geom.Area;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import squares.Player;
 
 import squares.api.Direction;
 import squares.api.DirectedBlock;
@@ -55,6 +56,11 @@ public class BlasterBlock extends Block implements DirectedBlock {
 
     public void setDelay(int d) {
         delay = d;
+    }
+
+    @Override
+    public void onLand(Player player) {
+        System.out.println("Bruh, dunno how you landed on a BlasterBlock, but here you are.");
     }
 
     public static class Blast {

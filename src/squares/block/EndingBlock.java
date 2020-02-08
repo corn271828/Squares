@@ -6,6 +6,8 @@
 package squares.block;
 
 import javax.swing.ImageIcon;
+import squares.Player;
+import squares.api.CharacterState;
 
 /**
  *
@@ -17,6 +19,11 @@ public class EndingBlock extends Block {
 
     public EndingBlock() {
         super(endingBlockIcon, "End Block", true);
+    }
+
+    @Override
+    public void onLand(Player player) {
+        player.charState = CharacterState.NORMAL;
     }
 
 }

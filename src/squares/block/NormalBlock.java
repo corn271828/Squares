@@ -6,6 +6,8 @@
 package squares.block;
 
 import javax.swing.ImageIcon;
+import squares.Player;
+import squares.api.CharacterState;
 
 /**
  *
@@ -17,6 +19,11 @@ public class NormalBlock extends Block {
 
     public NormalBlock() {
         super(normalBlockIcon, "Normal Block", true);
+    }
+
+    @Override
+    public void onLand(Player player) {
+        player.charState = CharacterState.NORMAL;
     }
 
 }

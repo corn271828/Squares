@@ -8,6 +8,7 @@ package squares.block;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import javax.swing.ImageIcon;
+import squares.Player;
 
 /**
  *
@@ -28,6 +29,11 @@ public class CannonBlock extends Block {
 
     public void setDelay(int d) {
         delay = d;
+    }
+
+    @Override
+    public void onLand(Player player) {
+        System.out.println("How did you even land on a CannonBlock?");
     }
 
     public static class Cannonball extends BlasterBlock.Blast {

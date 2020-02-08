@@ -591,42 +591,10 @@ public class MainRunningThing extends javax.swing.JFrame {
     public void landChecker() {
          if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.blocks[0].length || player.yPosition >= player.level.blocks.length) {
             death();
-        } else if (player.level.blocks[player.yPosition][player.xPosition] instanceof LauncherBlock) {
-            switch(((LauncherBlock) player.level.blocks[player.yPosition][player.xPosition]).getDirection()) {
-                case UP :
-                    while(player.yPosition > 0 && (player.level.blocks[player.yPosition - 1][player.xPosition] != null && !player.level.blocks[player.yPosition - 1][player.xPosition].stepable
-                            || player.level.blocks[player.yPosition - 1][player.xPosition] == null))
-                        player.yPosition--;
-                    player.yPosition--;
-                    player.charState = CharacterState.FASTMOVING;
-                    break;
-                case RIGHT :
-                    while(player.xPosition < player.level.blocks[0].length && (player.level.blocks[player.yPosition][player.xPosition + 1] != null &&
-                            !player.level.blocks[player.yPosition][player.xPosition + 1].stepable || player.level.blocks[player.yPosition][player.xPosition + 1] == null )) {
-                         player.xPosition++;
-                    }
-                    player.xPosition++;
-                    player.charState = CharacterState.FASTMOVING;
-                    break;
-                case DOWN :
-                    while(player.yPosition < player.level.blocks.length && (player.level.blocks[player.yPosition + 1][player.xPosition] != null && 
-                            !player.level.blocks[player.yPosition + 1][player.xPosition].stepable  || player.level.blocks[player.yPosition + 1][player.xPosition] == null))
-                        player.yPosition++;
-                    player.yPosition++;
-                    player.charState = CharacterState.FASTMOVING;
-                    break;
-                case LEFT :
-                    while(player.xPosition > 0 && (player.level.blocks[player.yPosition][player.xPosition - 1] != null 
-                            && !player.level.blocks[player.yPosition][player.xPosition - 1].stepable  || player.level.blocks[player.yPosition][player.xPosition - 1] == null ))
-                        player.xPosition--;
-                    player.xPosition--;
-                    player.charState = CharacterState.FASTMOVING;
-                    break;
-            }
+        } else {
+            player.level.blocks[player.yPosition][player.xPosition].onLand(player);
             player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        } else {
-            player.charState = CharacterState.NORMAL;
             shouldRepaint = true;
         }
     }
