@@ -29,7 +29,6 @@ public class TasGenerator {
 
     public boolean doTasStuff(int startx, int starty, int timestamp, Player player) {
         if (script.containsKey(timestamp)) {
-            Block[][] block = player.level.blocks;
             player.callMove(script.get(timestamp));
             player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;

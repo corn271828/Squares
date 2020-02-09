@@ -883,16 +883,13 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         if (tasActive && player.level instanceof SJBossFight) {
-            if(sjbossTas.doTasStuff(startx, starty, timestamp, player))
-                repaint();
+            sjbossTas.doTasStuff(startx, starty, timestamp, player);
         }
 
         if (ouchArea.intersects(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
             ouch();
         }
         
-        if (player.moveAnim(clipholder))
-            landChecker();
 
         if (player.xPosition == player.level.endPosCol && player.yPosition == player.level.endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (player.isPracticeMode) {
@@ -974,6 +971,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             currG.setColor(new Color(0, 0, 255, timestamp % 2 == 0 ? 50 : 100));
             currG.fillRect(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);
         }
+        
+        if (player.moveAnim(clipholder))
+            landChecker();
 
         // Dev tool to see ouchArea and the clip
         if (SEE_OVERLAP) {
