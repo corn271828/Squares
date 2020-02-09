@@ -30,6 +30,8 @@ import squares.block.HighExplosion;
 import squares.block.LauncherBlock;
 
 import static squares.api.RenderingConstants.*;
+import squares.api.block.FiringBlock;
+import squares.api.block.TargetingBlock;
 
 /**
  *
@@ -48,9 +50,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     public AudioManager audio = new AudioManager();
 
     // Level indices
-    public int maxLevelIndex = 0;
+    public int maxLevelIndex = 26;
     public int holdLevelIndex = maxLevelIndex;
-
 
     public List<Projectile> blasts = new ArrayList<>();
     public List<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
@@ -668,9 +669,52 @@ public class MainRunningThing extends javax.swing.JFrame {
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        BlastCalculator bc = new BlastCalculator(this); // opens new thread for blasts
-        bc.start();
+        for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) {
+            for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) {
+                Block currBlock = player.level.blocks[rowNumber][columnNumber];
+                if (currBlock == null) {
+                    continue;
+                }
 
+                //Generates blasts at correct time
+                if (!(player.charState == CharacterState.DEAD) && !(player.charState == CharacterState.RESTARTING) && !(player.charState == CharacterState.WINE)) {
+                    if (currBlock instanceof TargetingBlock) {
+                        ((TargetingBlock) currBlock).setTarget(player.xCoordinates, player.yCoordinates); // for now.
+                    }
+                    if (currBlock instanceof FiringBlock) {
+                        FiringBlock fb = (BlasterBlock) currBlock;
+
+                        if ((timestamp - fb.getPhase()) % fb.getPeriod() == 0) {
+                            blasts.add(fb.createAtCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS));
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+        if (player.level instanceof Level.BossLevel) {
+            blasts.addAll(((Level.BossLevel) player.level).generateBlasts(timestamp, player.xCoordinates, 
+                    player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+        }
+
+        // Calculates where the blasts would be
+        int charYUpper = player.yCoordinates;
+        int charXLeft = player.xCoordinates;
+        int charYLower = player.yCoordinates + CHARACTER_WIDTH;
+        int charXRight = player.xCoordinates + CHARACTER_WIDTH;
+        for (int i = 0; i < blasts.size(); i++) {
+            Projectile bla = blasts.get(i);
+            bla.moveTick();
+            Area blaouch = bla.getCollision();
+            Rectangle bound = blaouch.getBounds();
+            if (bound.getX() > charXRight || bound.getX() + bound.width < charXLeft || bound.getY() > charYLower || bound.getY() + bound.height < charYUpper) {
+            } else {
+                ouchArea.add(blaouch);
+            }
+        }
+        
         /// Levelspecific testing
         if (player.level.levelLabel.equals("0")) {
             if (timestamp % 30 == 10) {
@@ -826,12 +870,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             timeend = Instant.now();
             System.out.println(Duration.between(timestart, timeend).toMillis());
         }
-
-
-        int charYUpper = player.yCoordinates;
-        int charXLeft = player.xCoordinates;
-        int charYLower = player.yCoordinates + CHARACTER_WIDTH;
-        int charXRight = player.xCoordinates + CHARACTER_WIDTH;
+        
         for (int i = 0; i < lineExplosions.size(); i++) {
             Level.BossLevel.LineExploder currentLineExplosion = lineExplosions.get(i);
             Area ouchyline = currentLineExplosion.xplosionOuchArea(timestamp);
@@ -874,12 +913,8 @@ public class MainRunningThing extends javax.swing.JFrame {
                 levelFinished();
             }
         }
+        
 
-        try {
-            bc.join();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
 
         if (opacity < 15 || player.charState == CharacterState.DEAD || (player.charState == CharacterState.WINE || player.charState == CharacterState.RESTARTING) && isSwitching)
             timestamp += 1;
