@@ -844,7 +844,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
 
             if (timestamp % 20 == 10) {
-                double ang = getAngle(player.xCoordinates - middlex, player.yCoordinates - middley);
+                double ang = Math.atan2(player.yCoordinates - middley, player.xCoordinates - middlex);
                 blasts.add(new SJBossFight.ArcingBone(ang + Math.PI / 2, -20 * Math.cos(ang), -20 * Math.sin(ang),  5 * Math.cos(ang), 5 * Math.sin(ang)));
                 blasts.get(blasts.size() - 1).moveTo(middlex, middley);
             }
@@ -1072,10 +1072,6 @@ public class MainRunningThing extends javax.swing.JFrame {
             repaint();
         }
 
-    }
-
-    public double getAngle(int xdif, int ydif) {
-        return Math.PI / 2 - Math.atan2(xdif, ydif);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
