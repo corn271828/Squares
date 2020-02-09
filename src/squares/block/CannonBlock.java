@@ -72,7 +72,6 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
     public static class Cannonball extends Projectile {
         protected static final ImageIcon cannonballPic = new ImageIcon(new ImageIcon("Pics/Cannonball.png", "Cannonball pic").getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
         public double angle; // angle in radians; think reflected unit circle
-        public int speed;
 
         public Cannonball(int x, int y, int s, double ang) {
             super(x, y, s, cannonballPic);
@@ -81,20 +80,19 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
 
         @Override
         public void moveTick() {
-            xpos += speed * Math.cos(angle);
-            ypos += speed * Math.sin(angle);
+            moveOffset((int) (getSpeed() * Math.cos(angle)), (int) (getSpeed() * Math.sin(angle)));
         }
 
         @Override
         public Area getCollision() {
-            return new Area(new Rectangle(xpos, ypos, 20, 20));
+            return new Area(new Rectangle(getX(), getY(), 20, 20));
         }
 
         @Override
         public Area getClip() {
-            Area a = new Area(new Rectangle(xpos, ypos, 20, 20));
-            a.add(new Area(new Rectangle((int) (xpos - speed * Math.cos(angle)), 
-                    (int) (ypos - speed * Math.sin(angle)), 20, 20)));
+            Area a = new Area(new Rectangle(getX(), getY(), 20, 20));
+            a.add(new Area(new Rectangle((int) (getX() - getSpeed() * Math.cos(angle)), 
+                    (int) (getY() - getSpeed() * Math.sin(angle)), 20, 20)));
             return a;
         }
 

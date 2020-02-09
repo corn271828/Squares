@@ -378,14 +378,13 @@ public class SJBossFight extends Level.BossLevel {
 
         @Override
         public void moveTick() {
-            xpos += Math.cos(angle) * speed;
-            ypos += Math.sin(angle) * speed;
+            moveOffset((int) (getSpeed() * Math.cos(angle)), (int) (getSpeed() * Math.sin(angle)));
             updateRegister();
         }
 
         public void updateRegister() {
-            xregister = (int) (xpos * Math.cos(angle) + ypos * Math.sin(angle));
-            yregister = (int) (-xpos * Math.sin(angle) + ypos * Math.cos(angle));
+            xregister = (int) (getX() * Math.cos(angle) + getY() * Math.sin(angle));
+            yregister = (int) (-getX() * Math.sin(angle) + getY() * Math.cos(angle));
         }
 
         @Override
@@ -419,7 +418,7 @@ public class SJBossFight extends Level.BossLevel {
 
         @Override
         public FlyingBone clone() {
-            FlyingBone fb = new FlyingBone(angle, speed, image);
+            FlyingBone fb = new FlyingBone(angle, getSpeed(), image);
             fb.setDimensions(picwidth, picheight);
             return fb;
         }
@@ -452,8 +451,7 @@ public class SJBossFight extends Level.BossLevel {
         public void moveTick() {
             xvelocity += xaccel;
             yvelocity += yaccel;
-            xpos += xvelocity;
-            ypos += yvelocity;
+            moveOffset((int) xvelocity, (int)yvelocity);
             updateRegister();
         }
 
@@ -489,8 +487,7 @@ public class SJBossFight extends Level.BossLevel {
             angle += angularVel;
             xvelocity += xaccel;
             yvelocity += yaccel;
-            xpos += xvelocity;
-            ypos += yvelocity;
+            moveOffset((int) xvelocity, (int) yvelocity);
             updateRegister();
             tx.rotate(angularVel);
         }

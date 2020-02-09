@@ -101,7 +101,6 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
         private static Icon[] blastIcons = new Icon[Direction.values().length];
 
         public Direction direction;
-        public int speed;
 
         public Blast(int x, int y, Direction d, int bs) {
             this(x, y, d, bs, getIconByDirection(d));
@@ -121,21 +120,20 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
 
         @Override
         public void moveTick() {
-            xpos += direction.x * speed;
-            ypos += direction.y * speed;
+            moveOffset(direction.x * getSpeed(),  direction.y * getSpeed());
         }
 
         @Override
         public Area getCollision() {
             switch(direction) {
                 case UP:
-                    return new Area(new Rectangle(xpos, ypos + 8, 17, 30));
+                    return new Area(new Rectangle(getX(), getY() + 8, 17, 30));
                 case LEFT:
-                    return new Area(new Rectangle(xpos + 8, ypos, 30, 17));
+                    return new Area(new Rectangle(getX() + 8, getY(), 30, 17));
                 case DOWN:
-                    return new Area(new Rectangle(xpos, ypos, 17, 30));
+                    return new Area(new Rectangle(getX(), getY(), 17, 30));
                 case RIGHT:
-                    return new Area(new Rectangle(xpos, ypos, 30, 17));
+                    return new Area(new Rectangle(getX(), getY(), 30, 17));
             }
             throw new IllegalStateException();
         }
@@ -144,20 +142,20 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
         public Area getClip() {
             switch (direction) {
             case LEFT:
-                return new Area(new Rectangle(xpos - 1, ypos - 1, 43 + speed, 19));
+                return new Area(new Rectangle(getX() - 1, getY() - 1, 43 + getSpeed(), 19));
             case RIGHT:
-                return new Area(new Rectangle(xpos - 1 - speed, ypos - 1, 43 + speed, 19));
+                return new Area(new Rectangle(getX() - 1 - getSpeed(), getY() - 1, 43 + getSpeed(), 19));
             case DOWN:
-                return new Area(new Rectangle(xpos - 1, ypos - 1 - speed, 19, 43 + speed));
+                return new Area(new Rectangle(getX() - 1, getY() - 1 - getSpeed(), 19, 43 + getSpeed()));
             case UP:
-                return new Area(new Rectangle(xpos - 1, ypos - 1, 19, 43 + speed));
+                return new Area(new Rectangle(getX() - 1, getY() - 1, 19, 43 + getSpeed()));
             }
             throw new IllegalStateException();
         }
 
         @Override
         public Blast clone() {
-            return new Blast(xpos, ypos, direction, speed, icon);
+            return new Blast(getX(), getY(), direction, getSpeed(), icon);
         }
 
     }

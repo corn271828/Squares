@@ -8,7 +8,7 @@ import javax.swing.Icon;
 import squares.api.Direction;
 
 public abstract class Projectile {
-    protected int xpos, ypos, speed;
+    private int xpos, ypos, speed;
     protected Icon icon;
 
     public Projectile(int x, int y, int s, Icon i) {
@@ -32,5 +32,9 @@ public abstract class Projectile {
 
     public void moveTo(int x, int y) {
         xpos = x; ypos = y;
+    }
+    
+    public void moveOffset(int xdelta, int ydelta) {
+        xpos += xdelta; ypos += ydelta;
     }
 }
