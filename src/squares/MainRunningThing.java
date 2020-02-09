@@ -684,7 +684,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                         ((TargetingBlock) currBlock).setTarget(player.xCoordinates, player.yCoordinates); // for now.
                     }
                     if (currBlock instanceof FiringBlock) {
-                        FiringBlock fb = (BlasterBlock) currBlock;
+                        FiringBlock fb = (FiringBlock) currBlock;
 
                         if ((timestamp - fb.getPhase()) % fb.getPeriod() == 0) {
                             blasts.add(fb.createAtCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS));
