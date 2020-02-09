@@ -95,7 +95,10 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 
     // All the levels. All of them.
-    public LevelLoader levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"));
+    public LevelLoader levelLoader = new LevelLoader.Builder()
+        .addLevelType("sjbossfight", SJBossFight::new)
+        .addLevelType("level", Level::new)
+        .build(new ResourceLoader("data", "leveldata.txt"));
 
     /**
      * Creates new form MainRunningThing

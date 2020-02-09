@@ -11,13 +11,19 @@ import squares.api.ResourceLoader;
 public class LevelLoader {
     private int index = 0;
     private Level[] levels = new Level[0];
-    public static final Map<String, BiFunction<String[][], String[], Level>> levelProvs = new java.util.HashMap<>();
-    static {
-        LevelLoader.levelProvs.put("sjbossfight", SJBossFight::new);
-        LevelLoader.levelProvs.put("level", Level::new);
+
+    public static class Builder {
+        private Map<String, BiFunction<String[][], String[], Level>> levelProvs = new java.util.HashMap<>();
+        public LevelLoader build(ResourceLoader index) {
+            return new LevelLoader(index, levelProvs);
+        }
+        public Builder addLevelType(String name, BiFunction<String[][], String[], Level> bf) {
+            levelProvs.put(name, bf);
+            return this;
+        }
     }
 
-    public LevelLoader(ResourceLoader index) {
+    private LevelLoader(ResourceLoader index, Map<String, BiFunction<String[][], String[], Level>> levelProvs) {
         List<Level> levels = new ArrayList<>();
         try(BufferedReader br = index.asBufferedReader()) {
             while(br.ready()) {
