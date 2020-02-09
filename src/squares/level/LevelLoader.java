@@ -1,4 +1,4 @@
-package squares;
+package squares.level;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package squares;
+package squares.level;
 
 import squares.block.LauncherBlock;
 import squares.block.Block;
@@ -36,16 +36,16 @@ import squares.api.Direction;
 
 // Holds the layout of a single level
 public class Level {
-    protected String levelLabel; // Name of Level
+    public final String levelLabel; // Name of Level
     protected String[][] design; // level layout
     private String levelCode;
 
     public final Block[][] blocks;
 
-    protected int startPosRow = -78954; // Starting position in indices
-    protected int startPosCol = -84739;
-    protected int endPosRow = -48395; // Ending position in indices
-    protected int endPosCol = -23481;
+    public final int startPosRow; // Starting position in indices
+    public final int startPosCol;
+    public final int endPosRow; // Ending position in indices
+    public final int endPosCol;
 
     // Static variables for reference
     public static final char START_CHAR = 'X';
@@ -63,21 +63,26 @@ public class Level {
 
     public Level(String[][] in, String label, String code) {
         design = in;
+        int spr = -1, spc = -1, epr = -1, epc = -1;
         for (int i = 0; i < in.length; i++)
             for (int j = 0; j < in[0].length; j++)
             {
                 if(in[i][j].length() > 0)
                     switch(in[i][j].charAt(0)) {
                         case START_CHAR:
-                            startPosRow = i;
-                            startPosCol = j;
+                            spr = i;
+                            spc = j;
                             break;
                         case END_CHAR:
-                            endPosRow = i;
-                            endPosCol = j;
+                            epr = i;
+                            epc = j;
                             break;
                     }
             }
+        startPosRow = spr;
+        startPosCol = spc;
+        endPosRow = epr;
+        endPosCol = epc;
         levelLabel = label;
         levelCode = code == null ? "\"\\\"" : eviscerator(code);
         blocks = new Block[in.length][in[0].length];

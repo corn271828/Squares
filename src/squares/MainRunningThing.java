@@ -29,6 +29,10 @@ import squares.block.Block;
 import squares.block.CannonBlock;
 import squares.block.HighExplosion;
 import squares.block.LauncherBlock;
+import squares.level.LevelLoader;
+import squares.level.Level;
+import squares.level.SJBossFight;
+import squares.level.LineExploderTester;
 
 import static squares.api.RenderingConstants.*;
 import squares.api.block.FiringBlock;
