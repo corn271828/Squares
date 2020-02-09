@@ -79,7 +79,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 104;
-    public static final boolean SEE_OVERLAP = false;
+    public static final boolean SEE_OVERLAP = true;
     public boolean musicOn = true;
 
     // Checkpoints
@@ -881,6 +881,10 @@ public class MainRunningThing extends javax.swing.JFrame {
                 repaint();
         }
 
+        if (ouchArea.intersects(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
+            ouch();
+        }
+        
         if (player.moveAnim(clipholder))
             landChecker();
 
@@ -910,14 +914,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
         
-
-
         if (opacity < 15 || player.charState == CharacterState.DEAD || (player.charState == CharacterState.WINE || player.charState == CharacterState.RESTARTING) && isSwitching)
             timestamp += 1;
 
-        if (ouchArea.intersects(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
-            ouch();
-        }
 
         // Setting clip
         if (player.level instanceof Level.BossLevel) {
@@ -973,10 +972,10 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         // Dev tool to see ouchArea and the clip
         if (SEE_OVERLAP) {
+            /*currG.setColor(Color.red);
+            ((Graphics2D) currG).draw(clipholder);*/
             currG.setColor(Color.black);
             ((Graphics2D) currG).draw(ouchArea);
-            currG.setColor(Color.red);
-            ((Graphics2D) currG).draw(clipholder);
         }
         
         // Draws all the blasts and explosions and stuff
