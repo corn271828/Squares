@@ -22,8 +22,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import squares.api.ResourceLocator;
+import squares.api.block.Projectile;
 import squares.block.HighExplosion;
-import squares.block.BlasterBlock;
 
 /**
  *
@@ -44,7 +44,7 @@ public class SJBossFight extends Level.BossLevel {
     public static final char LINE_EXPLODER_TESTER_CHAR = 'L';
     public static final char SERIOUS_EXPLODER_CHAR = 'S';
 
-    HashMap<Integer, ArrayList<BlasterBlock.Blast>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
+    HashMap<Integer, ArrayList<FlyingBone>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
                                                                                           // adjusted on generate(); formula: 0 is center of 1st block, every 2 equals one spacing
     HashMap<Integer, ArrayList<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
 
@@ -93,54 +93,54 @@ public class SJBossFight extends Level.BossLevel {
         for (String control : controls) {
             String[] splitted = control.trim().split(" ");
             int time = Integer.parseInt(splitted[0]);
-            BlasterBlock.Blast hold;
+            FlyingBone hold;
 
             switch(splitted[1].charAt(0)) {
                 case FLYING_BONE_CHAR:
                     hold = new FlyingBone(Double.parseDouble(splitted[4]), Integer.parseInt(splitted[5]));
-                    hold.setCoords(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
                     if (splitted.length > 6) {
-                        ((FlyingBone) hold).setDimensions(Integer.parseInt(splitted[6]), Integer.parseInt(splitted[7]));
+                        hold.setDimensions(Integer.parseInt(splitted[6]), Integer.parseInt(splitted[7]));
                     }
                     timeToBlasts.get(time).add(hold);
                     break;
                 case ARCING_BONE_CHAR:
                     hold = new ArcingBone(Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]));
-                    hold.setCoords(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
                     if (splitted.length > 9) {
-                        ((ArcingBone) hold).setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
+                        hold.setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
                     }
                     timeToBlasts.get(time).add(hold);
                     break;
                 case ROTATING_BONE_CHAR:
                     hold = new RotatingBone(Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]), Double.parseDouble(splitted[9]));
-                    hold.setCoords(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
                     if (splitted.length > 10) {
-                        ((RotatingBone) hold).setDimensions(Integer.parseInt(splitted[10]), Integer.parseInt(splitted[11]));
+                        hold.setDimensions(Integer.parseInt(splitted[10]), Integer.parseInt(splitted[11]));
                     }
                     timeToBlasts.get(time).add(hold);
                     break;
                 case TARGETING_BONE_CHAR:
                     hold = new ArcingBone(Double.parseDouble(splitted[4]) + 1000, Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]));
-                    hold.setCoords(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
                     if (splitted.length > 9) {
-                        ((ArcingBone) hold).setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
+                        hold.setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
                     }
                     timeToBlasts.get(time).add(hold);
                     break;
                 case ORANGE_BONE_CHAR:
                     hold = new ArcingBone(Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]), FlyingBone.orangeBony);
-                    hold.setCoords(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
                     if (splitted.length > 9) {
-                        ((ArcingBone) hold).setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
+                        hold.setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
                     }
                     timeToBlasts.get(time).add(hold);
                     break;
                 case BLUE_BONE_CHAR:
                     hold = new ArcingBone(Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]), FlyingBone.blueBony);
-                    hold.setCoords(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
                     if (splitted.length > 9) {
-                        ((ArcingBone) hold).setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
+                        hold.setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
                     }
                     timeToBlasts.get(time).add(hold);
                     break;
@@ -159,21 +159,22 @@ public class SJBossFight extends Level.BossLevel {
 
 
     @Override
-    public ArrayList<BlasterBlock.Blast> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
-        ArrayList<BlasterBlock.Blast> temp = timeToBlasts.get(timestamp);
-        ArrayList<BlasterBlock.Blast> hold = new ArrayList<>();
+    public ArrayList<? extends Projectile> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+        ArrayList<FlyingBone> temp = timeToBlasts.get(timestamp);
+        ArrayList<FlyingBone> hold = new ArrayList<>();
         if (temp == null)
             return hold;
-        for (BlasterBlock.Blast bla : temp) {
-            BlasterBlock.Blast kin = bla.clone();
-            kin.setCoords(startx + SPACING_BETWEEN_BLOCKS * bla.xcoord / 2 + STANDARD_ICON_WIDTH / 2, starty + SPACING_BETWEEN_BLOCKS * bla.ycoord / 2 + STANDARD_ICON_WIDTH / 2);
+        for (FlyingBone bla : temp) {
+            FlyingBone kin = bla.clone();
+            kin.moveTo(startx + SPACING_BETWEEN_BLOCKS * bla.getX() / 2 + STANDARD_ICON_WIDTH / 2, starty + SPACING_BETWEEN_BLOCKS * bla.getY() / 2 + STANDARD_ICON_WIDTH / 2);
             if (kin instanceof ArcingBone && ((ArcingBone) kin).angle > 900) {
-                ((ArcingBone) kin).angle = Math.atan2(xCoordinates - kin.xcoord, yCoordinates - kin.ycoord);
-                ((ArcingBone) kin).xvelocity = kin.blastSpeed * Math.sin(((ArcingBone) kin).angle);
-                ((ArcingBone) kin).yvelocity = kin.blastSpeed * Math.cos(((ArcingBone) kin).angle);
-                ((ArcingBone) kin).angle *= -1;
-                ((ArcingBone) kin).tx = new AffineTransform();
-                ((ArcingBone) kin).tx.rotate(((ArcingBone) kin).angle);
+                ArcingBone ab = (ArcingBone) kin;
+                ab.angle = Math.atan2(xCoordinates - kin.getX(), yCoordinates - kin.getY());
+                ab.xvelocity = kin.getSpeed() * Math.sin(ab.angle);
+                ab.yvelocity = kin.getSpeed() * Math.cos(ab.angle);
+                ab.angle *= -1;
+                ab.tx = new AffineTransform();
+                ab.tx.rotate(ab.angle);
             }
             hold.add(kin);
         }
@@ -314,13 +315,13 @@ public class SJBossFight extends Level.BossLevel {
     }
 
 
-    public static class FlyingBone extends BlasterBlock.Blast {
+    public static class FlyingBone extends Projectile {
         public static final Image bonypict = new ImageIcon("Pics/bonepic.png", "bonepic").getImage();
         public static final Image orangeBony = new ImageIcon("Pics/orangebone.png", "orangebone").getImage();
         public static final Image blueBony = new ImageIcon("Pics/bluebone.png", "bluebone").getImage();
         public int picwidth = 100;
         public int picheight = 30;
-        public ImageIcon bonepic;
+        public Image image;
         public double angle;
         int xregister;
         int yregister;
@@ -328,19 +329,15 @@ public class SJBossFight extends Level.BossLevel {
         Area oldArea;
 
         public FlyingBone(double d, int bs) {
-            bonepic = new ImageIcon(bonypict.getScaledInstance(picwidth, picheight, java.awt.Image.SCALE_SMOOTH));
-            icon = bonepic;
-            blastSpeed = bs;
-            angle = d;
-            tx = new AffineTransform();
-            tx.rotate(angle);
-            oldArea = new Area();
+            this(d, bs, bonypict);
         }
 
         public FlyingBone(double d, int bs, Image i) {
-            bonepic = new ImageIcon(i.getScaledInstance(picwidth, picheight, java.awt.Image.SCALE_SMOOTH));
-            icon = bonepic;
-            blastSpeed = bs;
+            this(0, 0, d, bs, i);
+        }
+        public FlyingBone(int x, int y, double d, int bs, Image i) {
+            super(x, y, bs, new ImageIcon(i));
+            image = i;
             angle = d;
             tx = new AffineTransform();
             tx.rotate(angle);
@@ -350,29 +347,29 @@ public class SJBossFight extends Level.BossLevel {
         public void setDimensions(int newWidth, int newHeight) {
             picwidth = newWidth;
             picheight = newHeight;
-            bonepic = new ImageIcon(bonepic.getImage().getScaledInstance(picwidth, picheight, java.awt.Image.SCALE_SMOOTH));
+            icon = new ImageIcon(image.getScaledInstance(picwidth, picheight, java.awt.Image.SCALE_SMOOTH));
         }
 
         @Override
-        public void move() {
-            xcoord += Math.cos(angle) * blastSpeed;
-            ycoord += Math.sin(angle) * blastSpeed;
+        public void moveTick() {
+            xpos += Math.cos(angle) * speed;
+            ypos += Math.sin(angle) * speed;
             updateRegister();
         }
 
         public void updateRegister() {
-            xregister = (int) (xcoord * Math.cos(angle) + ycoord * Math.sin(angle));
-            yregister = (int) (-xcoord * Math.sin(angle) + ycoord * Math.cos(angle));
+            xregister = (int) (xpos * Math.cos(angle) + ypos * Math.sin(angle));
+            yregister = (int) (-xpos * Math.sin(angle) + ypos * Math.cos(angle));
         }
 
         @Override
-        public void setCoords(int x, int y) {
-            super.setCoords(x,y);
+        public void moveTo(int x, int y) {
+            super.moveTo(x, y);
             updateRegister();
         }
 
         @Override
-        public Area getOuchArea() {
+        public Area getCollision() {
             return new Area(tx.createTransformedShape(new Rectangle(xregister - picwidth / 2, yregister - picheight / 2, picwidth, picheight)));
         }
 
@@ -390,13 +387,13 @@ public class SJBossFight extends Level.BossLevel {
         public void draw(Graphics g, JPanel jp) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.rotate(angle);
-            bonepic.paintIcon(jp, g2d, xregister - picwidth / 2, yregister - picheight / 2);
+            icon.paintIcon(jp, g2d, xregister - picwidth / 2, yregister - picheight / 2);
             g2d.rotate(-angle);
         }
 
         @Override
         public FlyingBone clone() {
-            FlyingBone fb = new FlyingBone(angle, blastSpeed, bonepic.getImage());
+            FlyingBone fb = new FlyingBone(angle, speed, image);
             fb.setDimensions(picwidth, picheight);
             return fb;
         }
@@ -426,11 +423,11 @@ public class SJBossFight extends Level.BossLevel {
         }
 
         @Override
-        public void move() {
+        public void moveTick() {
             xvelocity += xaccel;
             yvelocity += yaccel;
-            xcoord += xvelocity;
-            ycoord += yvelocity;
+            xpos += xvelocity;
+            ypos += yvelocity;
             updateRegister();
         }
 
@@ -446,7 +443,7 @@ public class SJBossFight extends Level.BossLevel {
 
         @Override
         public ArcingBone clone() {
-            ArcingBone ab = new ArcingBone(angle, xvelocity, yvelocity, xaccel, yaccel, bonepic.getImage());
+            ArcingBone ab = new ArcingBone(angle, xvelocity, yvelocity, xaccel, yaccel, image);
             ab.setDimensions(picwidth, picheight);
             return ab;
         }
@@ -462,12 +459,12 @@ public class SJBossFight extends Level.BossLevel {
         }
 
         @Override
-        public void move() {
+        public void moveTick() {
             angle += angularVel;
             xvelocity += xaccel;
             yvelocity += yaccel;
-            xcoord += xvelocity;
-            ycoord += yvelocity;
+            xpos += xvelocity;
+            ypos += yvelocity;
             updateRegister();
             tx.rotate(angularVel);
         }

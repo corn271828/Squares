@@ -71,21 +71,21 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
     }
 
     @Override
-    public Blast createAtCoords(int x, int y) {
-            Blast b = new Blast(direction, blastSpeed);
+    public Projectile createAtCoords(int x, int y) {
+            Projectile b = new Blast(-1, -1, direction, blastSpeed);
 
             switch (direction) {
                 case UP:
-                    b.setCoords(x + 32, y);
+                    b.moveTo(x + 32, y);
                     break;
                 case LEFT:
-                    b.setCoords(x, y + 32);
+                    b.moveTo(x, y + 32);
                     break;
                 case RIGHT:
-                    b.setCoords(x + 30, y + 32);
+                    b.moveTo(x + 30, y + 32);
                     break;
                 case DOWN:
-                    b.setCoords(x + 32, y + 30);
+                    b.moveTo(x + 32, y + 30);
                     break;
             }
             primed = false;
@@ -97,100 +97,67 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
         System.out.println("Bruh, dunno how you landed on a BlasterBlock, but here you are.");
     }
 
-    public static class Blast {
+    public static class Blast extends Projectile {
+        private static Icon[] blastIcons = new Icon[Direction.values().length];
+
         public Direction direction;
-        public int blastSpeed;
-        public Icon icon;
-        public int xcoord;
-        public int ycoord;
+        public int speed;
 
-        public Blast() {
-            direction = null;
-            blastSpeed = 0;
-            icon = null;
+        public Blast(int x, int y, Direction d, int bs) {
+            this(x, y, d, bs, getIconByDirection(d));
         }
 
-        public Blast(Direction d, int bs) {
+        public Blast(int x, int y, Direction d, int s, Icon imgicn) {
+            super(x, y, s, imgicn);
             direction = d;
-            blastSpeed = bs;
-            icon = new ImageIcon("Pics/Slow Blast " + direction + ".png", "Blaster Block Image");
         }
 
-        public Blast(Direction d, int bs, ImageIcon imgicn) {
-            direction = d;
-            blastSpeed = bs;
-            icon = imgicn;
+        private static Icon getIconByDirection(Direction d) {
+            int i = d.ordinal();
+            if(blastIcons[i] == null)
+                blastIcons[i] = new ImageIcon(String.format("Pics/Slow Blast %s.png", d.name), "Blaster Block Image");
+            return blastIcons[i];
         }
 
-        public Blast(Blast bla) {
-            this.direction = bla.direction;
-            this.blastSpeed = bla.blastSpeed;
-            this.icon = bla.icon;
+        @Override
+        public void moveTick() {
+            xpos += direction.x * speed;
+            ypos += direction.y * speed;
         }
 
-        public void setCoords(int x, int y) {
-            xcoord = x;
-            ycoord = y;
-        }
-
-        public void move() {
+        @Override
+        public Area getCollision() {
             switch(direction) {
                 case UP:
-                    ycoord -= blastSpeed;
-                    break;
+                    return new Area(new Rectangle(xpos, ypos + 8, 17, 30));
                 case LEFT:
-                    xcoord -= blastSpeed;
-                    break;       
+                    return new Area(new Rectangle(xpos + 8, ypos, 30, 17));
                 case DOWN:
-                    ycoord += blastSpeed;
-                    break;
+                    return new Area(new Rectangle(xpos, ypos, 17, 30));
                 case RIGHT:
-                    xcoord += blastSpeed;
-                    break;
+                    return new Area(new Rectangle(xpos, ypos, 30, 17));
             }
+            throw new IllegalStateException();
         }
 
-        public Area getOuchArea() {
-            Area a = new Area();
-            switch(direction) {
-                case UP:
-                    a = new Area(new Rectangle(xcoord, ycoord + 8, 17, 30));
-                    break;
-                case LEFT:
-                    a = new Area(new Rectangle(xcoord + 8, ycoord, 30, 17));
-                    break;       
-                case DOWN:
-                    a = new Area(new Rectangle(xcoord, ycoord, 17, 30));
-                    break;
-                case RIGHT:
-                    a = new Area(new Rectangle(xcoord, ycoord, 30, 17));
-                    break;
-            }
-            return a;
-        }
-
+        @Override
         public Area getClip() {
             switch (direction) {
             case LEFT:
-                return new Area(new Rectangle(xcoord - 1, ycoord - 1, 43 + blastSpeed, 19));
+                return new Area(new Rectangle(xpos - 1, ypos - 1, 43 + speed, 19));
             case RIGHT:
-                return new Area(new Rectangle(xcoord - 1 - blastSpeed, ycoord - 1, 43 + blastSpeed, 19));
+                return new Area(new Rectangle(xpos - 1 - speed, ypos - 1, 43 + speed, 19));
             case DOWN:
-                return new Area(new Rectangle(xcoord - 1, ycoord - 1 - blastSpeed, 19, 43 + blastSpeed));
+                return new Area(new Rectangle(xpos - 1, ypos - 1 - speed, 19, 43 + speed));
             case UP:
-                return new Area(new Rectangle(xcoord - 1, ycoord - 1, 19, 43 + blastSpeed));
+                return new Area(new Rectangle(xpos - 1, ypos - 1, 19, 43 + speed));
             }
-
-            return new Area();
-        }
-
-        public void draw(Graphics g, JPanel jp) {
-            icon.paintIcon(jp, g, xcoord, ycoord);
+            throw new IllegalStateException();
         }
 
         @Override
         public Blast clone() {
-            return new Blast(this);
+            return new Blast(xpos, ypos, direction, speed, icon);
         }
 
     }

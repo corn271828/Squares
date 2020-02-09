@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import squares.api.ResourceLocator;
+import squares.api.block.Projectile;
 import squares.api.Direction;
 
 /**
@@ -246,9 +247,9 @@ public class Level {
             }
         }
 
-        public abstract java.util.ArrayList<BlasterBlock.Blast> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
+        public abstract java.util.ArrayList<? extends Projectile> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
 
-        public abstract java.util.ArrayList<LineExploder> generateLines(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
+        public abstract java.util.ArrayList<? extends LineExploder> generateLines(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS);
 
         public abstract void generateHashMaps();
 

@@ -20,6 +20,7 @@ import javax.swing.ImageIcon;
 import squares.api.CharacterState;
 import squares.api.ResourceLocator;
 import squares.api.AudioManager;
+import squares.api.block.Projectile;
 import squares.block.BlasterBlock;
 import squares.block.Block;
 import squares.block.CannonBlock;
@@ -49,7 +50,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int holdLevelIndex = maxLevelIndex;
 
 
-    public ArrayList<BlasterBlock.Blast> blasts = new ArrayList<>();
+    public ArrayList<Projectile> blasts = new ArrayList<>();
     public ArrayList<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
 
     public Color transitioning = null;
@@ -696,30 +697,30 @@ public class MainRunningThing extends javax.swing.JFrame {
 
             if (timestamp % 12 == 1) {
                 blasts.add(new SJBossFight.FlyingBone(0, 20));
-                blasts.get(blasts.size() - 1).setCoords(startx, starty + 100);
+                blasts.get(blasts.size() - 1).moveTo(startx, starty + 100);
                 blasts.add(new SJBossFight.FlyingBone(0, 20));
-                blasts.get(blasts.size() - 1).setCoords(startx, starty + 100 + SPACING_BETWEEN_BLOCKS * 3);
+                blasts.get(blasts.size() - 1).moveTo(startx, starty + 100 + SPACING_BETWEEN_BLOCKS * 3);
             }
 
             if (timestamp % 30 == 8) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
-                blasts.get(blasts.size() - 1).setCoords(endx, starty + 40);
+                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40);
             }
 
             if (timestamp % 30 == 5) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
-                blasts.get(blasts.size() - 1).setCoords(endx, starty + 40 + SPACING_BETWEEN_BLOCKS * 3);
+                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40 + SPACING_BETWEEN_BLOCKS * 3);
             }
             if (timestamp % 30 == 17) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
-                blasts.get(blasts.size() - 1).setCoords(endx, starty + 40 + SPACING_BETWEEN_BLOCKS * 4);
+                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40 + SPACING_BETWEEN_BLOCKS * 4);
             }
 
             if (timestamp % 12 == 5) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI / 2, 20));
-                blasts.get(blasts.size() - 1).setCoords(startx + 100, starty);
+                blasts.get(blasts.size() - 1).moveTo(startx + 100, starty);
                 blasts.add(new SJBossFight.FlyingBone(Math.PI / 2, 20));
-                blasts.get(blasts.size() - 1).setCoords(startx + 100 + SPACING_BETWEEN_BLOCKS * 3, starty);
+                blasts.get(blasts.size() - 1).moveTo(startx + 100 + SPACING_BETWEEN_BLOCKS * 3, starty);
             }
         }
 
@@ -727,42 +728,42 @@ public class MainRunningThing extends javax.swing.JFrame {
 
             if (timestamp % 30 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, 40, 0, -4, 0));
-                blasts.get(blasts.size() - 1).setCoords(startx, starty + 40);
+                blasts.get(blasts.size() - 1).moveTo(startx, starty + 40);
             }
 
             if (timestamp % 20 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, -20, 0, -3, 0));
-                blasts.get(blasts.size() - 1).setCoords(endx, starty + 40);
+                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40);
             }
 
             if (timestamp % 20 == 14) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, -20, 0, -3, 0));
-                blasts.get(blasts.size() - 1).setCoords(endx, starty + 40 + SPACING_BETWEEN_BLOCKS);
+                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40 + SPACING_BETWEEN_BLOCKS);
             }
 
             if (timestamp % 25 == 2) {
                 blasts.add(new SJBossFight.ArcingBone(0, 0, 20, 0, 3));
-                blasts.get(blasts.size() - 1).setCoords(startx + 40 + SPACING_BETWEEN_BLOCKS, starty);
+                blasts.get(blasts.size() - 1).moveTo(startx + 40 + SPACING_BETWEEN_BLOCKS, starty);
             }
 
             if (timestamp % 30 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(3 * Math.PI / 4, 30, 30, -2, -2));
-                blasts.get(blasts.size() - 1).setCoords(startx + 2, starty);
+                blasts.get(blasts.size() - 1).moveTo(startx + 2, starty);
             }
 
             if (timestamp % 30 == 20) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, -28, -28, 0, 0, 0.4));
-                blasts.get(blasts.size() - 1).setCoords(endx, endy);
+                blasts.get(blasts.size() - 1).moveTo(endx, endy);
             }
 
             if (timestamp % 30 == 20) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, 28, 0, 2, 0, 0.4));
-                blasts.get(blasts.size() - 1).setCoords(startx, endy - STANDARD_ICON_WIDTH / 2);
+                blasts.get(blasts.size() - 1).moveTo(startx, endy - STANDARD_ICON_WIDTH / 2);
             }
 
             if (timestamp % 30 == 5) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, 28, 0, 2, 0, 0.4));
-                blasts.get(blasts.size() - 1).setCoords(startx, endy - STANDARD_ICON_WIDTH / 2 - SPACING_BETWEEN_BLOCKS);
+                blasts.get(blasts.size() - 1).moveTo(startx, endy - STANDARD_ICON_WIDTH / 2 - SPACING_BETWEEN_BLOCKS);
             }
 
         }
@@ -770,47 +771,47 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.level.levelLabel.equals("-3")) {
             if (timestamp % 30 == 5) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 0, 2, .4, STANDARD_ICON_WIDTH));
-                blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), starty - 8);
+                blasts.get(blasts.size() - 1).moveTo(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), starty - 8);
             }
 
             if (timestamp % 30 == 20) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 0, -2, .4, STANDARD_ICON_WIDTH));
-                blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), endy + 8);
+                blasts.get(blasts.size() - 1).moveTo(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), endy + 8);
             }
 
             if (timestamp % 30 == 13) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 2, 0, .4, STANDARD_ICON_WIDTH));
-                blasts.get(blasts.size() - 1).setCoords(startx - 8, starty + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
+                blasts.get(blasts.size() - 1).moveTo(startx - 8, starty + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
             }
 
             if (timestamp % 30 == 28) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, -2, 0, .4, STANDARD_ICON_WIDTH));
-                blasts.get(blasts.size() - 1).setCoords(endx + 8, starty + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
+                blasts.get(blasts.size() - 1).moveTo(endx + 8, starty + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
             }
 
             if (timestamp % 20 == 10) {
                 double ang = getAngle(player.xCoordinates - middlex, player.yCoordinates - middley);
                 blasts.add(new SJBossFight.ArcingBone(ang + Math.PI / 2, -20 * Math.cos(ang), -20 * Math.sin(ang),  5 * Math.cos(ang), 5 * Math.sin(ang)));
-                blasts.get(blasts.size() - 1).setCoords(middlex, middley);
+                blasts.get(blasts.size() - 1).moveTo(middlex, middley);
             }
         }
 
         if (player.level.levelLabel.equals("-4")) {
             if (timestamp == 2) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, 0, 0, 0, -.055));
-                blasts.get(blasts.size() - 1).setCoords(middlex, middley);
+                blasts.get(blasts.size() - 1).moveTo(middlex, middley);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(500, 30);
             }
 
             if (timestamp % 20 == 2) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, -3, 0, -2, 0.1));
-                blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 5 / 2, endy);
+                blasts.get(blasts.size() - 1).moveTo(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 5 / 2, endy);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(200, 30);
             }
 
             if (timestamp % 20 == 4) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, 3, 0, 2, -0.1));
-                blasts.get(blasts.size() - 1).setCoords(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 9 / 2, starty);
+                blasts.get(blasts.size() - 1).moveTo(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 9 / 2, starty);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(200, 30);
             }
         }
@@ -890,7 +891,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
         } else {
             for (int i = 0; i < blasts.size(); i++) {
-                BlasterBlock.Blast bla = blasts.get(i);
+                Projectile bla = blasts.get(i);
                 clipholder.add(bla.getClip());
             }
 
@@ -947,22 +948,22 @@ public class MainRunningThing extends javax.swing.JFrame {
         
         // Draws all the blasts and explosions and stuff
         for (int i = 0; i < blasts.size(); i++) {
-            BlasterBlock.Blast bla = blasts.get(i);
+            Projectile bla = blasts.get(i);
 
-            if (bla.xcoord < startx - 10 || bla.ycoord < starty - 10 || bla.xcoord > endx + 10 || bla.ycoord > endy + 10) {
+            if (bla.getX() < startx - 10 || bla.getY() < starty - 10 || bla.getX() > endx + 10 || bla.getY() > endy + 10) {
 
                 if (bla instanceof HighExplosion) {
                     double holdangle = 0;
-                    if (bla.xcoord > endx + 10) {
+                    if (bla.getX() > endx + 10) {
                         holdangle = Math.PI / 2;
-                    } else if (bla.xcoord < startx - 10) {
+                    } else if (bla.getX() < startx - 10) {
                         holdangle = 3 * Math.PI / 2;
-                    } else if (bla.ycoord > endy + 10) {
+                    } else if (bla.getY() > endy + 10) {
                         holdangle = Math.PI;
                     } else {
                         holdangle = 0;
                     }
-                    lineExplosions.add(((HighExplosion) bla).getLineExplosion(timestamp, holdangle, bla.xcoord, bla.ycoord));
+                    lineExplosions.add(((HighExplosion) bla).getLineExplosion(timestamp, holdangle, bla.getX(), bla.getY()));
                 }
 
                 blasts.remove(i);

@@ -11,6 +11,7 @@ import squares.api.CharacterState;
 import squares.api.Direction;
 import squares.api.block.FiringBlock;
 import squares.api.block.TargetingBlock;
+import squares.api.block.Projectile;
 import squares.block.BlasterBlock;
 import squares.block.Block;
 import squares.block.CannonBlock;
@@ -68,9 +69,9 @@ public class BlastCalculator extends Thread {
         int charYLower = mrt.player.yCoordinates + CHARACTER_WIDTH;
         int charXRight = mrt.player.xCoordinates + CHARACTER_WIDTH;
         for (int i = 0; i < mrt.blasts.size(); i++) {
-            BlasterBlock.Blast bla = mrt.blasts.get(i);
-            bla.move();
-            Area blaouch = bla.getOuchArea();
+            Projectile bla = mrt.blasts.get(i);
+            bla.moveTick();
+            Area blaouch = bla.getCollision();
             Rectangle bound = blaouch.getBounds();
             if (bound.getX() > charXRight || bound.getX() + bound.width < charXLeft || bound.getY() > charYLower || bound.getY() + bound.height < charYUpper) {
             } else {

@@ -8,28 +8,26 @@ import javax.swing.Icon;
 import squares.api.Direction;
 
 public abstract class Projectile {
-    protected Direction direction;
-    protected int xpos, ypos;
-    protected int velocity;
-    protected Icon render;
+    protected int xpos, ypos, speed;
+    protected Icon icon;
 
-    public Projectile(Direction dir, int x, int y, int v, Icon i) {
-        direction = dir;
+    public Projectile(int x, int y, int s, Icon i) {
         xpos = x;
         ypos = y;
-        velocity = v;
-        render = i;
+        speed = s;
+        icon = i;
     }
+
+    public abstract void moveTick();
     public abstract Area getClip();
     public abstract Area getCollision();
 
-    public void draw(Graphics g, JPanel jp) {
-        render.paintIcon(jp, g, xpos, ypos);
-    }
+    public int getX()     { return xpos; }
+    public int getY()     { return ypos; }
+    public int getSpeed() { return speed; }
 
-    public void moveTick() {
-        xpos += velocity * direction.x;
-        ypos += velocity * direction.y;
+    public void draw(Graphics g, JPanel jp) {
+        icon.paintIcon(jp, g, xpos, ypos);
     }
 
     public void moveTo(int x, int y) {

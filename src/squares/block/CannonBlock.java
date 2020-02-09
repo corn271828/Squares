@@ -10,6 +10,7 @@ import java.awt.geom.Area;
 import javax.swing.ImageIcon;
 
 import squares.Player;
+import squares.api.block.Projectile;
 import squares.api.block.FiringBlock;
 import squares.api.block.TargetingBlock;
 
@@ -55,12 +56,11 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
     }
 
     @Override
-    public BlasterBlock.Blast createAtCoords(int x, int y) {
+    public Projectile createAtCoords(int x, int y) {
         int xcenter = x + STANDARD_ICON_WIDTH / 2;
         int ycenter = y + STANDARD_ICON_WIDTH / 2;
-        Cannonball cb = new Cannonball(cannonballSpeed, 
+        Cannonball cb = new Cannonball(xcenter, ycenter, cannonballSpeed, 
             Math.atan2(targetY + CHARACTER_WIDTH / 2 - ycenter, targetX + CHARACTER_WIDTH / 2 - xcenter));
-        cb.setCoords(xcenter, ycenter);
         return cb;
     }
 
@@ -69,33 +69,32 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
         System.out.println("How did you even land on a CannonBlock?");
     }
 
-    public static class Cannonball extends BlasterBlock.Blast {
+    public static class Cannonball extends Projectile {
         protected static final ImageIcon cannonballPic = new ImageIcon(new ImageIcon("Pics/Cannonball.png", "Cannonball pic").getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
         public double angle; // angle in radians; think reflected unit circle
+        public int speed;
 
-        public Cannonball(int bs, double ang) {
-            direction = null;
-            blastSpeed = bs;
-            icon = cannonballPic;
+        public Cannonball(int x, int y, int s, double ang) {
+            super(x, y, s, cannonballPic);
             angle = ang;
         }
 
         @Override
-        public void move() {
-            xcoord += blastSpeed * Math.cos(angle);
-            ycoord += blastSpeed * Math.sin(angle);
+        public void moveTick() {
+            xpos += speed * Math.cos(angle);
+            ypos += speed * Math.sin(angle);
         }
 
         @Override
-        public Area getOuchArea() {
-            return new Area(new Rectangle(xcoord, ycoord, 20, 20));
+        public Area getCollision() {
+            return new Area(new Rectangle(xpos, ypos, 20, 20));
         }
 
         @Override
         public Area getClip() {
-            Area a = new Area(new Rectangle(xcoord, ycoord, 20, 20));
-            a.add(new Area(new Rectangle((int) (xcoord - blastSpeed * Math.cos(angle)), 
-                    (int) (ycoord - blastSpeed * Math.sin(angle)), 20, 20)));
+            Area a = new Area(new Rectangle(xpos, ypos, 20, 20));
+            a.add(new Area(new Rectangle((int) (xpos - speed * Math.cos(angle)), 
+                    (int) (ypos - speed * Math.sin(angle)), 20, 20)));
             return a;
         }
 
