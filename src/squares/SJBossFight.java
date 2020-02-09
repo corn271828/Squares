@@ -16,7 +16,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -44,9 +46,9 @@ public class SJBossFight extends Level.BossLevel {
     public static final char LINE_EXPLODER_TESTER_CHAR = 'L';
     public static final char SERIOUS_EXPLODER_CHAR = 'S';
 
-    HashMap<Integer, ArrayList<FlyingBone>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
-                                                                                          // adjusted on generate(); formula: 0 is center of 1st block, every 2 equals one spacing
-    HashMap<Integer, ArrayList<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
+    Map<Integer, List<FlyingBone>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
+                                                                                 // adjusted on generate(); formula: 0 is center of 1st block, every 2 equals one spacing
+    Map<Integer, List<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
 
     public static final int wI_WIDTH = 300;
     public static final int wI_HEIGHT = 300;
@@ -159,9 +161,9 @@ public class SJBossFight extends Level.BossLevel {
 
 
     @Override
-    public ArrayList<? extends Projectile> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
-        ArrayList<FlyingBone> temp = timeToBlasts.get(timestamp);
-        ArrayList<FlyingBone> hold = new ArrayList<>();
+    public List<? extends Projectile> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+        List<FlyingBone> temp = timeToBlasts.get(timestamp);
+        List<FlyingBone> hold = new ArrayList<>();
         if (temp == null)
             return hold;
         for (FlyingBone bla : temp) {
@@ -182,9 +184,9 @@ public class SJBossFight extends Level.BossLevel {
     }
 
     @Override
-    public ArrayList<LineExploder> generateLines(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
-        ArrayList<Level.BossLevel.LineExploder> temp = timeToLines.get(timestamp);
-        ArrayList<Level.BossLevel.LineExploder> hold = new ArrayList<>();
+    public List<? extends LineExploder> generateLines(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+        List<Level.BossLevel.LineExploder> temp = timeToLines.get(timestamp);
+        List<Level.BossLevel.LineExploder> hold = new ArrayList<>();
         if (temp == null)
             return hold;
         for (Level.BossLevel.LineExploder lein : temp) {

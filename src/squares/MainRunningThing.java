@@ -13,7 +13,9 @@ import java.awt.geom.Area;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
@@ -50,8 +52,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int holdLevelIndex = maxLevelIndex;
 
 
-    public ArrayList<Projectile> blasts = new ArrayList<>();
-    public ArrayList<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
+    public List<Projectile> blasts = new ArrayList<>();
+    public List<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
 
     public Color transitioning = null;
     public boolean isSwitching = false;
