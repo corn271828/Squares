@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package squares;
+package squares.level;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -18,7 +18,7 @@ import javax.swing.ImageIcon;
  *
  * @author piercelai
  */
-public class LineExploderTester extends squares.Level.BossLevel.LineExploder {
+public class LineExploderTester extends Level.BossLevel.LineExploder {
     public static final int sans_width = 70;
     public static final int sans_height = 100;
     public static final int[] opacities = new int[] {50, 100, 200, 255, 255, 255, 200, 100, 50};

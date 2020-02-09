@@ -29,6 +29,10 @@ import squares.block.Block;
 import squares.block.CannonBlock;
 import squares.block.HighExplosion;
 import squares.block.LauncherBlock;
+import squares.level.LevelLoader;
+import squares.level.Level;
+import squares.level.SJBossFight;
+import squares.level.LineExploderTester;
 
 import static squares.api.RenderingConstants.*;
 import squares.api.block.FiringBlock;
@@ -95,7 +99,10 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 
     // All the levels. All of them.
-    public LevelLoader levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"));
+    public LevelLoader levelLoader = new LevelLoader.Builder()
+        .addLevelType("sjbossfight", SJBossFight::new)
+        .addLevelType("level", Level::new)
+        .build(new ResourceLoader("data", "leveldata.txt"));
 
     /**
      * Creates new form MainRunningThing

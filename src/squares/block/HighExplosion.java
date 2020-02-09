@@ -5,7 +5,7 @@
  */
 package squares.block;
 
-import squares.Level;
+import squares.level.Level;
 
 /**
  *
