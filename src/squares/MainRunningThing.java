@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.Set;
+import java.util.Iterator;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
@@ -705,8 +706,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         int charXLeft = player.xCoordinates;
         int charYLower = player.yCoordinates + CHARACTER_WIDTH;
         int charXRight = player.xCoordinates + CHARACTER_WIDTH;
-        for (int i = 0; i < blasts.size(); i++) {
-            Projectile bla = blasts.get(i);
+        for (Projectile bla: blasts) {
             bla.moveTick();
             Area blaouch = bla.getCollision();
             Rectangle bound = blaouch.getBounds();
@@ -867,8 +867,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             lineExplosions.addAll(((Level.BossLevel) player.level).generateLines(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
         }
         
-        for (int i = 0; i < lineExplosions.size(); i++) {
-            Level.BossLevel.LineExploder currentLineExplosion = lineExplosions.get(i);
+        for (Level.BossLevel.LineExploder currentLineExplosion: lineExplosions) {
             Area ouchyline = currentLineExplosion.xplosionOuchArea(timestamp);
             Rectangle rect = ouchyline.getBounds();
             if (rect.getMinX() <= charXRight && rect.getMaxX() >= charXLeft && rect.getMinY() <= charYUpper && rect.getMaxY() >= charYLower) {
@@ -922,8 +921,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.level instanceof Level.BossLevel) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
         } else {
-            for (int i = 0; i < blasts.size(); i++) {
-                Projectile bla = blasts.get(i);
+            for (Projectile bla: blasts) {
                 clipholder.add(bla.getClip());
             }
 
@@ -935,8 +933,8 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clipholder.add(new Area(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH)));
             }
 
-            for (int i = 0; i < lineExplosions.size(); i++) {
-                clipholder.add(lineExplosions.get(i).xplosionClipArea(timestamp));
+            for (Level.BossLevel.LineExploder le: lineExplosions) {
+                clipholder.add(le.xplosionClipArea(timestamp));
             }
 
             if (timestamp >= 314 && timestamp <= 335) { // Sets clip for the pie
@@ -979,8 +977,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         
         // Draws all the blasts and explosions and stuff
-        for (int i = 0; i < blasts.size(); i++) {
-            Projectile bla = blasts.get(i);
+        for (Iterator<Projectile> it = blasts.iterator(); it.hasNext();) {
+            Projectile bla = it.next();
 
             if (bla.getX() < startx - 10 || bla.getY() < starty - 10 || bla.getX() > endx + 10 || bla.getY() > endy + 10) {
 
@@ -998,8 +996,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                     lineExplosions.add(((HighExplosion) bla).getLineExplosion(timestamp, holdangle, bla.getX(), bla.getY()));
                 }
 
-                blasts.remove(i);
-                i--;
+                it.remove();
                 letsseeifthisworks = true;
             } else {
                 bla.draw(currG, jPanel1);
@@ -1007,11 +1004,11 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         // Gets rid of explosions at correct time
-        for (int i = 0; i < lineExplosions.size(); i++) {
-            Level.BossLevel.LineExploder le = lineExplosions.get(i);
+        for (Iterator<Level.BossLevel.LineExploder> lit = lineExplosions.iterator(); lit.hasNext();) {
+            Level.BossLevel.LineExploder le = lit.next();
             le.drawXPlosion(jPanel1, currG, timestamp);
             if (le.starttime + le.timelength <= timestamp) {
-                lineExplosions.remove(i);
+                lit.remove();
             }
         }
 
