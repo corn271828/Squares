@@ -12,18 +12,22 @@ public class LevelLoader {
     private int index = 0;
     private Level[] levels = new Level[0];
 
+    // Who needs typedefs :agony:
+    @FunctionalInterface
+    public interface LevelProv extends BiFunction<String[][], String[], Level> {}
+
     public static class Builder {
-        private Map<String, BiFunction<String[][], String[], Level>> levelProvs = new java.util.HashMap<>();
+        private Map<String, LevelProv> levelProvs = new java.util.HashMap<>();
         public LevelLoader build(ResourceLoader index) {
             return new LevelLoader(index, levelProvs);
         }
-        public Builder addLevelType(String name, BiFunction<String[][], String[], Level> bf) {
+        public Builder addLevelType(String name, LevelProv bf) {
             levelProvs.put(name, bf);
             return this;
         }
     }
 
-    private LevelLoader(ResourceLoader index, Map<String, BiFunction<String[][], String[], Level>> levelProvs) {
+    private LevelLoader(ResourceLoader index, Map<String, LevelProv> levelProvs) {
         List<Level> levels = new ArrayList<>();
         try(BufferedReader br = index.asBufferedReader()) {
             while(br.ready()) {
