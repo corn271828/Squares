@@ -50,7 +50,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public AudioManager audio = new AudioManager();
 
     // Level indices
-    public int maxLevelIndex = 26;
+    public int maxLevelIndex = 0;
     public int holdLevelIndex = maxLevelIndex;
 
     public List<Projectile> blasts = new ArrayList<>();
@@ -78,7 +78,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
-    public static final int sleepTime = 100;
+    public static final int sleepTime = 104;
     public static final boolean SEE_OVERLAP = false;
     public boolean musicOn = true;
 
@@ -601,6 +601,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     @Override
     public void paint(Graphics g) {
+        timestart = Instant.now();
         clipholder = new Area();
         ouchArea = new Area();
         if (middlex != jPanel1.getWidth() / 2) {
@@ -865,11 +866,6 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.level instanceof Level.BossLevel) {
             lineExplosions.addAll(((Level.BossLevel) player.level).generateLines(timestamp, player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
         }
-
-        if (timestamp == 1200 && timestart != null) {
-            timeend = Instant.now();
-            System.out.println(Duration.between(timestart, timeend).toMillis());
-        }
         
         for (int i = 0; i < lineExplosions.size(); i++) {
             Level.BossLevel.LineExploder currentLineExplosion = lineExplosions.get(i);
@@ -1056,13 +1052,16 @@ public class MainRunningThing extends javax.swing.JFrame {
             LEAGIF.paintIcon(this, g, 0, 30);
         }
 
+        timeend = Instant.now();
         // Gets the block to show up on first run
         if (opacity > 15 || player.xCoordinates != player.xTarg || player.yCoordinates != player.yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || player.level instanceof Level.BossLevel) {
             if (letsseeifthisworks) {
                 letsseeifthisworks = false;
             }
+            long millitime = Duration.between(timestart, timeend).toMillis();
             try {
-                Thread.sleep(sleepTime);
+                if (millitime < sleepTime)
+                    Thread.sleep(sleepTime - millitime);
             } catch (InterruptedException ex) {
                 Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
