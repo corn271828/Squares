@@ -119,6 +119,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         middley = jPanel1.getHeight() / 2;
         player = new Player();
         player.level = levelLoader.getCurrent();
+        player.deathCb = this::death;
 
         if (musicOn) {
             audio.addClip("normal", new ResourceLoader("bgm", "Canon_in_D_Swing.wav"))
