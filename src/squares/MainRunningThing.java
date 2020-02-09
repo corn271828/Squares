@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import squares.api.CharacterState;
-import squares.api.ResourceLocator;
+import squares.api.ResourceLoader;
 import squares.api.AudioManager;
 import squares.api.block.Projectile;
 import squares.block.BlasterBlock;
@@ -82,7 +82,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Checkpoints
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
-    public TasGenerator sjbossTas = new TasGenerator(new ResourceLocator("bossdata", "sjbossscript.txt"));
+    public TasGenerator sjbossTas = new TasGenerator(new ResourceLoader("bossdata", "sjbossscript.txt"));
 
     // Easter eggs
     public static final String KONAMI_CODE = "uuddlrlrba";
@@ -91,7 +91,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 
     // All the levels. All of them.
-    public LevelLoader levelLoader = new LevelLoader(new ResourceLocator("data", "leveldata.txt"));
+    public LevelLoader levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"));
 
     /**
      * Creates new form MainRunningThing
@@ -110,8 +110,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.level = levelLoader.getCurrent();
 
         if (musicOn) {
-            audio.addClip("normal", new ResourceLocator("bgm", "Canon_in_D_Swing.wav"))
-                 .addClip("boss",   new ResourceLocator("bgm", "Megalovania_Swing.wav"));
+            audio.addClip("normal", new ResourceLoader("bgm", "Canon_in_D_Swing.wav"))
+                 .addClip("boss",   new ResourceLoader("bgm", "Megalovania_Swing.wav"));
         }
     }
 

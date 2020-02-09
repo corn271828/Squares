@@ -4,14 +4,14 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import javax.sound.sampled.AudioInputStream;
 
-public class ResourceLocator {
+public class ResourceLoader {
     private static final String format = "assets/%s/%s";
 
     private final String path;
     private InputStream stream;
     private final static String[] prefices = {"", "/"};
 
-    public ResourceLocator(String namespace, String path) {
+    public ResourceLoader(String namespace, String path) {
         this.path = String.format(format, namespace, path);
         boolean okay = false;
         for(String prefix: prefices) {

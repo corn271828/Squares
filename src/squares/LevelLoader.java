@@ -6,7 +6,7 @@ import java.util.Map;
 import java.io.BufferedReader;
 import java.util.function.BiFunction;
 
-import squares.api.ResourceLocator;
+import squares.api.ResourceLoader;
 
 public class LevelLoader {
     private int index = 0;
@@ -17,7 +17,7 @@ public class LevelLoader {
         LevelLoader.levelProvs.put("level", Level::new);
     }
 
-    public LevelLoader(ResourceLocator index) {
+    public LevelLoader(ResourceLoader index) {
         List<Level> levels = new ArrayList<>();
         try(BufferedReader br = index.asBufferedReader()) {
             while(br.ready()) {

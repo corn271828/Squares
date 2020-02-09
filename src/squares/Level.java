@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import squares.api.ResourceLocator;
+import squares.api.ResourceLoader;
 import squares.api.block.Projectile;
 import squares.api.Direction;
 
@@ -215,7 +215,7 @@ public class Level {
             levelHP = hp;
         }
 
-        public BossLevel(String[][] in, String label, ResourceLocator input) {
+        public BossLevel(String[][] in, String label, ResourceLoader input) {
             super(in, label);
             try (BufferedReader br = input.asBufferedReader()) {
                 String hold = "";
@@ -231,7 +231,7 @@ public class Level {
             }
         }
 
-        public BossLevel(String[][] in, String label, String code, ResourceLocator input) {
+        public BossLevel(String[][] in, String label, String code, ResourceLoader input) {
             super(in, label, code);
             try (BufferedReader br = input.asBufferedReader()) {
                 String hold = "";

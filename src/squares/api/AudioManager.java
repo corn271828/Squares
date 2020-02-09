@@ -7,13 +7,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 
-import squares.api.ResourceLocator;
+import squares.api.ResourceLoader;
 
 public class AudioManager {
     private Map<String, Clip> clips = new HashMap<>();
     Clip current;
 
-    public AudioManager addClip(String name, ResourceLocator loc) {
+    public AudioManager addClip(String name, ResourceLoader loc) {
         try (AudioInputStream ais = loc.asAudioStream()) {
             Clip clip = AudioSystem.getClip();
             clip.open(ais);

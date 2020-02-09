@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import squares.api.CharacterState;
-import squares.api.ResourceLocator;
+import squares.api.ResourceLoader;
 import squares.block.Block;
 
 import static squares.api.RenderingConstants.*;
@@ -14,7 +14,7 @@ import static squares.api.RenderingConstants.*;
 public class TasGenerator {
     Map<Integer, Character> script;
 
-    public TasGenerator(ResourceLocator in) {
+    public TasGenerator(ResourceLoader in) {
         script = new TreeMap<>();
         try (BufferedReader br = in.asBufferedReader()) {
             while (br.ready()) {

@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import squares.api.ResourceLocator;
+import squares.api.ResourceLoader;
 import squares.api.block.Projectile;
 import squares.block.HighExplosion;
 
@@ -53,7 +53,7 @@ public class SJBossFight extends Level.BossLevel {
     public static ImageIcon warningIcon = new ImageIcon(new ImageIcon("Pics/warning750.png").getImage().getScaledInstance(wI_WIDTH, wI_HEIGHT, java.awt.Image.SCALE_SMOOTH));
 
     public SJBossFight(String[][] in, String[] args) {
-        this(in, args[0], Integer.parseInt(args[1]), new ResourceLocator("bossdata", args[2]), args[3]);
+        this(in, args[0], Integer.parseInt(args[1]), new ResourceLoader("bossdata", args[2]), args[3]);
     }
 
     public SJBossFight(String[][] in, String label, String... controls) {
@@ -70,14 +70,14 @@ public class SJBossFight extends Level.BossLevel {
         levelHP = hp;
     }
 
-    public SJBossFight(String[][] in, String label, int hp, ResourceLocator input){
+    public SJBossFight(String[][] in, String label, int hp, ResourceLoader input){
         super(in, label, input);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
         generateHashMaps();
         levelHP = hp;
     }     
 
-    public SJBossFight(String[][] in, String label, int hp, ResourceLocator input, String code){
+    public SJBossFight(String[][] in, String label, int hp, ResourceLoader input, String code){
         super(in, label, code, input);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
         generateHashMaps();
