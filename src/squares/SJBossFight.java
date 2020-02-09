@@ -16,6 +16,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,9 +47,14 @@ public class SJBossFight extends Level.BossLevel {
     public static final char LINE_EXPLODER_TESTER_CHAR = 'L';
     public static final char SERIOUS_EXPLODER_CHAR = 'S';
 
-    Map<Integer, List<FlyingBone>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
+    //Map<Integer, List<FlyingBone>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
                                                                                  // adjusted on generate(); formula: 0 is center of 1st block, every 2 equals one spacing
-    Map<Integer, List<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
+    //Map<Integer, List<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
+    
+    List<FlyingBone> allTheBlasts = new java.util.LinkedList<>();
+    int[] timeToBlastIndex;
+    List<Level.BossLevel.LineExploder> allTheLines = new java.util.LinkedList<>();
+    int[] timeToLinesIndex;
 
     public static final int wI_WIDTH = 300;
     public static final int wI_HEIGHT = 300;
@@ -88,7 +94,9 @@ public class SJBossFight extends Level.BossLevel {
 
     @Override
     public void generateHashMaps() {
-        for (int time = 0; time <= endtime; time++) {
+        Map<Integer, List<FlyingBone>> timeToBlasts = new HashMap<>();
+        Map<Integer, List<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
+        for (int time = 0; time <= endtime + 1; time++) {
             timeToBlasts.put(time, new ArrayList<>());
             timeToLines.put(time, new ArrayList<>());
         }
@@ -155,14 +163,28 @@ public class SJBossFight extends Level.BossLevel {
                     LineExploderTester lety = new LineExploderTester(time, 18, Double.parseDouble(splitted[4]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), LineExploderTester.sansSrous);
                     timeToLines.get(time).add(lety);
             }
-
+        }
+        
+        int currentBlastCount = 0;
+        timeToBlastIndex = new int[endtime + 1];
+        int currentLineCount = 0;
+        timeToLinesIndex = new int[endtime + 1];
+        for (int i = 0; i <= endtime; i++) {
+            allTheBlasts.addAll(timeToBlasts.get(i));
+            currentBlastCount += timeToBlasts.get(i).size();
+            timeToBlastIndex[i] = currentBlastCount;
+            allTheLines.addAll(timeToLines.get(i));
+            currentLineCount += timeToLines.get(i).size();
+            timeToLinesIndex[i] = currentLineCount;
         }
     }
 
 
     @Override
     public List<? extends Projectile> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
-        List<FlyingBone> temp = timeToBlasts.get(timestamp);
+        if (timestamp > endtime || timestamp <= 0)
+            return new ArrayList<>();
+        List<FlyingBone> temp = allTheBlasts.subList(timeToBlastIndex[timestamp - 1], timeToBlastIndex[timestamp]);
         List<FlyingBone> hold = new ArrayList<>();
         if (temp == null)
             return hold;
@@ -185,7 +207,9 @@ public class SJBossFight extends Level.BossLevel {
 
     @Override
     public List<? extends LineExploder> generateLines(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
-        List<Level.BossLevel.LineExploder> temp = timeToLines.get(timestamp);
+        if (timestamp > endtime || timestamp <= 0)
+            return new ArrayList<>();
+        List<Level.BossLevel.LineExploder> temp = allTheLines.subList(timeToLinesIndex[timestamp - 1], timeToLinesIndex[timestamp]);
         List<Level.BossLevel.LineExploder> hold = new ArrayList<>();
         if (temp == null)
             return hold;
