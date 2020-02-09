@@ -571,34 +571,19 @@ public class MainRunningThing extends javax.swing.JFrame {
         repaint();
     }
 
-    public void ouch() {
-        if (!player.isInvincible(timestamp) && player.charState.vulnerable) {
-            player.hp--;
-            if (player.hp <= 0) {
-                death();
-            } else {
-                player.iftime = timestamp;
-            }
-        }
-    }
 
-    // on death
-    public void death() {
-        if (player.charState.vulnerable) {
-            player.charState = CharacterState.DEAD;
-            isSwitching = true;
-            opacity = 10;
-            transitioning = new Color(0, 0, 0);
-            player.level.addDeath();
-            player.deaths++;
-            repaint();
-        }
+    // death cb
+    public void death(Player p) {
+        isSwitching = true;
+        opacity = 10;
+        transitioning = new Color(0, 0, 0);
+        repaint();
     }
 
     //  checks the character when the character lands at its destination
     public void landChecker() {
          if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.blocks[0].length || player.yPosition >= player.level.blocks.length) {
-            death();
+            player.die();
         } else {
             player.level.blocks[player.yPosition][player.xPosition].onLand(player);
             player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
@@ -887,7 +872,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         if (ouchArea.intersects(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
-            ouch();
+            player.hurt(timestamp);
         }
         
 

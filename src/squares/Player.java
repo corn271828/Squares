@@ -2,6 +2,7 @@ package squares;
 
 import java.awt.Rectangle;
 import java.awt.geom.Area;
+import java.util.function.Consumer;
 
 import squares.api.CharacterState;
 import squares.level.Level;
@@ -21,6 +22,7 @@ public class Player {
     public int yTarg;
     public int xCoordinates; //Position of the upper left hand corner of the character pic in panel coordinates
     public int yCoordinates;
+    public Consumer<Player> deathCb;
 
     public int iftime = -11;
     public int deaths = 0;
@@ -108,6 +110,24 @@ public class Player {
         
         return xCoordinates == xTarg && yCoordinates == yTarg; // for landchecker
     }
-    
+
+    public void hurt(int ts) {
+        if (!isInvincible(ts) && charState.vulnerable) {
+            if (hp-- <= 0) {
+                die();
+            } else {
+                iftime = ts;
+            }
+        }
+    }
+
+    public void die() {
+        if (charState.vulnerable) {
+            charState = CharacterState.DEAD;
+            level.addDeath();
+            deaths++;
+            deathCb.accept(this);
+        }
+    }
     public Level level;
 }
