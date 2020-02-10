@@ -113,7 +113,7 @@ public class Player {
 
     public void hurt(int ts) {
         if (!isInvincible(ts) && charState.vulnerable) {
-            if (hp-- <= 0) {
+            if (--hp <= 0) {
                 die();
             } else {
                 iftime = ts;

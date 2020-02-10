@@ -932,6 +932,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
 
         }
+        
+        if (player.moveAnim(clipholder))
+            landChecker();
 
         ///PAINTINGG!!!
         
@@ -958,8 +961,6 @@ public class MainRunningThing extends javax.swing.JFrame {
             currG.fillRect(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);
         }
         
-        if (player.moveAnim(clipholder))
-            landChecker();
 
         // Dev tool to see ouchArea and the clip
         if (SEE_OVERLAP) {
