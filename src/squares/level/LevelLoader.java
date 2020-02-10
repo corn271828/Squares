@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.util.function.BiFunction;
 
 import squares.api.ResourceLoader;
+import squares.api.block.BlockFactory;
 
 public class LevelLoader {
     private int index = 0;
@@ -14,20 +15,17 @@ public class LevelLoader {
 
     // Who needs typedefs :agony:
     @FunctionalInterface
-    public interface LevelProv extends BiFunction<String[][], String[], Level> {}
-
-    public static class Builder {
-        private Map<String, LevelProv> levelProvs = new java.util.HashMap<>();
-        public LevelLoader build(ResourceLoader index) {
-            return new LevelLoader(index, levelProvs);
-        }
-        public Builder addLevelType(String name, LevelProv bf) {
-            levelProvs.put(name, bf);
-            return this;
-        }
+    public interface LevelProv {
+        Level create(String[][] map, String[] args, BlockFactory bf);
     }
 
-    private LevelLoader(ResourceLoader index, Map<String, LevelProv> levelProvs) {
+    private static Map<String, LevelProv> levelProvs = new java.util.HashMap<>();
+
+    public static void addLevelType(String name, LevelProv bf) {
+        levelProvs.put(name, bf);
+    }
+
+    public LevelLoader(ResourceLoader index, BlockFactory bf) {
         List<Level> levels = new ArrayList<>();
         try(BufferedReader br = index.asBufferedReader()) {
             while(br.ready()) {
@@ -40,7 +38,7 @@ public class LevelLoader {
                 System.out.println(java.util.Arrays.toString(arguments));
                 while((buf = line(br)) != null)
                     map.add(buf.split("\\s+"));
-                levels.add(levelProvs.get(provider).apply(map.toArray(new String[0][0]), arguments));
+                levels.add(levelProvs.get(provider).create(map.toArray(new String[0][0]), arguments, bf));
             }
             this.levels = levels.toArray(this.levels);
         }
@@ -69,8 +67,8 @@ public class LevelLoader {
     public int getNumLevels() {
         return levels.length;
     }
-    public Level getLevel(int index) {
-        return levels[index];
+    public String getCodeForLevel(int index) {
+        return levels[index].getCode();
     }
     public void setLevelIndex(int ind) {
         index = ind;

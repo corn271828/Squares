@@ -20,24 +20,25 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
-import squares.api.CharacterState;
-import squares.api.ResourceLoader;
 import squares.api.AudioManager;
+import squares.api.CharacterState;
 import squares.api.Clock;
-import squares.api.block.Projectile;
-import squares.block.BlasterBlock;
+import squares.api.ResourceLoader;
 import squares.api.block.Block;
+import squares.api.block.FiringBlock;
+import squares.api.block.Projectile;
+import squares.api.block.TargetingBlock;
+import squares.api.block.BlockFactory;
+import squares.block.BlasterBlock;
 import squares.block.CannonBlock;
 import squares.block.HighExplosion;
 import squares.block.LauncherBlock;
-import squares.level.LevelLoader;
 import squares.level.Level;
-import squares.level.SJBossFight;
+import squares.level.LevelLoader;
 import squares.level.LineExploderTester;
+import squares.level.SJBossFight;
 
 import static squares.api.RenderingConstants.*;
-import squares.api.block.FiringBlock;
-import squares.api.block.TargetingBlock;
 
 /**
  *
@@ -100,10 +101,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 
     // All the levels. All of them.
-    public LevelLoader levelLoader = new LevelLoader.Builder()
-        .addLevelType("sjbossfight", SJBossFight::new)
-        .addLevelType("level", Level::new)
-        .build(new ResourceLoader("data", "leveldata.txt"));
+    public LevelLoader levelLoader;
 
     /**
      * Creates new form MainRunningThing
@@ -118,6 +116,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         jButton1.setVisible(true);
         middlex = jPanel1.getWidth() / 2;
         middley = jPanel1.getHeight() / 2;
+        RegistrationHandler.init();
+        levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"), new BlockFactory());
         clock = new Clock();
         player = new Player(clock);
         player.level = levelLoader.getCurrent();
@@ -387,7 +387,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         int hold = -1;
         for (int i = 0; i < levelLoader.getNumLevels(); i++) {
-            if (code.equals(levelLoader.getLevel(i).getCode())) {
+            if (code.equals(levelLoader.getCodeForLevel(i))) {
                 hold = i;
                 break;
             }

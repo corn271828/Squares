@@ -29,6 +29,13 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
     public int targetX, targetY;
     public static final ImageIcon cannonBlockIcon = new ImageIcon("Pics/Aiming Cannon Base.png", "Cannon Block Image");
 
+    public CannonBlock(String arg) {
+        this(
+            Integer.parseInt(arg.substring(0, 2)),
+            Integer.parseInt(arg.substring(2, 4)),
+            Integer.parseInt("0" + arg.substring(4)));
+    }
+
     public CannonBlock(int p, int bs, int d) {
         super(cannonBlockIcon, null, false);
         period = p;

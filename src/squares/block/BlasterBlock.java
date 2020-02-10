@@ -32,6 +32,13 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
 
     private static final ImageIcon[] blasterBlocks = new ImageIcon[Direction.values().length];
 
+    public BlasterBlock(Direction d, String arg) {
+        this(d,
+            Integer.parseInt(arg.substring(0, 2)),
+            Integer.parseInt(arg.substring(2, 4)),
+            Integer.parseInt("0" + arg.substring(4)));
+    }
+
     public BlasterBlock(Direction d, int p, int bs) {
         this(d, p, bs, 1);
     }
