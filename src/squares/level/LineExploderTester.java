@@ -18,7 +18,7 @@ import javax.swing.ImageIcon;
  *
  * @author piercelai
  */
-public class LineExploderTester extends Level.BossLevel.LineExploder {
+public class LineExploderTester extends BaseLevel.LineExploder {
     public static final int sans_width = 70;
     public static final int sans_height = 100;
     public static final int[] opacities = new int[] {50, 100, 200, 255, 255, 255, 200, 100, 50};
@@ -77,7 +77,7 @@ public class LineExploderTester extends Level.BossLevel.LineExploder {
 
     @Override
     public LineExploderTester clone() {
-        return new LineExploderTester(starttime, timelength, angle, startxPosition, startyPosition, plody);
+        return new LineExploderTester(starttime, timelength, angle, startposition.x, startposition.y, plody);
     }
 
 

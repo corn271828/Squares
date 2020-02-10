@@ -27,13 +27,18 @@ import javax.swing.JPanel;
 import squares.api.ResourceLoader;
 import squares.api.block.Projectile;
 import squares.api.block.BlockFactory;
+import squares.api.level.BossLevel;
+import squares.api.Coordinate;
 import squares.block.HighExplosion;
+
+import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
+import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
 
 /**
  *
  * @author piercelai
  */
-public class SJBossFight extends Level.BossLevel {
+public class SJBossFight extends BaseLevel implements BossLevel {
 
     public static int FIRST_BOSS_TIME = 840;
     public static int SECOND_BOSS_TIME = 720;
@@ -50,11 +55,11 @@ public class SJBossFight extends Level.BossLevel {
 
     //Map<Integer, List<FlyingBone>> timeToBlasts = new HashMap<>(); // Note: blast coordinates are not true coordinates; coordinates 
                                                                                  // adjusted on generate(); formula: 0 is center of 1st block, every 2 equals one spacing
-    //Map<Integer, List<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
+    //Map<Integer, List<BaseLevel.LineExploder>> timeToLines = new HashMap<>();
     
     List<FlyingBone> allTheBlasts = new java.util.LinkedList<>();
     int[] timeToBlastIndex;
-    List<Level.BossLevel.LineExploder> allTheLines = new java.util.LinkedList<>();
+    List<BaseLevel.LineExploder> allTheLines = new java.util.LinkedList<>();
     int[] timeToLinesIndex;
 
     public static final int wI_WIDTH = 300;
@@ -68,14 +73,13 @@ public class SJBossFight extends Level.BossLevel {
     public SJBossFight(String[][] in, String label, int hp, ResourceLoader input, String code, BlockFactory bf) {
         super(in, label, code, input, bf);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
-        generateHashMaps();
+        generateMaps();
         levelHP = hp;
-    } 
+    }
 
-    @Override
-    public void generateHashMaps() {
+    private void generateMaps() {
         Map<Integer, List<FlyingBone>> timeToBlasts = new HashMap<>();
-        Map<Integer, List<Level.BossLevel.LineExploder>> timeToLines = new HashMap<>();
+        Map<Integer, List<BaseLevel.LineExploder>> timeToLines = new HashMap<>();
         for (int time = 0; time <= endtime + 1; time++) {
             timeToBlasts.put(time, new ArrayList<>());
             timeToLines.put(time, new ArrayList<>());
@@ -161,7 +165,7 @@ public class SJBossFight extends Level.BossLevel {
 
 
     @Override
-    public List<? extends Projectile> generateBlasts(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+    public List<? extends Projectile> generateBlasts(int timestamp, Coordinate render, Coordinate start) {
         if (timestamp > endtime || timestamp <= 0)
             return new ArrayList<>();
         List<FlyingBone> temp = allTheBlasts.subList(timeToBlastIndex[timestamp - 1], timeToBlastIndex[timestamp]);
@@ -173,7 +177,7 @@ public class SJBossFight extends Level.BossLevel {
             kin.moveTo(startx + SPACING_BETWEEN_BLOCKS * bla.getX() / 2 + STANDARD_ICON_WIDTH / 2, starty + SPACING_BETWEEN_BLOCKS * bla.getY() / 2 + STANDARD_ICON_WIDTH / 2);
             if (kin instanceof ArcingBone && ((ArcingBone) kin).angle > 900) {
                 ArcingBone ab = (ArcingBone) kin;
-                ab.angle = Math.atan2(xCoordinates - kin.getX(), yCoordinates - kin.getY());
+                ab.angle = Math.atan2(render.x - kin.getX(), render.y - kin.getY());
                 ab.xvelocity = kin.getSpeed() * Math.sin(ab.angle);
                 ab.yvelocity = kin.getSpeed() * Math.cos(ab.angle);
                 ab.angle *= -1;
@@ -186,17 +190,17 @@ public class SJBossFight extends Level.BossLevel {
     }
 
     @Override
-    public List<? extends LineExploder> generateLines(int timestamp, int xCoordinates, int yCoordinates, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+    public List<? extends LineExploder> generateLines(int timestamp, Coordinate render, Coordinate start) {
         if (timestamp > endtime || timestamp <= 0)
             return new ArrayList<>();
-        List<Level.BossLevel.LineExploder> temp = allTheLines.subList(timeToLinesIndex[timestamp - 1], timeToLinesIndex[timestamp]);
-        List<Level.BossLevel.LineExploder> hold = new ArrayList<>();
+        List<BaseLevel.LineExploder> temp = allTheLines.subList(timeToLinesIndex[timestamp - 1], timeToLinesIndex[timestamp]);
+        List<BaseLevel.LineExploder> hold = new ArrayList<>();
         if (temp == null)
             return hold;
-        for (Level.BossLevel.LineExploder lein : temp) {
-            Level.BossLevel.LineExploder kin = lein.clone();
-            kin.startxPosition = startx + SPACING_BETWEEN_BLOCKS * kin.startxPosition / 2 + STANDARD_ICON_WIDTH / 2;
-            kin.startyPosition = starty + SPACING_BETWEEN_BLOCKS * kin.startyPosition / 2 + STANDARD_ICON_WIDTH / 2;
+        for (BaseLevel.LineExploder lein : temp) {
+            BaseLevel.LineExploder kin = lein.clone();
+            kin.startposition.x = startx + SPACING_BETWEEN_BLOCKS * kin.startposition.x / 2 + STANDARD_ICON_WIDTH / 2;
+            kin.startposition.y = starty + SPACING_BETWEEN_BLOCKS * kin.startposition.y / 2 + STANDARD_ICON_WIDTH / 2;
             kin.updateRegister();
             hold.add(kin);
         }
@@ -320,6 +324,10 @@ public class SJBossFight extends Level.BossLevel {
         }
     }
 
+    @Override
+    public int getEndTime() { return endtime; }
+    @Override
+    public int getPlayerHealth() { return levelHP; }
 
     public static class FlyingBone extends Projectile {
         public static final Image bonypict = new ImageIcon("Pics/bonepic.png", "bonepic").getImage();
@@ -495,7 +503,7 @@ public class SJBossFight extends Level.BossLevel {
             return new SimpleLineExplosion(startime, ang, starx, stary, explosionWidth);
         }
 
-        public static class SimpleLineExplosion extends Level.BossLevel.LineExploder{
+        public static class SimpleLineExplosion extends BaseLevel.LineExploder{
 
             public static final int[] opacities = new int[] {100, 200, 255, 255, 200, 0, 0};
             public int width;

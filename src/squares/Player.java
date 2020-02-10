@@ -5,8 +5,9 @@ import java.awt.geom.Area;
 import java.util.function.Consumer;
 
 import squares.api.CharacterState;
+import squares.api.Coordinate;
 import squares.api.Clock;
-import squares.level.Level;
+import squares.api.level.Level;
 
 import static squares.api.RenderingConstants.CHARACTER_FASTSPEED;
 import static squares.api.RenderingConstants.CHARACTER_SPEED;
@@ -17,12 +18,9 @@ public class Player {
     public static final int PRACTICE_MODE_LIVES = 100;
 
     public CharacterState charState = CharacterState.NORMAL;
-    public int xPosition; //Target position of the character in grid coordinates
-    public int yPosition;
-    public int xTarg; // Target position of the character in panel coordinates
-    public int yTarg;
-    public int xCoordinates; //Position of the upper left hand corner of the character pic in panel coordinates
-    public int yCoordinates;
+    public Coordinate position; // Target pos, grid coords
+    public Coordinate target; // Target position of the character in panel coordinates
+    public Coordinate render; //Position of the upper left hand corner of the character pic in panel coordinates
     public Consumer<Player> deathCb;
 
     public int iftime = -11;
@@ -47,27 +45,27 @@ public class Player {
     }
 
     public boolean canMoveRight() {
-        return !(xPosition == level.blocks[0].length - 1) &&
-                !(level.blocks[yPosition][xPosition + 1] == null) &&
-                level.blocks[yPosition][xPosition + 1].stepable;
+        return !(position.x == level.xSize() - 1) &&
+                !(level.blockAt(position.x + 1, position.y) == null) &&
+                level.blockAt(position.x + 1, position.y).stepable;
     }
     
     public boolean canMoveLeft() {
-        return !(xPosition == 0) &&
-                !(level.blocks[yPosition][xPosition - 1] == null) &&
-                level.blocks[yPosition][xPosition - 1].stepable;
+        return !(position.x == 0) &&
+                !(level.blockAt(position.x - 1, position.y) == null) &&
+                level.blockAt(position.x - 1, position.y).stepable;
     }
     
     public boolean canMoveUp() {
-        return !(yPosition == 0) &&
-                !(level.blocks[yPosition - 1][xPosition] == null) &&
-                level.blocks[yPosition - 1][xPosition].stepable;
+        return !(position.y == 0) &&
+                !(level.blockAt(position.x, position.y - 1) == null) &&
+                level.blockAt(position.x, position.y - 1).stepable;
     }
     
     public boolean canMoveDown() {
-        return !(yPosition == level.blocks.length - 1) &&
-                !(level.blocks[yPosition + 1][xPosition] == null) &&
-                level.blocks[yPosition + 1][xPosition].stepable;
+        return !(position.y == level.ySize() - 1) &&
+                !(level.blockAt(position.x, position.y + 1) == null) &&
+                level.blockAt(position.x, position.y + 1).stepable;
     }
     
     public void callMove(int keyCode) {
@@ -75,22 +73,22 @@ public class Player {
             case RIGHT_KEY_PRESS:
             case 'D':
                 if (canMoveRight())
-                    xPosition++;
+                    position.x++;
                 break;
             case LEFT_KEY_PRESS:
             case 'A':
                 if (canMoveLeft())
-                    xPosition--;
+                    position.x--;
                 break;
             case DOWN_KEY_PRESS:
             case 'S':
                 if (canMoveDown())
-                    yPosition++;
+                    position.y++;
                 break;
             case UP_KEY_PRESS:
             case 'W':
                 if (canMoveUp())
-                    yPosition--;
+                    position.y--;
                 break;
         }
     }
@@ -101,22 +99,22 @@ public class Player {
         if (currSpeed == 0)
             return false;
         
-        if (xCoordinates != xTarg) {
-            if (Math.abs(xCoordinates - xTarg) <= currSpeed) {
-                xCoordinates = xTarg;
+        if (render.x != target.x) {
+            if (Math.abs(render.x - target.x) <= currSpeed) {
+                render.x = target.x;
             } else 
-                xCoordinates += xCoordinates > xTarg ? -currSpeed : currSpeed;
+                render.x += render.x > target.x ? -currSpeed : currSpeed;
         }
-        if (yCoordinates != yTarg) {
-            if (Math.abs(yCoordinates - yTarg) <= currSpeed) {
-                yCoordinates = yTarg;
+        if (render.y != target.y) {
+            if (Math.abs(render.y - target.y) <= currSpeed) {
+                render.y = target.y;
             } else 
-                yCoordinates += yCoordinates > yTarg ? -currSpeed : currSpeed;
+                render.y += render.y > target.y ? -currSpeed : currSpeed;
         }
-        clipholder.add(new Area(new Rectangle(xCoordinates - currSpeed, yCoordinates - currSpeed, 
+        clipholder.add(new Area(new Rectangle(render.x - currSpeed, render.y - currSpeed, 
                 CHARACTER_WIDTH + 2 * currSpeed,  CHARACTER_WIDTH + 2 * currSpeed)));
         
-        return xCoordinates == xTarg && yCoordinates == yTarg; // for landchecker
+        return render.x == target.x && render.y == target.y; // for landchecker
     }
 
     public void hurt() {

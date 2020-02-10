@@ -29,10 +29,7 @@ import squares.api.block.FiringBlock;
 import squares.api.block.Projectile;
 import squares.api.block.TargetingBlock;
 import squares.api.block.BlockFactory;
-import squares.block.BlasterBlock;
-import squares.block.CannonBlock;
 import squares.block.HighExplosion;
-import squares.block.LauncherBlock;
 import squares.level.Level;
 import squares.level.LevelLoader;
 import squares.level.LineExploderTester;
@@ -351,8 +348,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         
         player.callMove(evt.getKeyCode());
         
-        player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         if (player.charState == CharacterState.NORMAL) {
             if (player.level instanceof Level.BossLevel) 
                 player.charState = CharacterState.FASTMOVING;
@@ -498,16 +495,16 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         // Set up currentLevel.block - the design of the level in Blocks
-        player.xPosition = currentLevel.startPosCol;
-        player.yPosition = currentLevel.startPosRow;
+        player.position.x = currentLevel.startPosCol;
+        player.position.y = currentLevel.startPosRow;
         startx = middlex - (currentLevel.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         starty = middley - (currentLevel.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         endx = 2 * middlex - startx;
         endy = 2 * middley - starty;
-        player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.xCoordinates = player.xTarg;
-        player.yCoordinates = player.yTarg;
+        player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.render.x = player.target.x;
+        player.render.y = player.target.y;
 
         if (currentLevel instanceof Level.BossLevel) {
             currentLevelHealth = ((Level.BossLevel) currentLevel).levelHP;
@@ -535,12 +532,12 @@ public class MainRunningThing extends javax.swing.JFrame {
         for (Block[] row : player.level.blocks)
             for (Block cell : row)
                 if (cell != null) cell.reset();
-        player.xPosition = player.level.startPosCol;
-        player.yPosition = player.level.startPosRow;
-        player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.xCoordinates = player.xTarg;
-        player.yCoordinates = player.yTarg;
+        player.position.x = player.level.startPosCol;
+        player.position.y = player.level.startPosRow;
+        player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.render.x = player.target.x;
+        player.render.y = player.target.y;
         clock.reset();
         if (player.level instanceof Level.BossLevel && !tasActive) {
             if (player.isPracticeMode && checkpointTimes.size() > 0) {
@@ -585,12 +582,12 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     //  checks the character when the character lands at its destination
     public void landChecker() {
-         if (player.xPosition < 0 || player.yPosition < 0 || player.xPosition >= player.level.blocks[0].length || player.yPosition >= player.level.blocks.length) {
+         if (player.position.x < 0 || player.position.y < 0 || player.position.x >= player.level.blocks[0].length || player.position.y >= player.level.blocks.length) {
             player.die();
         } else {
-            player.level.blocks[player.yPosition][player.xPosition].onLand(player);
-            player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-            player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.level.blocks[player.position.y][player.position.x].onLand(player);
+            player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             shouldRepaint = true;
         }
     }
@@ -619,7 +616,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.charState = CharacterState.NORMAL;
         }
         
-        if (player.xCoordinates == 0 && player.yCoordinates == 0) {
+        if (player.render.x == 0 && player.render.y == 0) {
             System.out.println("Oi, why's it at zero?");
             loadLevel();
         }
@@ -676,7 +673,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                 //Generates blasts at correct time
                 if (!(player.charState == CharacterState.DEAD) && !(player.charState == CharacterState.RESTARTING) && !(player.charState == CharacterState.WINE)) {
                     if (currBlock instanceof TargetingBlock) {
-                        ((TargetingBlock) currBlock).setTarget(player.xCoordinates, player.yCoordinates); // for now.
+                        ((TargetingBlock) currBlock).setTarget(player.render.x, player.render.y); // for now.
                     }
                     if (currBlock instanceof FiringBlock) {
                         FiringBlock fb = (FiringBlock) currBlock;
@@ -692,15 +689,15 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         if (player.level instanceof Level.BossLevel) {
-            blasts.addAll(((Level.BossLevel) player.level).generateBlasts(clock.getTimestamp(), player.xCoordinates, 
-                    player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+            blasts.addAll(((Level.BossLevel) player.level).generateBlasts(clock.getTimestamp(), player.render.x, 
+                    player.render.y, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
         }
 
         // Calculates where the blasts would be
-        int charYUpper = player.yCoordinates;
-        int charXLeft = player.xCoordinates;
-        int charYLower = player.yCoordinates + CHARACTER_WIDTH;
-        int charXRight = player.xCoordinates + CHARACTER_WIDTH;
+        int charYUpper = player.render.y;
+        int charXLeft = player.render.x;
+        int charYLower = player.render.y + CHARACTER_WIDTH;
+        int charXRight = player.render.x + CHARACTER_WIDTH;
         for (Projectile bla: blasts) {
             bla.moveTick();
             Area blaouch = bla.getCollision();
@@ -832,7 +829,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
 
             if (clock.getTimestamp() % 20 == 10) {
-                double ang = Math.atan2(player.yCoordinates - middley, player.xCoordinates - middlex);
+                double ang = Math.atan2(player.render.y - middley, player.render.x - middlex);
                 blasts.add(new SJBossFight.ArcingBone(ang + Math.PI / 2, -20 * Math.cos(ang), -20 * Math.sin(ang),  5 * Math.cos(ang), 5 * Math.sin(ang)));
                 blasts.get(blasts.size() - 1).moveTo(middlex, middley);
             }
@@ -859,7 +856,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         if (player.level instanceof Level.BossLevel) {
-            lineExplosions.addAll(((Level.BossLevel) player.level).generateLines(clock.getTimestamp(), player.xCoordinates, player.yCoordinates, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+            lineExplosions.addAll(((Level.BossLevel) player.level).generateLines(clock.getTimestamp(), player.render.x, player.render.y, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
         }
         
         for (Level.BossLevel.LineExploder currentLineExplosion: lineExplosions) {
@@ -874,12 +871,12 @@ public class MainRunningThing extends javax.swing.JFrame {
             sjbossTas.doTasStuff(startx, starty, clock.getTimestamp(), player);
         }
 
-        if (ouchArea.intersects(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
+        if (ouchArea.intersects(new Rectangle(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
             player.hurt();
         }
         
 
-        if (player.xPosition == player.level.endPosCol && player.yPosition == player.level.endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
+        if (player.position.x == player.level.endPosCol && player.position.y == player.level.endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (player.isPracticeMode) {
                 player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
@@ -922,7 +919,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
 
             if (player.isInvincible()) {
-                clipholder.add(new Area(new Rectangle(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH)));
+                clipholder.add(new Area(new Rectangle(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH)));
             }
 
             for (Level.BossLevel.LineExploder le: lineExplosions) {
@@ -956,11 +953,11 @@ public class MainRunningThing extends javax.swing.JFrame {
                 if (player.level.blocks[rowNumber][columnNumber] != null)
                     player.level.blocks[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
 
-        characterIconAlive.paintIcon(jPanel1, currG, player.xCoordinates, player.yCoordinates);
+        characterIconAlive.paintIcon(jPanel1, currG, player.render.x, player.render.y);
 
         if (player.isInvincible()) {
             currG.setColor(new Color(0, 0, 255, clock.getTimestamp() % 2 == 0 ? 50 : 100));
-            currG.fillRect(player.xCoordinates, player.yCoordinates, CHARACTER_WIDTH, CHARACTER_WIDTH);
+            currG.fillRect(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH);
         }
         
 
@@ -1046,7 +1043,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         timeend = Instant.now();
         // Gets the block to show up on first run
-        if (opacity > 15 || player.xCoordinates != player.xTarg || player.yCoordinates != player.yTarg || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || player.level instanceof Level.BossLevel) {
+        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || player.level instanceof Level.BossLevel) {
             if (letsseeifthisworks) {
                 letsseeifthisworks = false;
             }

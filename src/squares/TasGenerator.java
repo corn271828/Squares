@@ -30,8 +30,8 @@ public class TasGenerator {
     public boolean doTasStuff(int startx, int starty, int timestamp, Player player) {
         if (script.containsKey(timestamp)) {
             player.callMove(script.get(timestamp));
-            player.xTarg = startx + player.xPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-            player.yTarg = starty + player.yPosition * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             if (player.charState == CharacterState.NORMAL) {
                 if (player.level instanceof Level.BossLevel) 
                     player.charState = CharacterState.FASTMOVING;
