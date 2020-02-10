@@ -160,12 +160,6 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
             }
             throw new IllegalStateException();
         }
-
-        @Override
-        public Blast clone() {
-            return new Blast(getX(), getY(), direction, getSpeed(), icon);
-        }
-
     }
     @Override
     public Direction getDirection() {

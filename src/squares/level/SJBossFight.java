@@ -331,7 +331,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     @Override
     public int getPlayerHealth() { return levelHP; }
 
-    public static class FlyingBone extends Projectile {
+    public static class FlyingBone extends Projectile implements Cloneable {
         public static final Image bonypict = new ImageIcon("Pics/bonepic.png", "bonepic").getImage();
         public static final Image orangeBony = new ImageIcon("Pics/orangebone.png", "orangebone").getImage();
         public static final Image blueBony = new ImageIcon("Pics/bluebone.png", "bluebone").getImage();

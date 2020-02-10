@@ -73,12 +73,4 @@ public class LineExploderTester extends BaseLevel.LineExploder {
             return new Area(tx.createTransformedShape(new Rectangle(xregister - sans_width / 2, yregister - sans_height / 2, sans_width, 1000)));
         }
     }
-
-
-    @Override
-    public LineExploderTester clone() {
-        return new LineExploderTester(starttime, timelength, angle, startPos.x, startPos.y, plody);
-    }
-
-
 }

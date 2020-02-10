@@ -106,7 +106,7 @@ public class BaseLevel extends Level {
         return end;
     }
     
-    public static class LineExploder {
+    public static class LineExploder implements Cloneable {
         public final int starttime;
         public final int timelength;
         public final double angle; //Angle be in radians
