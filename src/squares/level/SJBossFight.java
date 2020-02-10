@@ -22,13 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 
 import squares.api.ResourceLoader;
 import squares.api.block.Projectile;
 import squares.api.block.BlockFactory;
 import squares.api.level.BossLevel;
 import squares.api.Coordinate;
+import squares.api.Clock;
 import squares.block.HighExplosion;
 
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
@@ -57,16 +57,17 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                                                                                  // adjusted on generate(); formula: 0 is center of 1st block, every 2 equals one spacing
     //Map<Integer, List<BaseLevel.LineExploder>> timeToLines = new HashMap<>();
     
-    List<FlyingBone> allTheBlasts = new java.util.LinkedList<>();
+    List<FlyingBone> allTheBlasts = new java.util.ArrayList<>();
     int[] timeToBlastIndex;
-    List<BaseLevel.LineExploder> allTheLines = new java.util.LinkedList<>();
+    List<BaseLevel.LineExploder> allTheLines = new java.util.ArrayList<>();
     int[] timeToLinesIndex;
 
     public static final int wI_WIDTH = 300;
     public static final int wI_HEIGHT = 300;
     public static ImageIcon warningIcon = new ImageIcon(new ImageIcon("Pics/warning750.png").getImage().getScaledInstance(wI_WIDTH, wI_HEIGHT, java.awt.Image.SCALE_SMOOTH));
 
-    int endtime, levelHP;
+    private int endtime, levelHP;
+    static public Clock clock;
 
     public SJBossFight(String[][] in, String[] args, BlockFactory bf) {
         this(in, args[0], Integer.parseInt(args[1]), new ResourceLoader("bossdata", args[2]), args[3], bf);
@@ -142,11 +143,11 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                     break;
 
                 case LINE_EXPLODER_TESTER_CHAR:
-                    LineExploderTester letx = new LineExploderTester(time, 20, Double.parseDouble(splitted[4]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    LineExploderTester letx = new LineExploderTester(time, 20, Double.parseDouble(splitted[4]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), clock);
                     timeToLines.get(time).add(letx);
                     break;
                 case SERIOUS_EXPLODER_CHAR:
-                    LineExploderTester lety = new LineExploderTester(time, 18, Double.parseDouble(splitted[4]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), LineExploderTester.sansSrous);
+                    LineExploderTester lety = new LineExploderTester(time, 18, Double.parseDouble(splitted[4]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), clock, LineExploderTester.sansSrous);
                     timeToLines.get(time).add(lety);
             }
         }
@@ -200,9 +201,12 @@ public class SJBossFight extends BaseLevel implements BossLevel {
         if (temp == null)
             return hold;
         for (BaseLevel.LineExploder lein : temp) {
-            BaseLevel.LineExploder kin = lein.clone();
-            kin.startPos.x = start.x + SPACING_BETWEEN_BLOCKS * kin.startPos.x / 2 + STANDARD_ICON_WIDTH / 2;
-            kin.startPos.y = start.y + SPACING_BETWEEN_BLOCKS * kin.startPos.y / 2 + STANDARD_ICON_WIDTH / 2;
+            assert lein instanceof Cloneable;
+            BaseLevel.LineExploder kin;
+            try { kin = lein.clone(); }
+            catch(CloneNotSupportedException e) { throw new IllegalArgumentException(e); } // TODO fix kludge
+            kin.moveTo(start.x + SPACING_BETWEEN_BLOCKS * kin.getX() / 2 + STANDARD_ICON_WIDTH / 2,
+                       start.y + SPACING_BETWEEN_BLOCKS * kin.getY() / 2 + STANDARD_ICON_WIDTH / 2);
             kin.updateRegister();
             hold.add(kin);
         }
@@ -399,7 +403,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
         }
 
         @Override
-        public void draw(Graphics g, JPanel jp) {
+        public void draw(Graphics g, Component jp) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.rotate(angle);
             icon.paintIcon(jp, g2d, xregister - picwidth / 2, yregister - picheight / 2);
@@ -516,11 +520,11 @@ public class SJBossFight extends BaseLevel implements BossLevel {
             }
 
             @Override
-            public void drawXPlosion(Component c, Graphics g, int timestamp) {
+            public void draw(Graphics g, Component c) {
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.rotate(angle);
 
-                int opacity = opacities[timestamp - starttime];
+                int opacity = opacities[clock.getTimestamp() - starttime];
                 g2d.setColor(new Color(0, 100, 0, opacity));
                 g2d.fillRect(xregister - width / 2, yregister, width, 1000);
                 g2d.setColor(new Color(0, 200, 0, opacity));
@@ -532,12 +536,12 @@ public class SJBossFight extends BaseLevel implements BossLevel {
             }
 
             @Override
-            public Area xplosionOuchArea(int timestamp) {
+            public Area getCollision() {
                 return new Area(tx.createTransformedShape(new Rectangle(xregister - width / 2, yregister, width, 1000)));
             }
 
             @Override
-            public Area xplosionClipArea(int timestamp) {
+            public Area getClip() {
                 return new Area(tx.createTransformedShape(new Rectangle(xregister - width / 2, yregister, width, 1000)));
             }
         }

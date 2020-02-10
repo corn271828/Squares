@@ -114,9 +114,10 @@ public class MainRunningThing extends javax.swing.JFrame {
         middle.x = jPanel1.getWidth() / 2;
         middle.y = jPanel1.getHeight() / 2;
         RegistrationHandler.init();
-        levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"), new BlockFactory());
         clock = new Clock();
         player = new Player(clock);
+        squares.level.SJBossFight.clock = clock;
+        levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"), new BlockFactory());
         player.level = levelLoader.getCurrent();
         player.deathCb = this::death;
 
@@ -709,17 +710,17 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.level.label.equals("0")) {
             if (clock.getTimestamp() % 30 == 10) {
                 lineExplosions.add(new LineExploderTester(clock.getTimestamp(), 20, Math.PI,
-                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80 + SPACING_BETWEEN_BLOCKS * 6));
+                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80 + SPACING_BETWEEN_BLOCKS * 6, clock));
             }
 
             if (clock.getTimestamp() % 30 == 5) {
                 lineExplosions.add(new LineExploderTester(clock.getTimestamp(), 20, 0,
-                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80));
+                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80, clock));
             }
 
             if (clock.getTimestamp() % 15 == 10) {
                 lineExplosions.add(new LineExploderTester(clock.getTimestamp(), 20, 0,
-                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80));
+                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80, clock));
             }
 
             if (clock.getTimestamp() % 15 == 5) {
@@ -857,10 +858,10 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         
         for (BaseLevel.LineExploder currentLineExplosion: lineExplosions) {
-            Area ouchyline = currentLineExplosion.xplosionOuchArea(clock.getTimestamp());
+            Area ouchyline = currentLineExplosion.getCollision());
             Rectangle rect = ouchyline.getBounds();
             if (rect.getMinX() <= charXRight && rect.getMaxX() >= charXLeft && rect.getMinY() <= charYUpper && rect.getMaxY() >= charYLower) {
-                ouchArea.add(currentLineExplosion.xplosionOuchArea(clock.getTimestamp()));
+                ouchArea.add(currentLineExplosion.getCollision());
             }
         }
 
@@ -920,7 +921,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
 
             for (BaseLevel.LineExploder le: lineExplosions) {
-                clipholder.add(le.xplosionClipArea(clock.getTimestamp()));
+                clipholder.add(le.getClip());
             }
 
             if (clock.getTimestamp() >= 314 && clock.getTimestamp() <= 335) { // Sets clip for the pie
@@ -996,7 +997,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         // Gets rid of explosions at correct time
         for (Iterator<BaseLevel.LineExploder> lit = lineExplosions.iterator(); lit.hasNext();) {
             BaseLevel.LineExploder le = lit.next();
-            le.drawXPlosion(jPanel1, currG, clock.getTimestamp());
+            le.draw(jPanel1, currG);
             if (le.starttime + le.timelength <= clock.getTimestamp()) {
                 lit.remove();
             }

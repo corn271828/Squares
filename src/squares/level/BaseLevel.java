@@ -19,6 +19,7 @@ import java.util.Collections;
 
 import squares.api.ResourceLoader;
 import squares.api.block.Projectile;
+import squares.api.block.Entity;
 import squares.api.block.Block;
 import squares.api.block.BlockFactory;
 import squares.api.level.Level;
@@ -106,46 +107,45 @@ public class BaseLevel extends Level {
         return end;
     }
     
-    public static class LineExploder implements Cloneable {
+    public static class LineExploder extends Entity {
         public final int starttime;
         public final int timelength;
         public final double angle; //Angle be in radians
-        public final Coordinate startPos;
         int xregister;
         int yregister;
         AffineTransform tx;
 
         public LineExploder(int stt, int tl, double ang, int sxp, int syp) {
+            super(sxp, syp);
             starttime = stt;
             timelength = tl;
             angle = ang;
-            startPos = new Coordinate(sxp, syp);
-            xregister = (int) (startPos.x * Math.cos(angle) + startPos.y * Math.sin(angle));
-            yregister = (int) (-startPos.x * Math.sin(angle) + startPos.y * Math.cos(angle));
+            updateRegister();
             tx = new AffineTransform();
             tx.rotate(angle);
         }
 
-        public void drawXPlosion(Component c, Graphics g, int timestamp) {}
+        @Override
+        public void draw(Graphics g, Component c) {}
 
-        public Area xplosionOuchArea(int timestamp) {
+        @Override
+        public Area getCollision() {
             return new Area();
         }
 
-        public Area xplosionClipArea(int timestamp) {
+        @Override
+        public Area getClip() {
             return new Area();
         }
 
         public void updateRegister() {
-            xregister = (int) (startPos.x * Math.cos(angle) + startPos.y * Math.sin(angle));
-            yregister = (int) (-startPos.x * Math.sin(angle) + startPos.y * Math.cos(angle));
+            xregister = (int) (getX() * Math.cos(angle) + getY() * Math.sin(angle));
+            yregister = (int) (-getX() * Math.sin(angle) + getY() * Math.cos(angle));
         }
-
         @Override
-        public LineExploder clone() {
-            return new LineExploder(starttime, timelength, angle, startPos.x, startPos.y);
+        public LineExploder clone() throws CloneNotSupportedException {
+            throw new CloneNotSupportedException();
         }
-
     }
 
 }
