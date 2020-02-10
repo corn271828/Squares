@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import squares.Player;
 import squares.api.CharacterState;
 import squares.api.Direction;
+import squares.api.block.Block;
 import squares.api.block.DirectedBlock;
 
 import static squares.api.RenderingConstants.BORDER_WIDTH;

@@ -26,7 +26,7 @@ import squares.api.AudioManager;
 import squares.api.Clock;
 import squares.api.block.Projectile;
 import squares.block.BlasterBlock;
-import squares.block.Block;
+import squares.api.block.Block;
 import squares.block.CannonBlock;
 import squares.block.HighExplosion;
 import squares.block.LauncherBlock;
@@ -118,8 +118,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         jButton1.setVisible(true);
         middlex = jPanel1.getWidth() / 2;
         middley = jPanel1.getHeight() / 2;
-        player = new Player();
-        clock = player.clock;
+        clock = new Clock();
+        player = new Player(clock);
         player.level = levelLoader.getCurrent();
         player.deathCb = this::death;
 

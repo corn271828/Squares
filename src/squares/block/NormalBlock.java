@@ -8,6 +8,7 @@ package squares.block;
 import javax.swing.ImageIcon;
 import squares.Player;
 import squares.api.CharacterState;
+import squares.api.block.Block;
 
 /**
  *

@@ -35,8 +35,12 @@ public class Player {
     public static final int DOWN_KEY_PRESS = 40;
     public static final int UP_KEY_PRESS = 38;
 
-    public Clock clock = new Clock();
+    public Clock clock;
     public Level level;
+
+    public Player(Clock clock) {
+        this.clock = clock;
+    }
     
     public boolean isInvincible() {
         return iftime + itime >= clock.getTimestamp();

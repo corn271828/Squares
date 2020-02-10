@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import squares.Player;
 
 import squares.api.Direction;
+import squares.api.block.Block;
 import squares.api.block.DirectedBlock;
 import squares.api.block.FiringBlock;
 import squares.api.block.Projectile;

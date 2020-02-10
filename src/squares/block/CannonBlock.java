@@ -10,6 +10,7 @@ import java.awt.geom.Area;
 import javax.swing.ImageIcon;
 
 import squares.Player;
+import squares.api.block.Block;
 import squares.api.block.Projectile;
 import squares.api.block.FiringBlock;
 import squares.api.block.TargetingBlock;

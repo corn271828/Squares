@@ -6,7 +6,7 @@
 package squares.level;
 
 import squares.block.LauncherBlock;
-import squares.block.Block;
+import squares.api.block.Block;
 import squares.block.EndingBlock;
 import squares.block.BlasterBlock;
 import squares.block.CannonBlock;
