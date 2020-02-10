@@ -362,7 +362,7 @@ public class SJBossFight extends Level.BossLevel {
             this(0, 0, d, bs, i);
         }
         public FlyingBone(int x, int y, double d, int bs, Image i) {
-            super(x, y, bs, new ImageIcon(i));
+            super(x, y, bs, new ImageIcon(i.getScaledInstance(100, 30, java.awt.Image.SCALE_SMOOTH)));
             image = i;
             angle = d;
             tx = new AffineTransform();
