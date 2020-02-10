@@ -2,7 +2,7 @@ package squares.api.block;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Function;
+import java.util.function.Function;
 
 import squares.api.block.Block;
 
