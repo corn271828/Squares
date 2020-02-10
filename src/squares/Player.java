@@ -5,6 +5,7 @@ import java.awt.geom.Area;
 import java.util.function.Consumer;
 
 import squares.api.CharacterState;
+import squares.api.Clock;
 import squares.level.Level;
 
 import static squares.api.RenderingConstants.CHARACTER_FASTSPEED;
@@ -34,8 +35,11 @@ public class Player {
     public static final int DOWN_KEY_PRESS = 40;
     public static final int UP_KEY_PRESS = 38;
 
-    public boolean isInvincible(int cframe) {
-        return iftime + itime >= cframe;
+    public Clock clock = new Clock();
+    public Level level;
+    
+    public boolean isInvincible() {
+        return iftime + itime >= clock.getTimestamp();
     }
 
     public boolean canMoveRight() {
@@ -111,12 +115,12 @@ public class Player {
         return xCoordinates == xTarg && yCoordinates == yTarg; // for landchecker
     }
 
-    public void hurt(int ts) {
-        if (!isInvincible(ts) && charState.vulnerable) {
+    public void hurt() {
+        if (!isInvincible() && charState.vulnerable) {
             if (--hp <= 0) {
                 die();
             } else {
-                iftime = ts;
+                iftime = clock.getTimestamp();
             }
         }
     }
@@ -129,5 +133,4 @@ public class Player {
             deathCb.accept(this);
         }
     }
-    public Level level;
 }
