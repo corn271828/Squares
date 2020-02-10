@@ -725,7 +725,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
             if (clock.getTimestamp() % 15 == 5) {
                 lineExplosions.add(new LineExploderTester(clock.getTimestamp(), 20, Math.PI * .5,
-                        start.x + SPACING_BETWEEN_BLOCKS * 4 + 2 * STANDARD_ICON_WIDTH, start.y - 80 + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 5) + 1)));
+                        start.x + SPACING_BETWEEN_BLOCKS * 4 + 2 * STANDARD_ICON_WIDTH, start.y - 80 + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 5) + 1), clock));
             }
 
         }
@@ -858,7 +858,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         
         for (BaseLevel.LineExploder currentLineExplosion: lineExplosions) {
-            Area ouchyline = currentLineExplosion.getCollision());
+            Area ouchyline = currentLineExplosion.getCollision();
             Rectangle rect = ouchyline.getBounds();
             if (rect.getMinX() <= charXRight && rect.getMaxX() >= charXLeft && rect.getMinY() <= charYUpper && rect.getMaxY() >= charYLower) {
                 ouchArea.add(currentLineExplosion.getCollision());
@@ -997,7 +997,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         // Gets rid of explosions at correct time
         for (Iterator<BaseLevel.LineExploder> lit = lineExplosions.iterator(); lit.hasNext();) {
             BaseLevel.LineExploder le = lit.next();
-            le.draw(jPanel1, currG);
+            le.draw(currG, jPanel1);
             if (le.starttime + le.timelength <= clock.getTimestamp()) {
                 lit.remove();
             }
