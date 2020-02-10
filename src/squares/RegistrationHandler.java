@@ -47,9 +47,9 @@ public class RegistrationHandler {
         case '>':
             return Direction.RIGHT;
         case 'v':
-            return Direction.LEFT;
-        case '<':
             return Direction.DOWN;
+        case '<':
+            return Direction.LEFT;
         }
         return null;
     }
