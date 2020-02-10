@@ -5,7 +5,7 @@
  */
 package squares.block;
 
-import squares.level.Level;
+import squares.level.BaseLevel;
 
 /**
  *
@@ -13,5 +13,5 @@ import squares.level.Level;
  */
 
 public interface HighExplosion {
-    public Level.BossLevel.LineExploder getLineExplosion(int startime, double ang, int starx, int stary);
+    public BaseLevel.LineExploder getLineExplosion(int startime, double ang, int starx, int stary);
 }

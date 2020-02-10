@@ -18,9 +18,9 @@ public class Player {
     public static final int PRACTICE_MODE_LIVES = 100;
 
     public CharacterState charState = CharacterState.NORMAL;
-    public Coordinate position; // Target pos, grid coords
-    public Coordinate target; // Target position of the character in panel coordinates
-    public Coordinate render; //Position of the upper left hand corner of the character pic in panel coordinates
+    public Coordinate position = new Coordinate(0, 0); // Target pos, grid coords
+    public Coordinate target   = new Coordinate(0, 0); // Target position of the character in panel coordinates
+    public Coordinate render   = new Coordinate(0, 0); // Position of the upper left hand corner of the character pic in panel coordinates
     public Consumer<Player> deathCb;
 
     public int iftime = -11;

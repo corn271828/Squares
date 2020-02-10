@@ -66,25 +66,27 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     public static final int wI_HEIGHT = 300;
     public static ImageIcon warningIcon = new ImageIcon(new ImageIcon("Pics/warning750.png").getImage().getScaledInstance(wI_WIDTH, wI_HEIGHT, java.awt.Image.SCALE_SMOOTH));
 
+    int endtime, levelHP;
+
     public SJBossFight(String[][] in, String[] args, BlockFactory bf) {
         this(in, args[0], Integer.parseInt(args[1]), new ResourceLoader("bossdata", args[2]), args[3], bf);
     }
 
     public SJBossFight(String[][] in, String label, int hp, ResourceLoader input, String code, BlockFactory bf) {
-        super(in, label, code, input, bf);
+        super(in, label, code, bf);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
-        generateMaps();
+        generateMaps(parseControls(input));
         levelHP = hp;
     }
 
-    private void generateMaps() {
+    private void generateMaps(String[] controls) {
         Map<Integer, List<FlyingBone>> timeToBlasts = new HashMap<>();
         Map<Integer, List<BaseLevel.LineExploder>> timeToLines = new HashMap<>();
         for (int time = 0; time <= endtime + 1; time++) {
             timeToBlasts.put(time, new ArrayList<>());
             timeToLines.put(time, new ArrayList<>());
         }
-        for (String control : controls) {
+        for (String control: controls) {
             String[] splitted = control.trim().split(" ");
             int time = Integer.parseInt(splitted[0]);
             FlyingBone hold;
@@ -174,7 +176,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
             return hold;
         for (FlyingBone bla : temp) {
             FlyingBone kin = bla.clone();
-            kin.moveTo(startx + SPACING_BETWEEN_BLOCKS * bla.getX() / 2 + STANDARD_ICON_WIDTH / 2, starty + SPACING_BETWEEN_BLOCKS * bla.getY() / 2 + STANDARD_ICON_WIDTH / 2);
+            kin.moveTo(start.x + SPACING_BETWEEN_BLOCKS * bla.getX() / 2 + STANDARD_ICON_WIDTH / 2, start.y + SPACING_BETWEEN_BLOCKS * bla.getY() / 2 + STANDARD_ICON_WIDTH / 2);
             if (kin instanceof ArcingBone && ((ArcingBone) kin).angle > 900) {
                 ArcingBone ab = (ArcingBone) kin;
                 ab.angle = Math.atan2(render.x - kin.getX(), render.y - kin.getY());
@@ -199,8 +201,8 @@ public class SJBossFight extends BaseLevel implements BossLevel {
             return hold;
         for (BaseLevel.LineExploder lein : temp) {
             BaseLevel.LineExploder kin = lein.clone();
-            kin.startposition.x = startx + SPACING_BETWEEN_BLOCKS * kin.startposition.x / 2 + STANDARD_ICON_WIDTH / 2;
-            kin.startposition.y = starty + SPACING_BETWEEN_BLOCKS * kin.startposition.y / 2 + STANDARD_ICON_WIDTH / 2;
+            kin.startPos.x = start.x + SPACING_BETWEEN_BLOCKS * kin.startPos.x / 2 + STANDARD_ICON_WIDTH / 2;
+            kin.startPos.y = start.y + SPACING_BETWEEN_BLOCKS * kin.startPos.y / 2 + STANDARD_ICON_WIDTH / 2;
             kin.updateRegister();
             hold.add(kin);
         }
@@ -226,33 +228,33 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
     @Override
-    public void drawBackground(Graphics g, int timestamp, Component c, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+    public void drawBackground(Graphics g, int timestamp, Component c, Coordinate start) {
 
     }
 
-    public Area getForegroundClip(int timestamp, Component c, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+    public Area getForegroundClip(int timestamp, Component c, Coordinate start) {
         Area ret = new Area();
         if (timestamp >= 165 && timestamp < 177)
-            ret.add(new Area(new Rectangle(startx + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    starty, warningIcon.getIconWidth(), warningIcon.getIconHeight())));
+            ret.add(new Area(new Rectangle(start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
+                    start.y, warningIcon.getIconWidth(), warningIcon.getIconHeight())));
 
         if (timestamp >= 500 && timestamp < 511)
-            ret.add(new Area(new Rectangle(startx + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    starty, warningIcon.getIconWidth(), warningIcon.getIconHeight())));
+            ret.add(new Area(new Rectangle(start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
+                    start.y, warningIcon.getIconWidth(), warningIcon.getIconHeight())));
 
         if (timestamp >= 520 && timestamp < 531)
-            ret.add(new Area(new Rectangle(startx + SPACING_BETWEEN_BLOCKS * 6 + STANDARD_ICON_WIDTH, 
-                    starty + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2,
+            ret.add(new Area(new Rectangle(start.x + SPACING_BETWEEN_BLOCKS * 6 + STANDARD_ICON_WIDTH, 
+                    start.y + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2,
                     warningIcon.getIconWidth(), warningIcon.getIconHeight())));
 
         if (timestamp >= 540 && timestamp < 551)
-            ret.add(new Area(new Rectangle(startx, 
-                    starty + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2,
+            ret.add(new Area(new Rectangle(start.x, 
+                    start.y + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2,
                     warningIcon.getIconWidth(), warningIcon.getIconHeight())));
 
         if (timestamp >= 560 && timestamp < 571)
-            ret.add(new Area(new Rectangle(startx + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    starty + SPACING_BETWEEN_BLOCKS * 5 + STANDARD_ICON_WIDTH,
+            ret.add(new Area(new Rectangle(start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
+                    start.y + SPACING_BETWEEN_BLOCKS * 5 + STANDARD_ICON_WIDTH,
                     warningIcon.getIconWidth(), warningIcon.getIconHeight())));
 
         if (timestamp <= FIRST_BOSS_TIME)
@@ -264,53 +266,53 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
     @Override
-    public void drawForeground(Graphics g, int timestamp, Component c, int startx, int starty, int STANDARD_ICON_WIDTH, int SPACING_BETWEEN_BLOCKS) {
+    public void drawForeground(Graphics g, int timestamp, Component c, Coordinate start) {
         Area ret = new Area();
 
         // Big bone warning signs
         if (timestamp >= 165 && timestamp < 176 && timestamp % 2 == 1) {
-            warningIcon.paintIcon(c, g, startx + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    starty);
+            warningIcon.paintIcon(c, g, start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
+                    start.y);
         }
 
         if (timestamp >= 500 && timestamp < 510 && timestamp % 2 == 1) {
-            warningIcon.paintIcon(c, g, startx + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    starty);
+            warningIcon.paintIcon(c, g, start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
+                    start.y);
         }
 
         if (timestamp >= 520 && timestamp < 530 && timestamp % 2 == 1) {
-            warningIcon.paintIcon(c, g, startx + SPACING_BETWEEN_BLOCKS * 6 + STANDARD_ICON_WIDTH, 
-                    starty + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2);
+            warningIcon.paintIcon(c, g, start.x + SPACING_BETWEEN_BLOCKS * 6 + STANDARD_ICON_WIDTH, 
+                    start.y + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2);
         }
 
         if (timestamp >= 540 && timestamp < 550 && timestamp % 2 == 1) {
-            warningIcon.paintIcon(c, g, startx, 
-                    starty + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2);
+            warningIcon.paintIcon(c, g, start.x, 
+                    start.y + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2);
         }
 
         if (timestamp >= 560 && timestamp < 570 && timestamp % 2 == 1) {
-            warningIcon.paintIcon(c, g, startx + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    starty + SPACING_BETWEEN_BLOCKS * 5 + STANDARD_ICON_WIDTH);
+            warningIcon.paintIcon(c, g, start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
+                    start.y + SPACING_BETWEEN_BLOCKS * 5 + STANDARD_ICON_WIDTH);
         }
 
         if (timestamp >= 1100 && timestamp <= 1130){
             g.setFont(new Font("Comic Sans MS", Font.BOLD, 150));
             g.setColor(Color.white);
-            g.drawString("Get ready....", startx + SPACING_BETWEEN_BLOCKS + (int) (Math.random() * 10), starty + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 10));
+            g.drawString("Get ready....", start.x + SPACING_BETWEEN_BLOCKS + (int) (Math.random() * 10), start.y + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 10));
         }
 
         if (timestamp >= 1130 && timestamp <= 1170){
             g.setFont(new Font("Comic Sans MS", Font.BOLD, 150));
             g.setColor(Color.red);
-            g.drawString("This is", startx + SPACING_BETWEEN_BLOCKS + (int) (Math.random() * 10), starty + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 10));
-            g.drawString(" the end.", startx + SPACING_BETWEEN_BLOCKS + (int) (Math.random() * 10), starty + SPACING_BETWEEN_BLOCKS * 4 + (int) (Math.random() * 10));
+            g.drawString("This is", start.x + SPACING_BETWEEN_BLOCKS + (int) (Math.random() * 10), start.y + SPACING_BETWEEN_BLOCKS * 3 + (int) (Math.random() * 10));
+            g.drawString(" the end.", start.x + SPACING_BETWEEN_BLOCKS + (int) (Math.random() * 10), start.y + SPACING_BETWEEN_BLOCKS * 4 + (int) (Math.random() * 10));
         }
 
         if (timestamp >= 1170 && timestamp <= 1200){
             g.setFont(new Font("Comic Sans MS", Font.BOLD, 30));
             g.setColor(Color.white);
-            g.drawString("Note: Bone colors don't mean anything;", startx + SPACING_BETWEEN_BLOCKS, starty + SPACING_BETWEEN_BLOCKS * 7);
-            g.drawString("They just help you see which direction they're going.", startx + SPACING_BETWEEN_BLOCKS, starty + (int) (SPACING_BETWEEN_BLOCKS * 7.3));
+            g.drawString("Note: Bone colors don't mean anything;", start.x + SPACING_BETWEEN_BLOCKS, start.y + SPACING_BETWEEN_BLOCKS * 7);
+            g.drawString("They just help you see which direction they're going.", start.x + SPACING_BETWEEN_BLOCKS, start.y + (int) (SPACING_BETWEEN_BLOCKS * 7.3));
         }
 
         // Progress bar

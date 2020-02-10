@@ -8,6 +8,7 @@ import java.util.function.BiFunction;
 
 import squares.api.ResourceLoader;
 import squares.api.block.BlockFactory;
+import squares.api.level.Level;
 
 public class LevelLoader {
     private int index = 0;
@@ -68,7 +69,7 @@ public class LevelLoader {
         return levels.length;
     }
     public String getCodeForLevel(int index) {
-        return levels[index].getCode();
+        return levels[index].code;
     }
     public void setLevelIndex(int ind) {
         index = ind;

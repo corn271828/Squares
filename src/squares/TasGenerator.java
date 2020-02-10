@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import squares.api.CharacterState;
+import squares.api.Coordinate;
 import squares.api.ResourceLoader;
 import squares.api.block.Block;
-import squares.level.Level;
+import squares.api.level.Level;
+import squares.api.level.BossLevel;
 
 import static squares.api.RenderingConstants.*;
 
@@ -27,13 +29,13 @@ public class TasGenerator {
         }
     }
 
-    public boolean doTasStuff(int startx, int starty, int timestamp, Player player) {
+    public boolean doTasStuff(Coordinate start, int timestamp, Player player) {
         if (script.containsKey(timestamp)) {
             player.callMove(script.get(timestamp));
-            player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-            player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             if (player.charState == CharacterState.NORMAL) {
-                if (player.level instanceof Level.BossLevel) 
+                if (player.level instanceof BossLevel) 
                     player.charState = CharacterState.FASTMOVING;
                 else
                     player.charState = CharacterState.MOVING;

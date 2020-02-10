@@ -46,30 +46,30 @@ public class LauncherBlock extends Block implements DirectedBlock {
     public void onLand(Player player) {
         switch(getDirection()) {
             case UP :
-                while(player.position.y > 0 && (player.level.blocks[player.position.y - 1][player.position.x] != null && !player.level.blocks[player.position.y - 1][player.position.x].stepable
-                        || player.level.blocks[player.position.y - 1][player.position.x] == null))
+                while(player.position.y > 0 && (player.level.blockAt(player.position.x, player.position.y - 1) != null && !player.level.blockAt(player.position.x, player.position.y - 1).stepable
+                        || player.level.blockAt(player.position.x, player.position.y - 1) == null))
                     player.position.y--;
                 player.position.y--;
                 player.charState = CharacterState.FASTMOVING;
                 break;
             case RIGHT :
-                while(player.position.x < player.level.blocks[0].length && (player.level.blocks[player.position.y][player.position.x + 1] != null &&
-                        !player.level.blocks[player.position.y][player.position.x + 1].stepable || player.level.blocks[player.position.y][player.position.x + 1] == null )) {
+                while(player.position.x < player.level.xSize() && (player.level.blockAt(player.position.x + 1, player.position.y) != null &&
+                        !player.level.blockAt(player.position.x + 1, player.position.y).stepable || player.level.blockAt(player.position.x + 1, player.position.y) == null )) {
                      player.position.x++;
                 }
                 player.position.x++;
                 player.charState = CharacterState.FASTMOVING;
                 break;
             case DOWN :
-                while(player.position.y < player.level.blocks.length && (player.level.blocks[player.position.y + 1][player.position.x] != null && 
-                        !player.level.blocks[player.position.y + 1][player.position.x].stepable  || player.level.blocks[player.position.y + 1][player.position.x] == null))
+                while(player.position.y < player.level.ySize() && (player.level.blockAt(player.position.x, player.position.y + 1) != null && 
+                        !player.level.blockAt(player.position.x, player.position.y + 1).stepable  || player.level.blockAt(player.position.x, player.position.y + 1) == null))
                     player.position.y++;
                 player.position.y++;
                 player.charState = CharacterState.FASTMOVING;
                 break;
             case LEFT :
-                while(player.position.x > 0 && (player.level.blocks[player.position.y][player.position.x - 1] != null 
-                        && !player.level.blocks[player.position.y][player.position.x - 1].stepable  || player.level.blocks[player.position.y][player.position.x - 1] == null ))
+                while(player.position.x > 0 && (player.level.blockAt(player.position.x - 1, player.position.y) != null 
+                        && !player.level.blockAt(player.position.x - 1, player.position.y).stepable  || player.level.blockAt(player.position.x - 1, player.position.y) == null ))
                     player.position.x--;
                 player.position.x--;
                 player.charState = CharacterState.FASTMOVING;

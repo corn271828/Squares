@@ -5,6 +5,8 @@
  */
 package squares.level;
 
+import java.awt.Graphics;
+import java.awt.Component;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.io.BufferedReader;
@@ -20,6 +22,7 @@ import squares.api.block.Projectile;
 import squares.api.block.Block;
 import squares.api.block.BlockFactory;
 import squares.api.level.Level;
+import squares.api.Coordinate;
 
 /**
  *
@@ -28,9 +31,7 @@ import squares.api.level.Level;
 
 // Holds the layout of a single level
 public class BaseLevel extends Level {
-    public final String levelLabel; // Name of Level
     protected String[][] design; // level layout
-    private String levelCode;
 
     public final Block[][] blocks;
 
@@ -59,14 +60,12 @@ public class BaseLevel extends Level {
         blocks = new Block[in.length][in[0].length];
         for (int rowNumber = 0; rowNumber < in.length; rowNumber++)
             for (int columnNumber = 0; columnNumber < in[0].length; columnNumber++)
-                blocks[rowNumber][columnNumber] = bf.makeBlock(in[rowNumber][columnNumber], rowNumber, columnNumber);
+                blocks[rowNumber][columnNumber] = bf.makeBlock(in[rowNumber][columnNumber], columnNumber, rowNumber);
 
         bf.removeBlockListener('X', startpos);
         bf.removeBlockListener('O', endpos);
         start = new Coordinate(temp[0], temp[1]);
-        startPosCol = temp[1];
-        endPosRow = temp[2];
-        endPosCol = temp[3];
+        end = new Coordinate(temp[2], temp[3]);
     }
 
     private static String eviscerator(String input) {
@@ -78,6 +77,12 @@ public class BaseLevel extends Level {
         for (int i = 1; i < input.length(); i+=3)
             ret = ret.concat(String.valueOf(input.charAt(i)));
         return ret;
+    }
+    @Override
+    public void reset() {
+        for (Block[] row : blocks)
+            for (Block cell : row)
+                if (cell != null) cell.reset();
     }
 
     @Override
@@ -92,12 +97,20 @@ public class BaseLevel extends Level {
     public int ySize() {
         return blocks.length;
     }
+    @Override
+    public Coordinate getStartPos() {
+        return start;
+    }
+    @Override
+    public Coordinate getEndPos() {
+        return end;
+    }
     
     public static class LineExploder {
-        public int starttime;
-        public int timelength;
-        public double angle; //Angle be in radians
-        public Coordinate startPos;
+        public final int starttime;
+        public final int timelength;
+        public final double angle; //Angle be in radians
+        public final Coordinate startPos;
         int xregister;
         int yregister;
         AffineTransform tx;
@@ -113,9 +126,7 @@ public class BaseLevel extends Level {
             tx.rotate(angle);
         }
 
-        public void drawXPlosion(Component c, Graphics g, int timestamp) {
-
-        }
+        public void drawXPlosion(Component c, Graphics g, int timestamp) {}
 
         public Area xplosionOuchArea(int timestamp) {
             return new Area();

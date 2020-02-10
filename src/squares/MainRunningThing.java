@@ -24,13 +24,16 @@ import squares.api.AudioManager;
 import squares.api.CharacterState;
 import squares.api.Clock;
 import squares.api.ResourceLoader;
+import squares.api.Coordinate;
 import squares.api.block.Block;
 import squares.api.block.FiringBlock;
 import squares.api.block.Projectile;
 import squares.api.block.TargetingBlock;
 import squares.api.block.BlockFactory;
+import squares.api.level.Level;
+import squares.api.level.BossLevel;
 import squares.block.HighExplosion;
-import squares.level.Level;
+import squares.level.BaseLevel;
 import squares.level.LevelLoader;
 import squares.level.LineExploderTester;
 import squares.level.SJBossFight;
@@ -58,20 +61,17 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int holdLevelIndex = maxLevelIndex;
 
     public List<Projectile> blasts = new ArrayList<>();
-    public List<Level.BossLevel.LineExploder> lineExplosions = new ArrayList<>();
+    public List<BaseLevel.LineExploder> lineExplosions = new ArrayList<>();
 
     public Color transitioning = null;
     public boolean isSwitching = false;
     public int opacity = 0;
     public boolean letsseeifthisworks = true;
-    public int middlex; // middle of panel
-    public int middley;
-    public int startx; // where to start drawing block
-    public int starty;
+    public Coordinate middle = new Coordinate(0, 0); // middle of panel
+    public Coordinate start  = new Coordinate(0, 0); // where to start drawing block
+    public Coordinate end    = new Coordinate(0, 0); // Border of block drawings; used to determine when ammunition disappears
     public boolean shouldRepaint = false;
     public Clock clock;
-    public int endx; //Border of block drawings; used to determine when ammunition disappears
-    public int endy;
 
     public int currentLevelHealth = 1;
 
@@ -111,8 +111,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         jText_levelCode.setFocusable(false);
         jSpinner_Level.setFocusable(false);
         jButton1.setVisible(true);
-        middlex = jPanel1.getWidth() / 2;
-        middley = jPanel1.getHeight() / 2;
+        middle.x = jPanel1.getWidth() / 2;
+        middle.y = jPanel1.getHeight() / 2;
         RegistrationHandler.init();
         levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"), new BlockFactory());
         clock = new Clock();
@@ -298,7 +298,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     @SuppressWarnings("fallthrough")
     private void jPanel1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyReleased
         // TODO add your handling code here:
-        if (player.level.blocks.length == 0) {
+        if (player.level.ySize() == 0) {
             return;
         }
 
@@ -325,12 +325,12 @@ public class MainRunningThing extends javax.swing.JFrame {
                 levelFinished();
                 break;
             case 'C': // add checkpoint
-                if (player.level instanceof Level.BossLevel && player.isPracticeMode) {
+                if (player.level instanceof BossLevel && player.isPracticeMode) {
                     checkpointTimes.add(clock.getTimestamp());
                 }
                 break;
             case 'V': // remove checkpoint
-                if (player.level instanceof Level.BossLevel && player.isPracticeMode) {
+                if (player.level instanceof BossLevel && player.isPracticeMode) {
                     if (checkpointTimes.size() > 0) {
                         checkpointTimes.pollLast();
                     }
@@ -348,10 +348,10 @@ public class MainRunningThing extends javax.swing.JFrame {
         
         player.callMove(evt.getKeyCode());
         
-        player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         if (player.charState == CharacterState.NORMAL) {
-            if (player.level instanceof Level.BossLevel) 
+            if (player.level instanceof BossLevel) 
                 player.charState = CharacterState.FASTMOVING;
             else
                 player.charState = CharacterState.MOVING;
@@ -370,8 +370,8 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     private void formPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_formPropertyChange
         // TODO add your handling code here:
-        middlex = jPanel1.getWidth() / 2;
-        middley = jPanel1.getHeight() / 2;
+        middle.x = jPanel1.getWidth() / 2;
+        middle.y = jPanel1.getHeight() / 2;
     }//GEN-LAST:event_formPropertyChange
 
     private void jText_levelCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jText_levelCodeActionPerformed
@@ -486,7 +486,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         blasts.clear();
         Level currentLevel = player.level;
 
-        if (player.level instanceof Level.BossLevel && !tasActive) {
+        if (player.level instanceof BossLevel && !tasActive) {
             if (player.isPracticeMode && checkpointTimes.size() > 0) {
                 clock.setTime(checkpointTimes.last());
             } else {
@@ -495,19 +495,19 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         // Set up currentLevel.block - the design of the level in Blocks
-        player.position.x = currentLevel.startPosCol;
-        player.position.y = currentLevel.startPosRow;
-        startx = middlex - (currentLevel.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-        starty = middley - (currentLevel.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-        endx = 2 * middlex - startx;
-        endy = 2 * middley - starty;
-        player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.position.x = currentLevel.getStartPos().x;
+        player.position.y = currentLevel.getStartPos().y;
+        start.x = middle.x - (currentLevel.xSize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        start.y = middle.y - (currentLevel.ySize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        end.x = 2 * middle.x - start.x;
+        end.y = 2 * middle.y - start.y;
+        player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         player.render.x = player.target.x;
         player.render.y = player.target.y;
 
-        if (currentLevel instanceof Level.BossLevel) {
-            currentLevelHealth = ((Level.BossLevel) currentLevel).levelHP;
+        if (currentLevel instanceof BossLevel) {
+            currentLevelHealth = ((BossLevel) currentLevel).getPlayerHealth();
             if (musicOn) {
                 audio.setPlaying("boss", clock.getTimestamp() * audio.getClip("boss").getMicrosecondLength() / 1556);
             }
@@ -529,17 +529,15 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Resets the level without reloading
     public void resetLevel() {
         player.charState = CharacterState.RESTARTING;
-        for (Block[] row : player.level.blocks)
-            for (Block cell : row)
-                if (cell != null) cell.reset();
-        player.position.x = player.level.startPosCol;
-        player.position.y = player.level.startPosRow;
-        player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.level.reset();
+        player.position.x = player.level.getStartPos().x;
+        player.position.y = player.level.getStartPos().y;
+        player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         player.render.x = player.target.x;
         player.render.y = player.target.y;
         clock.reset();
-        if (player.level instanceof Level.BossLevel && !tasActive) {
+        if (player.level instanceof BossLevel && !tasActive) {
             if (player.isPracticeMode && checkpointTimes.size() > 0) {
                 clock.setTime(checkpointTimes.last());
             } else {
@@ -582,12 +580,12 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     //  checks the character when the character lands at its destination
     public void landChecker() {
-         if (player.position.x < 0 || player.position.y < 0 || player.position.x >= player.level.blocks[0].length || player.position.y >= player.level.blocks.length) {
+         if (player.position.x < 0 || player.position.y < 0 || player.position.x >= player.level.xSize() || player.position.y >= player.level.ySize()) {
             player.die();
         } else {
-            player.level.blocks[player.position.y][player.position.x].onLand(player);
-            player.target.x = startx + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-            player.target.y = starty + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.level.blockAt(player.position.x, player.position.y).onLand(player);
+            player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+            player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             shouldRepaint = true;
         }
     }
@@ -597,20 +595,20 @@ public class MainRunningThing extends javax.swing.JFrame {
         timestart = Instant.now();
         clipholder = new Area();
         ouchArea = new Area();
-        if (middlex != jPanel1.getWidth() / 2) {
-            middlex = jPanel1.getWidth() / 2;
-            startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-            endx = middlex * 2 - startx;
+        if (middle.x != jPanel1.getWidth() / 2) {
+            middle.x = jPanel1.getWidth() / 2;
+            start.x = middle.x - (player.level.xSize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            end.x = middle.x * 2 - start.x;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
-        if (middley != jPanel1.getHeight() / 2) {
-            middley = jPanel1.getHeight() / 2;
-            starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-            endx = middlex * 2 - startx;
+        if (middle.y != jPanel1.getHeight() / 2) {
+            middle.y = jPanel1.getHeight() / 2;
+            start.y = middle.y - (player.level.ySize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            end.x = middle.x * 2 - start.x;
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        if (player.level.blocks.length == 0) {
+        if (player.level.ySize() == 0) {
             System.out.println("Instantiate player.level.blocks!");
             loadLevel();
             player.charState = CharacterState.NORMAL;
@@ -621,9 +619,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             loadLevel();
         }
         
-        if (startx == 0 || starty == 0) {
-            startx = middlex - (player.level.blocks[0].length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
-            starty = middley - (player.level.blocks.length - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+        if (start.x == 0 || start.y == 0) {
+            start.x = middle.x - (player.level.xSize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
+            start.y = middle.y - (player.level.ySize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         }
 
         // Does the level switching / restarting stuff
@@ -663,9 +661,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) {
-            for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) {
-                Block currBlock = player.level.blocks[rowNumber][columnNumber];
+        for (int rowNumber = 0; rowNumber < player.level.ySize(); rowNumber++) {
+            for (int columnNumber = 0; columnNumber < player.level.xSize(); columnNumber++) {
+                Block currBlock = player.level.blockAt(columnNumber, rowNumber);
                 if (currBlock == null) {
                     continue;
                 }
@@ -679,7 +677,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                         FiringBlock fb = (FiringBlock) currBlock;
 
                         if ((clock.getTimestamp() - fb.getPhase()) % fb.getPeriod() == 0) {
-                            blasts.add(fb.createAtCoords(startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS));
+                            blasts.add(fb.createAtCoords(start.x + columnNumber * SPACING_BETWEEN_BLOCKS, start.y + rowNumber * SPACING_BETWEEN_BLOCKS));
                         }
                     }
 
@@ -688,9 +686,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-        if (player.level instanceof Level.BossLevel) {
-            blasts.addAll(((Level.BossLevel) player.level).generateBlasts(clock.getTimestamp(), player.render.x, 
-                    player.render.y, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+        if (player.level instanceof BossLevel) {
+            blasts.addAll(((BossLevel) player.level).generateBlasts(clock.getTimestamp(), player.render, start));
         }
 
         // Calculates where the blasts would be
@@ -709,157 +706,157 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         
         /// Levelspecific testing
-        if (player.level.levelLabel.equals("0")) {
+        if (player.level.label.equals("0")) {
             if (clock.getTimestamp() % 30 == 10) {
                 lineExplosions.add(new LineExploderTester(clock.getTimestamp(), 20, Math.PI,
-                        startx + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, starty - 80 + SPACING_BETWEEN_BLOCKS * 6));
+                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80 + SPACING_BETWEEN_BLOCKS * 6));
             }
 
             if (clock.getTimestamp() % 30 == 5) {
                 lineExplosions.add(new LineExploderTester(clock.getTimestamp(), 20, 0,
-                        startx + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, starty - 80));
+                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80));
             }
 
             if (clock.getTimestamp() % 15 == 10) {
                 lineExplosions.add(new LineExploderTester(clock.getTimestamp(), 20, 0,
-                        startx + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, starty - 80));
+                        start.x + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 4)) + 2 * STANDARD_ICON_WIDTH, start.y - 80));
             }
 
             if (clock.getTimestamp() % 15 == 5) {
                 lineExplosions.add(new LineExploderTester(clock.getTimestamp(), 20, Math.PI * .5,
-                        startx + SPACING_BETWEEN_BLOCKS * 4 + 2 * STANDARD_ICON_WIDTH, starty - 80 + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 5) + 1)));
+                        start.x + SPACING_BETWEEN_BLOCKS * 4 + 2 * STANDARD_ICON_WIDTH, start.y - 80 + SPACING_BETWEEN_BLOCKS * ((int) (Math.random() * 5) + 1)));
             }
 
         }
 
-        if (player.level.levelLabel.equals("-1")) {
+        if (player.level.label.equals("-1")) {
 
             if (clock.getTimestamp() % 12 == 1) {
                 blasts.add(new SJBossFight.FlyingBone(0, 20));
-                blasts.get(blasts.size() - 1).moveTo(startx, starty + 100);
+                blasts.get(blasts.size() - 1).moveTo(start.x, start.y + 100);
                 blasts.add(new SJBossFight.FlyingBone(0, 20));
-                blasts.get(blasts.size() - 1).moveTo(startx, starty + 100 + SPACING_BETWEEN_BLOCKS * 3);
+                blasts.get(blasts.size() - 1).moveTo(start.x, start.y + 100 + SPACING_BETWEEN_BLOCKS * 3);
             }
 
             if (clock.getTimestamp() % 30 == 8) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
-                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40);
+                blasts.get(blasts.size() - 1).moveTo(end.x, start.y + 40);
             }
 
             if (clock.getTimestamp() % 30 == 5) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
-                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40 + SPACING_BETWEEN_BLOCKS * 3);
+                blasts.get(blasts.size() - 1).moveTo(end.x, start.y + 40 + SPACING_BETWEEN_BLOCKS * 3);
             }
             if (clock.getTimestamp() % 30 == 17) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI, 40));
-                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40 + SPACING_BETWEEN_BLOCKS * 4);
+                blasts.get(blasts.size() - 1).moveTo(end.x, start.y + 40 + SPACING_BETWEEN_BLOCKS * 4);
             }
 
             if (clock.getTimestamp() % 12 == 5) {
                 blasts.add(new SJBossFight.FlyingBone(Math.PI / 2, 20));
-                blasts.get(blasts.size() - 1).moveTo(startx + 100, starty);
+                blasts.get(blasts.size() - 1).moveTo(start.x + 100, start.y);
                 blasts.add(new SJBossFight.FlyingBone(Math.PI / 2, 20));
-                blasts.get(blasts.size() - 1).moveTo(startx + 100 + SPACING_BETWEEN_BLOCKS * 3, starty);
+                blasts.get(blasts.size() - 1).moveTo(start.x + 100 + SPACING_BETWEEN_BLOCKS * 3, start.y);
             }
         }
 
-        if (player.level.levelLabel.equals("-2")) {
+        if (player.level.label.equals("-2")) {
 
             if (clock.getTimestamp() % 30 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, 40, 0, -4, 0));
-                blasts.get(blasts.size() - 1).moveTo(startx, starty + 40);
+                blasts.get(blasts.size() - 1).moveTo(start.x, start.y + 40);
             }
 
             if (clock.getTimestamp() % 20 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, -20, 0, -3, 0));
-                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40);
+                blasts.get(blasts.size() - 1).moveTo(end.x, start.y + 40);
             }
 
             if (clock.getTimestamp() % 20 == 14) {
                 blasts.add(new SJBossFight.ArcingBone(Math.PI / 2, -20, 0, -3, 0));
-                blasts.get(blasts.size() - 1).moveTo(endx, starty + 40 + SPACING_BETWEEN_BLOCKS);
+                blasts.get(blasts.size() - 1).moveTo(end.x, start.y + 40 + SPACING_BETWEEN_BLOCKS);
             }
 
             if (clock.getTimestamp() % 25 == 2) {
                 blasts.add(new SJBossFight.ArcingBone(0, 0, 20, 0, 3));
-                blasts.get(blasts.size() - 1).moveTo(startx + 40 + SPACING_BETWEEN_BLOCKS, starty);
+                blasts.get(blasts.size() - 1).moveTo(start.x + 40 + SPACING_BETWEEN_BLOCKS, start.y);
             }
 
             if (clock.getTimestamp() % 30 == 4) {
                 blasts.add(new SJBossFight.ArcingBone(3 * Math.PI / 4, 30, 30, -2, -2));
-                blasts.get(blasts.size() - 1).moveTo(startx + 2, starty);
+                blasts.get(blasts.size() - 1).moveTo(start.x + 2, start.y);
             }
 
             if (clock.getTimestamp() % 30 == 20) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, -28, -28, 0, 0, 0.4));
-                blasts.get(blasts.size() - 1).moveTo(endx, endy);
+                blasts.get(blasts.size() - 1).moveTo(end.x, end.y);
             }
 
             if (clock.getTimestamp() % 30 == 20) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, 28, 0, 2, 0, 0.4));
-                blasts.get(blasts.size() - 1).moveTo(startx, endy - STANDARD_ICON_WIDTH / 2);
+                blasts.get(blasts.size() - 1).moveTo(start.x, end.y - STANDARD_ICON_WIDTH / 2);
             }
 
             if (clock.getTimestamp() % 30 == 5) {
                 blasts.add(new SJBossFight.RotatingBone(3 * Math.PI / 4, 28, 0, 2, 0, 0.4));
-                blasts.get(blasts.size() - 1).moveTo(startx, endy - STANDARD_ICON_WIDTH / 2 - SPACING_BETWEEN_BLOCKS);
+                blasts.get(blasts.size() - 1).moveTo(start.x, end.y - STANDARD_ICON_WIDTH / 2 - SPACING_BETWEEN_BLOCKS);
             }
 
         }
 
-        if (player.level.levelLabel.equals("-3")) {
+        if (player.level.label.equals("-3")) {
             if (clock.getTimestamp() % 30 == 5) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 0, 2, .4, STANDARD_ICON_WIDTH));
-                blasts.get(blasts.size() - 1).moveTo(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), starty - 8);
+                blasts.get(blasts.size() - 1).moveTo(start.x + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), start.y - 8);
             }
 
             if (clock.getTimestamp() % 30 == 20) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 0, -2, .4, STANDARD_ICON_WIDTH));
-                blasts.get(blasts.size() - 1).moveTo(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), endy + 8);
+                blasts.get(blasts.size() - 1).moveTo(start.x + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1), end.y + 8);
             }
 
             if (clock.getTimestamp() % 30 == 13) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, 2, 0, .4, STANDARD_ICON_WIDTH));
-                blasts.get(blasts.size() - 1).moveTo(startx - 8, starty + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
+                blasts.get(blasts.size() - 1).moveTo(start.x - 8, start.y + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
             }
 
             if (clock.getTimestamp() % 30 == 28) {
                 blasts.add(new SJBossFight.BoneExploder(0, 0, 0, -2, 0, .4, STANDARD_ICON_WIDTH));
-                blasts.get(blasts.size() - 1).moveTo(endx + 8, starty + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
+                blasts.get(blasts.size() - 1).moveTo(end.x + 8, start.y + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * (int) (Math.random() * 5 + 1));
             }
 
             if (clock.getTimestamp() % 20 == 10) {
-                double ang = Math.atan2(player.render.y - middley, player.render.x - middlex);
+                double ang = Math.atan2(player.render.y - middle.y, player.render.x - middle.x);
                 blasts.add(new SJBossFight.ArcingBone(ang + Math.PI / 2, -20 * Math.cos(ang), -20 * Math.sin(ang),  5 * Math.cos(ang), 5 * Math.sin(ang)));
-                blasts.get(blasts.size() - 1).moveTo(middlex, middley);
+                blasts.get(blasts.size() - 1).moveTo(middle.x, middle.y);
             }
         }
 
-        if (player.level.levelLabel.equals("-4")) {
+        if (player.level.label.equals("-4")) {
             if (clock.getTimestamp() == 2) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, 0, 0, 0, -.055));
-                blasts.get(blasts.size() - 1).moveTo(middlex, middley);
+                blasts.get(blasts.size() - 1).moveTo(middle.x, middle.y);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(500, 30);
             }
 
             if (clock.getTimestamp() % 20 == 2) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, -3, 0, -2, 0.1));
-                blasts.get(blasts.size() - 1).moveTo(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 5 / 2, endy);
+                blasts.get(blasts.size() - 1).moveTo(start.x + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 5 / 2, end.y);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(200, 30);
             }
 
             if (clock.getTimestamp() % 20 == 4) {
                 blasts.add(new SJBossFight.RotatingBone(0, 0, 3, 0, 2, -0.1));
-                blasts.get(blasts.size() - 1).moveTo(startx + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 9 / 2, starty);
+                blasts.get(blasts.size() - 1).moveTo(start.x + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 9 / 2, start.y);
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(200, 30);
             }
         }
 
-        if (player.level instanceof Level.BossLevel) {
-            lineExplosions.addAll(((Level.BossLevel) player.level).generateLines(clock.getTimestamp(), player.render.x, player.render.y, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS));
+        if (player.level instanceof BossLevel) {
+            lineExplosions.addAll(((BossLevel) player.level).generateLines(clock.getTimestamp(), player.render, start));
         }
         
-        for (Level.BossLevel.LineExploder currentLineExplosion: lineExplosions) {
+        for (BaseLevel.LineExploder currentLineExplosion: lineExplosions) {
             Area ouchyline = currentLineExplosion.xplosionOuchArea(clock.getTimestamp());
             Rectangle rect = ouchyline.getBounds();
             if (rect.getMinX() <= charXRight && rect.getMaxX() >= charXLeft && rect.getMinY() <= charYUpper && rect.getMaxY() >= charYLower) {
@@ -868,7 +865,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         if (tasActive && player.level instanceof SJBossFight) {
-            sjbossTas.doTasStuff(startx, starty, clock.getTimestamp(), player);
+            sjbossTas.doTasStuff(start, clock.getTimestamp(), player);
         }
 
         if (ouchArea.intersects(new Rectangle(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH))) {
@@ -876,7 +873,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         
 
-        if (player.position.x == player.level.endPosCol && player.position.y == player.level.endPosRow && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
+        if (player.position.x == player.level.getEndPos().x && player.position.y == player.level.getEndPos().y && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (player.isPracticeMode) {
                 player.charState = CharacterState.RESTARTING;
                 isSwitching = true;
@@ -888,7 +885,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
 
-        if (player.level instanceof Level.BossLevel && ((Level.BossLevel) player.level).endtime <= clock.getTimestamp() && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
+        if (player.level instanceof BossLevel && ((BossLevel) player.level).getEndTime() <= clock.getTimestamp() && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             System.out.println("Hey times up");
             if (tasActive || player.isPracticeMode) {
                 tasActive = false;
@@ -907,7 +904,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
 
         // Setting clip
-        if (player.level instanceof Level.BossLevel) {
+        if (player.level instanceof BossLevel) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
         } else {
             for (Projectile bla: blasts) {
@@ -922,7 +919,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clipholder.add(new Area(new Rectangle(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH)));
             }
 
-            for (Level.BossLevel.LineExploder le: lineExplosions) {
+            for (BaseLevel.LineExploder le: lineExplosions) {
                 clipholder.add(le.xplosionClipArea(clock.getTimestamp()));
             }
 
@@ -946,12 +943,12 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         currG.clearRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
 
-        player.level.drawBackground(currG, clock.getTimestamp(), jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
+        player.level.drawBackground(currG, clock.getTimestamp(), jPanel1, start);
 
-        for (int rowNumber = 0; rowNumber < player.level.blocks.length; rowNumber++) 
-            for (int columnNumber = 0; columnNumber < player.level.blocks[0].length; columnNumber++) 
-                if (player.level.blocks[rowNumber][columnNumber] != null)
-                    player.level.blocks[rowNumber][columnNumber].getIcon().paintIcon(jPanel1, currG, startx + columnNumber * SPACING_BETWEEN_BLOCKS, starty + rowNumber * SPACING_BETWEEN_BLOCKS);
+        for (int rowNumber = 0; rowNumber < player.level.ySize(); rowNumber++) 
+            for (int columnNumber = 0; columnNumber < player.level.xSize(); columnNumber++) 
+                if (player.level.blockAt(columnNumber, rowNumber) != null)
+                    player.level.blockAt(columnNumber, rowNumber).getIcon().paintIcon(jPanel1, currG, start.x + columnNumber * SPACING_BETWEEN_BLOCKS, start.y + rowNumber * SPACING_BETWEEN_BLOCKS);
 
         characterIconAlive.paintIcon(jPanel1, currG, player.render.x, player.render.y);
 
@@ -973,15 +970,15 @@ public class MainRunningThing extends javax.swing.JFrame {
         for (Iterator<Projectile> it = blasts.iterator(); it.hasNext();) {
             Projectile bla = it.next();
 
-            if (bla.getX() < startx - 10 || bla.getY() < starty - 10 || bla.getX() > endx + 10 || bla.getY() > endy + 10) {
+            if (bla.getX() < start.x - 10 || bla.getY() < start.y - 10 || bla.getX() > end.x + 10 || bla.getY() > end.y + 10) {
 
                 if (bla instanceof HighExplosion) {
                     double holdangle = 0;
-                    if (bla.getX() > endx + 10) {
+                    if (bla.getX() > end.x + 10) {
                         holdangle = Math.PI / 2;
-                    } else if (bla.getX() < startx - 10) {
+                    } else if (bla.getX() < start.x - 10) {
                         holdangle = 3 * Math.PI / 2;
-                    } else if (bla.getY() > endy + 10) {
+                    } else if (bla.getY() > end.y + 10) {
                         holdangle = Math.PI;
                     } else {
                         holdangle = 0;
@@ -997,8 +994,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         // Gets rid of explosions at correct time
-        for (Iterator<Level.BossLevel.LineExploder> lit = lineExplosions.iterator(); lit.hasNext();) {
-            Level.BossLevel.LineExploder le = lit.next();
+        for (Iterator<BaseLevel.LineExploder> lit = lineExplosions.iterator(); lit.hasNext();) {
+            BaseLevel.LineExploder le = lit.next();
             le.drawXPlosion(jPanel1, currG, clock.getTimestamp());
             if (le.starttime + le.timelength <= clock.getTimestamp()) {
                 lit.remove();
@@ -1011,7 +1008,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             currG.fillRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
         }
         
-        player.level.drawForeground(currG, clock.getTimestamp(), jPanel1, startx, starty, STANDARD_ICON_WIDTH, SPACING_BETWEEN_BLOCKS);
+        player.level.drawForeground(currG, clock.getTimestamp(), jPanel1, start);
         
 
         // Draws the pie at frame 314
@@ -1028,13 +1025,13 @@ public class MainRunningThing extends javax.swing.JFrame {
         g.fillRect(this.getWidth() / 2 - 25, 50, 50, 50);
         g.setColor(Color.BLACK);
         g.setFont(g.getFont().deriveFont(18f));
-        g.drawString(player.level.levelLabel, this.getWidth() / 2 - 20, 70);
+        g.drawString(player.level.label, this.getWidth() / 2 - 20, 70);
         g.drawString(String.format("TimeStamp: %d", clock.getTimestamp()), this.getWidth() - 300, 80);
         g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
         g.drawString(String.format("Death Count (Total): %d", player.deaths), 300, 50);
         g.drawString(String.format("Death Count (Level): %d", player.level.getDeaths()), 300, 70);
         g.drawString(String.format("Health: %d", player.hp), 300, 90);
-        g.drawString(String.format("Level Code: %s", player.level.getCode()), 300, 110);
+        g.drawString(String.format("Level Code: %s", player.level.code), 300, 110);
         
         // Draws Lea
         if (isLeaGif) {
@@ -1043,7 +1040,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         timeend = Instant.now();
         // Gets the block to show up on first run
-        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || player.level instanceof Level.BossLevel) {
+        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || player.level instanceof BossLevel) {
             if (letsseeifthisworks) {
                 letsseeifthisworks = false;
             }

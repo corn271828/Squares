@@ -77,7 +77,7 @@ public class LineExploderTester extends BaseLevel.LineExploder {
 
     @Override
     public LineExploderTester clone() {
-        return new LineExploderTester(starttime, timelength, angle, startposition.x, startposition.y, plody);
+        return new LineExploderTester(starttime, timelength, angle, startPos.x, startPos.y, plody);
     }
 
 

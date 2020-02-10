@@ -34,4 +34,5 @@ public abstract class Level {
     public Color getBackgroundColor(int ts) {
         return Color.WHITE;
     }
+    public void reset() {}
 }
