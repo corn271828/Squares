@@ -35,10 +35,14 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
             Integer.parseInt(arg.substring(0, 2)),
             Integer.parseInt(arg.substring(2, 4)),
             Integer.parseInt("0" + arg.substring(4)));
+        if (this.delay == 0)
+            delay = 1;
     }
 
     public BlasterBlock(Direction d, int p, int bs) {
         this(d, p, bs, 1);
+        if (this.delay == 0)
+            delay = 1;
     }
 
     public BlasterBlock(Direction d, int p, int bs, int delay) {
