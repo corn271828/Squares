@@ -635,7 +635,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         player.level.tickBlocks(player, clock, start);
-        player.level.tickEntities(player, new AABB(start, end), clock);
+        player.level.tickEntities(player, new AABB(start, end), clock, clipholder);
 
 
         // Calculates where the blasts would be
@@ -813,7 +813,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.hurt();
         }
         
-        if (clock.getTimestamp() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING)
+        if (clock.getTimestamp() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive)
             clock.increment();
 
         if (player.position.x == player.level.getEndPos().x && player.position.y == player.level.getEndPos().y && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {

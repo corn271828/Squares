@@ -110,7 +110,7 @@ public class BaseLevel extends Level {
         }
     }
     @Override
-    public void tickEntities(squares.Player player, AABB check, Clock clock) {
+    public void tickEntities(squares.Player player, AABB check, Clock clock, Area clipholder) {
         for (Iterator<Entity> it = blasts.iterator(); it.hasNext();) {
             Entity bla = it.next();
 
@@ -129,6 +129,7 @@ public class BaseLevel extends Level {
                     }
                     blasts.add(((HighExplosion) bla).getLineExplosion(clock.getTimestamp(), holdangle, bla.getX(), bla.getY()));
                 }
+                clipholder.add(bla.getClip());
                 onEntityRemove(bla);
                 it.remove();
             }

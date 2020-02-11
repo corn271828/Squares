@@ -34,6 +34,8 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
             Integer.parseInt(arg.substring(0, 2)),
             Integer.parseInt(arg.substring(2, 4)),
             Integer.parseInt("0" + arg.substring(4)));
+        if (this.delay == 0)
+            delay = 1;
     }
 
     public CannonBlock(int p, int bs, int d) {

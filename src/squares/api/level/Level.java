@@ -32,7 +32,7 @@ public abstract class Level {
     public abstract void setup(squares.Player pl);
     public abstract void setupMusic(AudioManager am, Clock c);
     public abstract void tickBlocks(squares.Player pl, Clock c, Coordinate drawingStart);
-    public abstract void tickEntities(squares.Player pl, AABB offscreen, Clock c);
+    public abstract void tickEntities(squares.Player pl, AABB offscreen, Clock c, java.awt.geom.Area clipholder);
 
     public abstract Iterable<Entity> getEntities();
 
