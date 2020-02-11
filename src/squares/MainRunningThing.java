@@ -13,26 +13,24 @@ import java.awt.geom.Area;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.Set;
-import java.util.Iterator;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
+import squares.api.AABB;
 import squares.api.AudioManager;
 import squares.api.CharacterState;
 import squares.api.Clock;
 import squares.api.ResourceLoader;
 import squares.api.Coordinate;
-import squares.api.block.Block;
-import squares.api.block.FiringBlock;
+import squares.api.block.Entity;
 import squares.api.block.Projectile;
-import squares.api.block.TargetingBlock;
 import squares.api.block.BlockFactory;
 import squares.api.level.Level;
 import squares.api.level.BossLevel;
-import squares.block.HighExplosion;
 import squares.level.BaseLevel;
 import squares.level.LevelLoader;
 import squares.level.LineExploderTester;
@@ -61,8 +59,6 @@ public class MainRunningThing extends javax.swing.JFrame {
     public int maxLevelIndex = 0;
     public int holdLevelIndex = maxLevelIndex;
 
-    public List<Projectile> blasts = new ArrayList<>();
-    public List<BaseLevel.LineExploder> lineExplosions = new ArrayList<>();
 
     public Color transitioning = null;
     public boolean isSwitching = false;
@@ -478,20 +474,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         });
     }
-    
-    public void resetAllBlasts() {
-        if (player.level instanceof BossLevel)
-            for (Projectile p : blasts)
-                ((Resettable) p).resetToOrigin();
-        blasts.clear();
-    }
-    
-    public void resetAllLines() {
-        if (player.level instanceof BossLevel)
-            for (BaseLevel.LineExploder lein : lineExplosions)
-                ((Resettable) lein).resetToOrigin();
-        lineExplosions.clear();
-    }
+
 
     // Loads player.level.blocks
     public void loadLevel() {
@@ -500,7 +483,6 @@ public class MainRunningThing extends javax.swing.JFrame {
         checkpointTimes.clear();
         clock.reset();
         Level currentLevel = player.level;
-        resetAllBlasts();
 
         if (player.level instanceof BossLevel && !tasActive) {
             if (player.isPracticeMode && checkpointTimes.size() > 0) {
@@ -511,6 +493,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
 
         // Set up currentLevel.block - the design of the level in Blocks
+        player.isPracticeMode = toggle_practice.isSelected();
+
         player.position.x = currentLevel.getStartPos().x;
         player.position.y = currentLevel.getStartPos().y;
         start.x = middle.x - (currentLevel.xSize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
@@ -522,30 +506,14 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.render.x = player.target.x;
         player.render.y = player.target.y;
 
-        if (currentLevel instanceof BossLevel) {
-            currentLevelHealth = ((BossLevel) currentLevel).getPlayerHealth();
-            if (musicOn) {
-                audio.setPlaying("boss", clock.getTimestamp() * audio.getClip("boss").getMicrosecondLength() / 1556);
-            }
-        } else {
-            currentLevelHealth = 1;
-            if (musicOn) {
-                audio.setPlaying("normal");
-            }
-        }
-        player.hp = currentLevelHealth;
-        player.isPracticeMode = toggle_practice.isSelected();
-        if (player.isPracticeMode) {
-            player.hp = Player.PRACTICE_MODE_LIVES;
-        }
-        player.iftime = -11;
-        resetAllLines();
+        player.level.setup(player);
+        if(musicOn)
+            player.level.setupMusic(audio, clock);
     }
 
     // Resets the level without reloading
     public void resetLevel() {
         player.charState = CharacterState.RESTARTING;
-        player.level.reset();
         player.position.x = player.level.getStartPos().x;
         player.position.y = player.level.getStartPos().y;
         player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
@@ -560,17 +528,13 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clock.setTime(bossTestStartTime);
             }
         }
-        resetAllBlasts();
-        resetAllLines();
-
-        player.iftime = -11;
-        player.hp = currentLevelHealth;
         player.isPracticeMode = toggle_practice.isSelected();
+        player.level.setup(player);
         if (player.isPracticeMode) {
             player.hp = Player.PRACTICE_MODE_LIVES;
         }
-        if (player.level instanceof SJBossFight && musicOn) {
-            audio.restartPlaying("boss", clock.getTimestamp() * audio.getClip("boss").getMicrosecondLength() / 1556);
+        if (musicOn) {
+            player.level.setupMusic(audio, clock);
         }
     }
 
@@ -677,41 +641,16 @@ public class MainRunningThing extends javax.swing.JFrame {
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        for (int rowNumber = 0; rowNumber < player.level.ySize(); rowNumber++) {
-            for (int columnNumber = 0; columnNumber < player.level.xSize(); columnNumber++) {
-                Block currBlock = player.level.blockAt(columnNumber, rowNumber);
-                if (currBlock == null) {
-                    continue;
-                }
+        player.level.tickBlocks(player, clock);
+        player.level.tickEntities(player, new AABB(start, end), clock);
 
-                //Generates blasts at correct time
-                if (!(player.charState == CharacterState.DEAD) && !(player.charState == CharacterState.RESTARTING) && !(player.charState == CharacterState.WINE)) {
-                    if (currBlock instanceof TargetingBlock) {
-                        ((TargetingBlock) currBlock).setTarget(player.render.x, player.render.y); // for now.
-                    }
-                    if (currBlock instanceof FiringBlock) {
-                        FiringBlock fb = (FiringBlock) currBlock;
-
-                        if ((clock.getTimestamp() - fb.getPhase()) % fb.getPeriod() == 0) {
-                            blasts.add(fb.createAtCoords(start.x + columnNumber * SPACING_BETWEEN_BLOCKS, start.y + rowNumber * SPACING_BETWEEN_BLOCKS));
-                        }
-                    }
-
-                }
-
-            }
-        }
-
-        if (player.level instanceof BossLevel) {
-            blasts.addAll(((BossLevel) player.level).generateBlasts(clock.getTimestamp(), player.render, start));
-        }
 
         // Calculates where the blasts would be
         int charYUpper = player.render.y;
         int charXLeft = player.render.x;
         int charYLower = player.render.y + CHARACTER_WIDTH;
         int charXRight = player.render.x + CHARACTER_WIDTH;
-        for (Projectile bla: blasts) {
+        for (Entity bla: player.level.getEntities()) {
             bla.moveTick();
             Area blaouch = bla.getCollision();
             Rectangle bound = blaouch.getBounds();
@@ -721,6 +660,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
         
+/*
         /// Levelspecific testing
         if (player.level.label.equals("0")) {
             if (clock.getTimestamp() % 30 == 10) {
@@ -871,15 +811,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.level instanceof BossLevel) {
             lineExplosions.addAll(((BossLevel) player.level).generateLines(clock.getTimestamp(), player.render, start));
         }
-        
-        for (BaseLevel.LineExploder currentLineExplosion: lineExplosions) {
-            Area ouchyline = currentLineExplosion.getCollision();
-            Rectangle rect = ouchyline.getBounds();
-            if (rect.getMinX() <= charXRight && rect.getMaxX() >= charXLeft && rect.getMinY() <= charYUpper && rect.getMaxY() >= charYLower) {
-                ouchArea.add(currentLineExplosion.getCollision());
-            }
-        }
-
+*/
         if (tasActive && player.level instanceof SJBossFight) {
             sjbossTas.doTasStuff(start, clock.getTimestamp(), player);
         }
@@ -923,7 +855,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.level instanceof BossLevel) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
         } else {
-            for (Projectile bla: blasts) {
+            for (Entity bla: player.level.getEntities()) {
                 clipholder.add(bla.getClip());
             }
 
@@ -933,10 +865,6 @@ public class MainRunningThing extends javax.swing.JFrame {
 
             if (player.isInvincible()) {
                 clipholder.add(new Area(new Rectangle(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH)));
-            }
-
-            for (BaseLevel.LineExploder le: lineExplosions) {
-                clipholder.add(le.getClip());
             }
 
             if (clock.getTimestamp() >= 314 && clock.getTimestamp() <= 335) { // Sets clip for the pie
@@ -983,43 +911,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         
         // Draws all the blasts and explosions and stuff
-        for (Iterator<Projectile> it = blasts.iterator(); it.hasNext();) {
-            Projectile bla = it.next();
-
-            if (bla.getX() < start.x - 10 || bla.getY() < start.y - 10 || bla.getX() > end.x + 10 || bla.getY() > end.y + 10) {
-
-                if (bla instanceof HighExplosion) {
-                    double holdangle = 0;
-                    if (bla.getX() > end.x + 10) {
-                        holdangle = Math.PI / 2;
-                    } else if (bla.getX() < start.x - 10) {
-                        holdangle = 3 * Math.PI / 2;
-                    } else if (bla.getY() > end.y + 10) {
-                        holdangle = Math.PI;
-                    } else {
-                        holdangle = 0;
-                    }
-                    lineExplosions.add(((HighExplosion) bla).getLineExplosion(clock.getTimestamp(), holdangle, bla.getX(), bla.getY()));
-                }
-                if (player.level instanceof BossLevel) {
-                    ((Resettable) bla).resetToOrigin();
-                }
-                it.remove();
-                letsseeifthisworks = true;
-            } else {
-                bla.draw(currG, jPanel1);
-            }
-        }
-
-        // Gets rid of explosions at correct time
-        for (Iterator<BaseLevel.LineExploder> lit = lineExplosions.iterator(); lit.hasNext();) {
-            BaseLevel.LineExploder le = lit.next();
-            le.draw(currG, jPanel1);
-            if (le.starttime + le.timelength <= clock.getTimestamp()) {
-                if (player.level instanceof BossLevel)
-                    ((Resettable) le).resetToOrigin();
-                lit.remove();
-            }
+        for (Entity e: player.level.getEntities()) {
+                e.draw(currG, jPanel1);
         }
 
         // Does the fading animations
@@ -1060,7 +953,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         timeend = Instant.now();
         // Gets the block to show up on first run
-        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || blasts.size() > 0 || lineExplosions.size() > 0 || letsseeifthisworks || player.level instanceof BossLevel) {
+        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || letsseeifthisworks || player.level instanceof BossLevel) {
             if (letsseeifthisworks) {
                 letsseeifthisworks = false;
             }

@@ -15,15 +15,27 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Iterator;
 import java.util.Collections;
+import java.util.Set;
+import java.util.HashSet;
 
+import squares.api.AABB;
+import squares.api.AudioManager;
+import squares.api.Clock;
 import squares.api.ResourceLoader;
 import squares.api.block.Projectile;
 import squares.api.block.Entity;
 import squares.api.block.Block;
+import squares.api.block.FiringBlock;
+import squares.api.block.TargetingBlock;
 import squares.api.block.BlockFactory;
 import squares.api.level.Level;
 import squares.api.Coordinate;
+import squares.block.HighExplosion;
+
+import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
+import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
 
 /**
  *
@@ -37,6 +49,8 @@ public class BaseLevel extends Level {
     public final Block[][] blocks;
 
     public final Coordinate start, end; // Starting position in indices
+
+    protected Set<Entity> blasts = new HashSet<>();
 
     public BaseLevel(String[][] in, String[] args, BlockFactory bf) {
         this(in, args[0], args.length >= 2 ? args[1] : null, bf);
@@ -80,10 +94,89 @@ public class BaseLevel extends Level {
         return ret;
     }
     @Override
-    public void reset() {
+    public void tickBlocks(squares.Player player, Clock clock) {
+        for (int rowNumber = 0; rowNumber < player.level.ySize(); rowNumber++) {
+            for (int columnNumber = 0; columnNumber < player.level.xSize(); columnNumber++) {
+                Block currBlock = blockAt(columnNumber, rowNumber);
+                if (currBlock == null) {
+                    continue;
+                }
+
+                //Generates blasts at correct time
+                if (player.charState.vulnerable) {
+                    if (currBlock instanceof TargetingBlock) {
+                        ((TargetingBlock) currBlock).setTarget(player.render.x, player.render.y); // for now.
+                    }
+                    if (currBlock instanceof FiringBlock) {
+                        FiringBlock fb = (FiringBlock) currBlock;
+
+                        if ((clock.getTimestamp() - fb.getPhase()) % fb.getPeriod() == 0) {
+                            blasts.add(fb.createAtCoords(start.x + columnNumber * SPACING_BETWEEN_BLOCKS, start.y + rowNumber * SPACING_BETWEEN_BLOCKS));
+                        }
+                    }
+
+                }
+
+            }
+        }
+    }
+    @Override
+    public void tickEntities(squares.Player player, AABB check, Clock clock) {
+        for (Iterator<Entity> it = blasts.iterator(); it.hasNext();) {
+            Entity bla = it.next();
+
+            if (shouldRemoveEntity(bla, check, clock)) {
+
+                if (bla instanceof HighExplosion) {
+                    double holdangle = 0;
+                    if (bla.getX() > check.rx + 10) {
+                        holdangle = Math.PI / 2;
+                    } else if (bla.getX() < check.lx - 10) {
+                        holdangle = 3 * Math.PI / 2;
+                    } else if (bla.getY() > check.ry + 10) {
+                        holdangle = Math.PI;
+                    } else {
+                        holdangle = 0;
+                    }
+                    blasts.add(((HighExplosion) bla).getLineExplosion(clock.getTimestamp(), holdangle, bla.getX(), bla.getY()));
+                }
+                onEntityRemove(bla);
+                it.remove();
+            }
+        }
+    }
+
+    protected boolean shouldRemoveEntity(Entity e, AABB check, Clock clock) {
+        if(e instanceof LineExploder) {
+            LineExploder le = (LineExploder) e;
+            if (le.starttime + le.timelength <= clock.getTimestamp()) return true;
+        }
+        return check.contains(e.getX(), e.getY());
+    }
+
+    public void onEntityRemove(Entity p) {};
+
+    @Override
+    public Iterable<Entity> getEntities() {
+        return blasts;
+    }
+
+    @Override
+    public void setup(squares.Player p) {
+        setup(p, 1);
+    }
+    protected void setup(squares.Player player, int hp) {
+        blasts.clear();
         for (Block[] row : blocks)
             for (Block cell : row)
                 if (cell != null) cell.reset();
+        player.setMaxHP(hp);
+        player.iftime = -11;
+    }
+
+    @Override
+    public void setupMusic(AudioManager audio, Clock c) {
+        audio.setPlaying("normal");
     }
 
     @Override
@@ -127,6 +220,9 @@ public class BaseLevel extends Level {
 
         @Override
         public void draw(Graphics g, Component c) {}
+
+        @Override
+        public void moveTick() {}
 
         @Override
         public Area getCollision() {

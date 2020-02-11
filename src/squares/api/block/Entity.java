@@ -22,6 +22,7 @@ public abstract class Entity {
     public int getY()     { return ypos; }
 
     public abstract void draw(Graphics g, Component c);
+    public abstract void moveTick();
 
     public void moveTo(int x, int y) {
         xpos = x; ypos = y;

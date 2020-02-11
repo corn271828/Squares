@@ -4,8 +4,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 
+import squares.api.AudioManager;
 import squares.api.Coordinate;
+import squares.api.Clock;
+import squares.api.AABB;
 import squares.api.block.Block;
+import squares.api.block.Entity;
 
 public abstract class Level {
     private int deaths = 0;
@@ -25,6 +29,13 @@ public abstract class Level {
     public abstract Coordinate getStartPos();
     public abstract Coordinate getEndPos();
 
+    public abstract void setup(squares.Player pl);
+    public abstract void setupMusic(AudioManager am, Clock c);
+    public abstract void tickBlocks(squares.Player pl, Clock c);
+    public abstract void tickEntities(squares.Player pl, AABB offscreen, Clock c);
+
+    public abstract Iterable<Entity> getEntities();
+
     public int getDeaths() {
         return deaths;
     }
@@ -34,5 +45,4 @@ public abstract class Level {
     public Color getBackgroundColor(int ts) {
         return Color.WHITE;
     }
-    public void reset() {}
 }

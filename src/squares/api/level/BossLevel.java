@@ -22,9 +22,8 @@ public interface BossLevel {
             throw new IllegalArgumentException(e);
         }
     }
-    List<? extends Projectile> generateBlasts(int timestamp,  Coordinate render, Coordinate start);
-    List<? extends LineExploder> generateLines(int timestamp, Coordinate render, Coordinate start);
+    //List<? extends Projectile> generateBlasts(int timestamp,  Coordinate render, Coordinate start);
+    //List<? extends LineExploder> generateLines(int timestamp, Coordinate render, Coordinate start);
 
     int getEndTime();
-    int getPlayerHealth();
 }

@@ -4,7 +4,7 @@ public enum CharacterState {
     NORMAL      (true),
     DEAD        (false),
     MOVING      (true),
-    LOCKED      (false),
+    LOCKED      (true),
     WINE        (false),
     RESTARTING  (false),
     FASTMOVING  (true);

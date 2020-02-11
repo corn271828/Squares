@@ -44,6 +44,10 @@ public class Player {
         return iftime + itime >= clock.getTimestamp();
     }
 
+    public void setMaxHP(int hp) {
+        this.hp = isPracticeMode ? PRACTICE_MODE_LIVES : hp;
+    }
+
     public boolean canMoveRight() {
         return !(position.x == level.xSize() - 1) &&
                 !(level.blockAt(position.x + 1, position.y) == null) &&

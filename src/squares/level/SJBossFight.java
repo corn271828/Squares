@@ -23,9 +23,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
+import squares.api.AABB;
+import squares.api.AudioManager;
 import squares.api.ResourceLoader;
 import squares.api.block.Resettable;
 import squares.api.block.Projectile;
+import squares.api.block.Entity;
 import squares.api.block.BlockFactory;
 import squares.api.level.BossLevel;
 import squares.api.Coordinate;
@@ -176,7 +179,6 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
 
-    @Override
     public List<? extends Projectile> generateBlasts(int timestamp, Coordinate render, Coordinate start) {
         if (timestamp > endtime || timestamp <= 0)
             return new ArrayList<>();
@@ -186,7 +188,6 @@ public class SJBossFight extends BaseLevel implements BossLevel {
         return temp;
     }
 
-    @Override
     public List<? extends LineExploder> generateLines(int timestamp, Coordinate render, Coordinate start) {
         if (timestamp > endtime || timestamp <= 0)
             return new ArrayList<>();
@@ -216,9 +217,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
     @Override
-    public void drawBackground(Graphics g, int timestamp, Component c, Coordinate start) {
-
-    }
+    public void drawBackground(Graphics g, int timestamp, Component c, Coordinate start) {}
 
     public Area getForegroundClip(int timestamp, Component c, Coordinate start) {
         Area ret = new Area();
@@ -315,9 +314,32 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
     @Override
-    public int getEndTime() { return endtime; }
+    public void setup(squares.Player p) {
+        for (Entity e : getEntities())
+            if(e instanceof Resettable)
+                ((Resettable) e).resetToOrigin();
+        setup(p, levelHP);
+    }
+
     @Override
-    public int getPlayerHealth() { return levelHP; }
+    public void tickEntities(squares.Player player, AABB check, Clock clock) {
+        super.tickEntities(player, check, clock);
+        blasts.addAll(generateBlasts(clock.getTimestamp(), player.render, new Coordinate(check.lx, check.ly)));
+    }
+
+    @Override
+    public void onEntityRemove(Entity p) {
+        if(p instanceof Resettable)
+            ((Resettable) p).resetToOrigin();
+    }
+
+    @Override
+    public void setupMusic(AudioManager audio, Clock c) {
+        audio.restartPlaying("boss", clock.getTimestamp() * audio.getClip("boss").getMicrosecondLength() / 1556);
+    }
+
+    @Override
+    public int getEndTime() { return endtime; }
 
     public static class FlyingBone extends Projectile implements Resettable {
         public static final Image bonypict = new ImageIcon("Pics/bonepic.png", "bonepic").getImage();
