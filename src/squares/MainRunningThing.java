@@ -634,8 +634,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        player.level.tickBlocks(player, clock);
-        player.level.tickEntities(player, new AABB(start, end), clock);
+        player.level.tickBlocks(player);
+        player.level.tickEntities(player, new AABB(start, end));
 
 
         // Calculates where the blasts would be
@@ -814,20 +814,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         
 
-        if (player.position.x == player.level.getEndPos().x && player.position.y == player.level.getEndPos().y && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
-            if (player.isPracticeMode) {
-                player.charState = CharacterState.RESTARTING;
-                isSwitching = true;
-                opacity = 10;
-                transitioning = new Color(180, 180, 180);
-                repaint();
-            } else {
-                levelFinished();
-            }
-        }
-
-        if (player.level instanceof BossLevel && ((BossLevel) player.level).getEndTime() <= clock.getTimestamp() && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
-            System.out.println("Hey times up");
+        if (player.level.winCond(player) && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (tasActive || player.isPracticeMode) {
                 tasActive = false;
                 player.charState = CharacterState.RESTARTING;

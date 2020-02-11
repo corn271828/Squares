@@ -319,15 +319,20 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
     @Override
-    public void tickEntities(squares.Player player, AABB check, Clock clock) {
-        super.tickEntities(player, check, clock);
-        blasts.addAll(generateBlasts(clock.getTimestamp(), player.render, new Coordinate(check.lx, check.ly)));
+    public void tickEntities(squares.Player player, AABB check) {
+        super.tickEntities(player, check);
+        blasts.addAll(generateBlasts(player.clock.getTimestamp(), player.render, new Coordinate(check.lx, check.ly)));
     }
 
     @Override
     public void onEntityRemove(Entity p) {
         if(p instanceof Resettable)
             ((Resettable) p).resetToOrigin();
+    }
+
+    @Override
+    public boolean winCond(squares.Player p) {
+        return p.clock.getTimestamp() >= getEndTime();
     }
 
     @Override
