@@ -813,6 +813,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.hurt();
         }
         
+        if (clock.getTimestamp() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING)
+            clock.increment();
 
         if (player.position.x == player.level.getEndPos().x && player.position.y == player.level.getEndPos().y && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (player.isPracticeMode) {
@@ -825,6 +827,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                 levelFinished();
             }
         }
+        
 
         if (player.level instanceof BossLevel && ((BossLevel) player.level).getEndTime() <= clock.getTimestamp() && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             System.out.println("Hey times up");
@@ -840,9 +843,6 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
         
-        if (opacity < 15 || player.charState == CharacterState.DEAD || (player.charState == CharacterState.WINE || player.charState == CharacterState.RESTARTING) && isSwitching)
-            clock.increment();
-
 
         // Setting clip
         if (player.level instanceof BossLevel) {
@@ -946,7 +946,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         timeend = Instant.now();
         // Gets the block to show up on first run
-        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || letsseeifthisworks || player.level instanceof BossLevel) {
+        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || player.level.getEntities().iterator().hasNext() || letsseeifthisworks || player.level instanceof BossLevel) {
             if (letsseeifthisworks) {
                 letsseeifthisworks = false;
             }
