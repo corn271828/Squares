@@ -319,8 +319,8 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
     @Override
-    public void tickEntities(squares.Player player, AABB check, Clock clock, Area clipholder) {
-        super.tickEntities(player, check, clock, clipholder);
+    public void tickEntities(squares.Player player, AABB check, Area clipholder) {
+        super.tickEntities(player, check, clipholder);
         blasts.addAll(generateBlasts(clock.getTimestamp(), player.render, new Coordinate(check.lx, check.ly)));
     }
 
@@ -328,6 +328,11 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     public void onEntityRemove(Entity p) {
         if(p instanceof Resettable)
             ((Resettable) p).resetToOrigin();
+    }
+
+    @Override
+    public boolean winCond(squares.Player p) {
+        return p.clock.getTimestamp() >= getEndTime();
     }
 
     @Override

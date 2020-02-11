@@ -86,7 +86,7 @@ public class BaseLevel extends Level {
     }
     
     @Override
-    public void tickBlocks(squares.Player player, Clock clock, Coordinate drawingStart) {
+    public void tickBlocks(squares.Player player, Coordinate drawingStart) {
         for (int rowNumber = 0; rowNumber < player.level.ySize(); rowNumber++) {
             for (int columnNumber = 0; columnNumber < player.level.xSize(); columnNumber++) {
                 Block currBlock = blockAt(columnNumber, rowNumber);
@@ -101,7 +101,7 @@ public class BaseLevel extends Level {
                 if (currBlock instanceof FiringBlock) {
                     FiringBlock fb = (FiringBlock) currBlock;
 
-                    if ((clock.getTimestamp() - fb.getPhase()) % fb.getPeriod() == 0) {
+                    if ((player.clock.getTimestamp() - fb.getPhase()) % fb.getPeriod() == 0) {
                         blasts.add(fb.createAtCoords(drawingStart.x + columnNumber * SPACING_BETWEEN_BLOCKS, drawingStart.y + rowNumber * SPACING_BETWEEN_BLOCKS));
                     }
                 }
@@ -109,12 +109,13 @@ public class BaseLevel extends Level {
             }
         }
     }
+    
     @Override
-    public void tickEntities(squares.Player player, AABB check, Clock clock, Area clipholder) {
+    public void tickEntities(squares.Player player, AABB check, Area clipholder) {
         for (Iterator<Entity> it = blasts.iterator(); it.hasNext();) {
             Entity bla = it.next();
 
-            if (shouldRemoveEntity(bla, check, clock)) {
+            if (shouldRemoveEntity(bla, check, player.clock)) {
 
                 if (bla instanceof HighExplosion) {
                     double holdangle = 0;
@@ -127,7 +128,7 @@ public class BaseLevel extends Level {
                     } else {
                         holdangle = 0;
                     }
-                    blasts.add(((HighExplosion) bla).getLineExplosion(clock.getTimestamp(), holdangle, bla.getX(), bla.getY()));
+                    blasts.add(((HighExplosion) bla).getLineExplosion(player.clock.getTimestamp(), holdangle, bla.getX(), bla.getY()));
                 }
                 clipholder.add(bla.getClip());
                 onEntityRemove(bla);
@@ -145,6 +146,11 @@ public class BaseLevel extends Level {
     }
 
     public void onEntityRemove(Entity p) {};
+
+    @Override
+    public boolean winCond(squares.Player p) {
+        return p.position.equals(end);
+    }
 
     @Override
     public Iterable<Entity> getEntities() {
