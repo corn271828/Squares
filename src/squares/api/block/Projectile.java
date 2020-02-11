@@ -2,7 +2,6 @@ package squares.api.block;
 
 import java.awt.Graphics;
 import java.awt.Component;
-import java.awt.geom.Area;
 import javax.swing.Icon;
 
 public abstract class Projectile extends Entity {

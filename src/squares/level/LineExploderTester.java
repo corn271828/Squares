@@ -16,15 +16,16 @@ import javax.swing.ImageIcon;
 
 import squares.api.Clock;
 import squares.api.Coordinate;
+import squares.api.block.Resettable;
+
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
 import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
-import squares.api.block.Resettable;
 
 /**
  *
  * @author piercelai
  */
-public class LineExploderTester extends BaseLevel.LineExploder implements Resettable{
+public class LineExploderTester extends BaseLevel.LineExploder implements Resettable {
     public static final int sans_width = 70;
     public static final int sans_height = 100;
     public static final int[] opacities = new int[] {50, 100, 200, 255, 255, 255, 200, 100, 50};

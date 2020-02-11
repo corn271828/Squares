@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.io.BufferedReader;
-import java.util.function.BiFunction;
 
 import squares.api.ResourceLoader;
 import squares.api.block.BlockFactory;

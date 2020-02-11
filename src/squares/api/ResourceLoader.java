@@ -2,7 +2,6 @@ package squares.api;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
-import javax.sound.sampled.AudioInputStream;
 
 public class ResourceLoader {
     private static final String format = "assets/%s/%s";
@@ -28,7 +27,7 @@ public class ResourceLoader {
     public BufferedReader asBufferedReader() {
         return new BufferedReader(new java.io.InputStreamReader(stream));
     }
-    public AudioInputStream asAudioStream() throws javax.sound.sampled.UnsupportedAudioFileException, java.io.IOException {
+    public javax.sound.sampled.AudioInputStream AudioInputStream asAudioStream() throws javax.sound.sampled.UnsupportedAudioFileException, java.io.IOException {
         return javax.sound.sampled.AudioSystem.getAudioInputStream(stream);
     }
 }

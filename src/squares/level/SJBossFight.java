@@ -14,13 +14,10 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform; 
 import java.awt.geom.Area;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import squares.api.AABB;

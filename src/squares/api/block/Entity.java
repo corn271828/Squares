@@ -3,9 +3,6 @@ package squares.api.block;
 import java.awt.Graphics;
 import java.awt.Component;
 import java.awt.geom.Area;
-import javax.swing.Icon;
-
-import squares.api.Direction;
 
 public abstract class Entity {
     private int xpos, ypos;

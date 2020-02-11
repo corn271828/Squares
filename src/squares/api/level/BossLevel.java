@@ -1,7 +1,5 @@
 package squares.api.level;
 
-import java.util.List;
-
 import squares.api.Coordinate;
 import squares.api.block.Projectile;
 import squares.api.ResourceLoader;
@@ -9,6 +7,8 @@ import squares.api.ResourceLoader;
 import static squares.level.BaseLevel.LineExploder; // stopgap
 
 public interface BossLevel {
+    int getEndTime();
+
     default String[] parseControls(ResourceLoader input) {
         try (java.io.BufferedReader br = input.asBufferedReader()) {
             StringBuilder hold = new StringBuilder();
@@ -22,8 +22,4 @@ public interface BossLevel {
             throw new IllegalArgumentException(e);
         }
     }
-    //List<? extends Projectile> generateBlasts(int timestamp,  Coordinate render, Coordinate start);
-    //List<? extends LineExploder> generateLines(int timestamp, Coordinate render, Coordinate start);
-
-    int getEndTime();
 }

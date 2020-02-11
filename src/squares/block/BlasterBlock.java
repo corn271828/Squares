@@ -5,12 +5,10 @@
  */
 package squares.block;
 
-import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import squares.Player;
 
 import squares.api.Direction;

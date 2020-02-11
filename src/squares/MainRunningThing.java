@@ -12,9 +12,6 @@ import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.TreeSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -27,17 +24,13 @@ import squares.api.Clock;
 import squares.api.ResourceLoader;
 import squares.api.Coordinate;
 import squares.api.block.Entity;
-import squares.api.block.Projectile;
 import squares.api.block.BlockFactory;
 import squares.api.level.Level;
 import squares.api.level.BossLevel;
-import squares.level.BaseLevel;
 import squares.level.LevelLoader;
-import squares.level.LineExploderTester;
 import squares.level.SJBossFight;
 
 import static squares.api.RenderingConstants.*;
-import squares.api.block.Resettable;
 
 /**
  *
