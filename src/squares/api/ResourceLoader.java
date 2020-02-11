@@ -27,7 +27,7 @@ public class ResourceLoader {
     public BufferedReader asBufferedReader() {
         return new BufferedReader(new java.io.InputStreamReader(stream));
     }
-    public javax.sound.sampled.AudioInputStream AudioInputStream asAudioStream() throws javax.sound.sampled.UnsupportedAudioFileException, java.io.IOException {
+    public javax.sound.sampled.AudioInputStream asAudioStream() throws javax.sound.sampled.UnsupportedAudioFileException, java.io.IOException {
         return javax.sound.sampled.AudioSystem.getAudioInputStream(stream);
     }
 }
