@@ -634,7 +634,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
-        player.level.tickBlocks(player, clock);
+        player.level.tickBlocks(player, clock, start);
         player.level.tickEntities(player, new AABB(start, end), clock);
 
 

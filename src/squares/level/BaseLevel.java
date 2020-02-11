@@ -84,8 +84,9 @@ public class BaseLevel extends Level {
             ret = ret.concat(String.valueOf(input.charAt(i)));
         return ret;
     }
+    
     @Override
-    public void tickBlocks(squares.Player player, Clock clock) {
+    public void tickBlocks(squares.Player player, Clock clock, Coordinate drawingStart) {
         for (int rowNumber = 0; rowNumber < player.level.ySize(); rowNumber++) {
             for (int columnNumber = 0; columnNumber < player.level.xSize(); columnNumber++) {
                 Block currBlock = blockAt(columnNumber, rowNumber);
@@ -94,18 +95,15 @@ public class BaseLevel extends Level {
                 }
 
                 //Generates blasts at correct time
-                if (player.charState.vulnerable) {
-                    if (currBlock instanceof TargetingBlock) {
-                        ((TargetingBlock) currBlock).setTarget(player.render.x, player.render.y); // for now.
-                    }
-                    if (currBlock instanceof FiringBlock) {
-                        FiringBlock fb = (FiringBlock) currBlock;
+                if (currBlock instanceof TargetingBlock) {
+                    ((TargetingBlock) currBlock).setTarget(player.render.x, player.render.y); // for now.
+                }
+                if (currBlock instanceof FiringBlock) {
+                    FiringBlock fb = (FiringBlock) currBlock;
 
-                        if ((clock.getTimestamp() - fb.getPhase()) % fb.getPeriod() == 0) {
-                            blasts.add(fb.createAtCoords(start.x + columnNumber * SPACING_BETWEEN_BLOCKS, start.y + rowNumber * SPACING_BETWEEN_BLOCKS));
-                        }
+                    if ((clock.getTimestamp() - fb.getPhase()) % fb.getPeriod() == 0) {
+                        blasts.add(fb.createAtCoords(drawingStart.x + columnNumber * SPACING_BETWEEN_BLOCKS, drawingStart.y + rowNumber * SPACING_BETWEEN_BLOCKS));
                     }
-
                 }
 
             }
@@ -142,7 +140,7 @@ public class BaseLevel extends Level {
             LineExploder le = (LineExploder) e;
             if (le.starttime + le.timelength <= clock.getTimestamp()) return true;
         }
-        return check.contains(e.getX(), e.getY());
+        return !check.contains(e.getX(), e.getY());
     }
 
     public void onEntityRemove(Entity p) {};
