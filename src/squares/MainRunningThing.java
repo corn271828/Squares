@@ -39,6 +39,7 @@ import squares.level.LineExploderTester;
 import squares.level.SJBossFight;
 
 import static squares.api.RenderingConstants.*;
+import squares.api.block.Resettable;
 
 /**
  *
@@ -477,6 +478,20 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void resetAllBlasts() {
+        if (player.level instanceof BossLevel)
+            for (Projectile p : blasts)
+                ((Resettable) p).resetToOrigin();
+        blasts.clear();
+    }
+    
+    public void resetAllLines() {
+        if (player.level instanceof BossLevel)
+            for (BaseLevel.LineExploder lein : lineExplosions)
+                ((Resettable) lein).resetToOrigin();
+        lineExplosions.clear();
+    }
 
     // Loads player.level.blocks
     public void loadLevel() {
@@ -484,8 +499,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         tasActive = false;
         checkpointTimes.clear();
         clock.reset();
-        blasts.clear();
         Level currentLevel = player.level;
+        resetAllBlasts();
 
         if (player.level instanceof BossLevel && !tasActive) {
             if (player.isPracticeMode && checkpointTimes.size() > 0) {
@@ -524,7 +539,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.hp = Player.PRACTICE_MODE_LIVES;
         }
         player.iftime = -11;
-        lineExplosions.clear();
+        resetAllLines();
     }
 
     // Resets the level without reloading
@@ -545,8 +560,8 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clock.setTime(bossTestStartTime);
             }
         }
-        blasts.clear();
-        lineExplosions.clear();
+        resetAllBlasts();
+        resetAllLines();
 
         player.iftime = -11;
         player.hp = currentLevelHealth;
@@ -986,7 +1001,9 @@ public class MainRunningThing extends javax.swing.JFrame {
                     }
                     lineExplosions.add(((HighExplosion) bla).getLineExplosion(clock.getTimestamp(), holdangle, bla.getX(), bla.getY()));
                 }
-
+                if (player.level instanceof BossLevel) {
+                    ((Resettable) bla).resetToOrigin();
+                }
                 it.remove();
                 letsseeifthisworks = true;
             } else {
@@ -999,6 +1016,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             BaseLevel.LineExploder le = lit.next();
             le.draw(currG, jPanel1);
             if (le.starttime + le.timelength <= clock.getTimestamp()) {
+                if (player.level instanceof BossLevel)
+                    ((Resettable) le).resetToOrigin();
                 lit.remove();
             }
         }

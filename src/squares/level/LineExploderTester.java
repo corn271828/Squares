@@ -15,12 +15,16 @@ import java.awt.geom.Area;
 import javax.swing.ImageIcon;
 
 import squares.api.Clock;
+import squares.api.Coordinate;
+import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
+import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
+import squares.api.block.Resettable;
 
 /**
  *
  * @author piercelai
  */
-public class LineExploderTester extends BaseLevel.LineExploder{
+public class LineExploderTester extends BaseLevel.LineExploder implements Resettable{
     public static final int sans_width = 70;
     public static final int sans_height = 100;
     public static final int[] opacities = new int[] {50, 100, 200, 255, 255, 255, 200, 100, 50};
@@ -30,6 +34,7 @@ public class LineExploderTester extends BaseLevel.LineExploder{
     public final ImageIcon plody;
 
     public final Clock clock;
+    private Coordinate origin;
 
     public LineExploderTester(int stt, int tl, double ang, int sxp, int syp, Clock c) {
         this(stt, tl, ang, sxp, syp, c, sansImage);
@@ -75,5 +80,22 @@ public class LineExploderTester extends BaseLevel.LineExploder{
         } else {
             return new Area(tx.createTransformedShape(new Rectangle(xregister - sans_width / 2, yregister - sans_height / 2, sans_width, 1000)));
         }
+    }
+
+    
+    @Override
+    public void resetToOrigin() {
+        moveTo(origin.x, origin.y);
+    }
+
+    @Override
+    public void updateToPanel(Coordinate render, Coordinate start) {
+        moveTo(start.x + SPACING_BETWEEN_BLOCKS * getX() / 2 + STANDARD_ICON_WIDTH / 2,
+                   start.y + SPACING_BETWEEN_BLOCKS * getY() / 2 + STANDARD_ICON_WIDTH / 2);
+    }
+
+    @Override
+    public void setOrigin() {
+        origin = new Coordinate(getX(), getY());
     }
 }

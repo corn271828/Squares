@@ -142,10 +142,13 @@ public class BaseLevel extends Level {
             xregister = (int) (getX() * Math.cos(angle) + getY() * Math.sin(angle));
             yregister = (int) (-getX() * Math.sin(angle) + getY() * Math.cos(angle));
         }
+        
         @Override
-        public LineExploder clone() throws CloneNotSupportedException {
-            throw new CloneNotSupportedException();
+        public void moveTo(int x, int y) {
+            super.moveTo(x, y);
+            updateRegister();
         }
+        
     }
 
 }

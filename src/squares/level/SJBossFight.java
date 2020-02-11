@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import squares.api.ResourceLoader;
+import squares.api.block.Resettable;
 import squares.api.block.Projectile;
 import squares.api.block.BlockFactory;
 import squares.api.level.BossLevel;
@@ -96,6 +97,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                 case FLYING_BONE_CHAR:
                     hold = new FlyingBone(Double.parseDouble(splitted[4]), Integer.parseInt(splitted[5]));
                     hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.setOrigin();
                     if (splitted.length > 6) {
                         hold.setDimensions(Integer.parseInt(splitted[6]), Integer.parseInt(splitted[7]));
                     }
@@ -104,6 +106,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                 case ARCING_BONE_CHAR:
                     hold = new ArcingBone(Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]));
                     hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.setOrigin();
                     if (splitted.length > 9) {
                         hold.setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
                     }
@@ -112,6 +115,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                 case ROTATING_BONE_CHAR:
                     hold = new RotatingBone(Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]), Double.parseDouble(splitted[9]));
                     hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.setOrigin();
                     if (splitted.length > 10) {
                         hold.setDimensions(Integer.parseInt(splitted[10]), Integer.parseInt(splitted[11]));
                     }
@@ -120,6 +124,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                 case TARGETING_BONE_CHAR:
                     hold = new ArcingBone(Double.parseDouble(splitted[4]) + 1000, Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]));
                     hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.setOrigin();
                     if (splitted.length > 9) {
                         hold.setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
                     }
@@ -128,6 +133,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                 case ORANGE_BONE_CHAR:
                     hold = new ArcingBone(Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]), FlyingBone.orangeBony);
                     hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.setOrigin();
                     if (splitted.length > 9) {
                         hold.setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
                     }
@@ -136,6 +142,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                 case BLUE_BONE_CHAR:
                     hold = new ArcingBone(Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]), Double.parseDouble(splitted[6]),  Double.parseDouble(splitted[7]),  Double.parseDouble(splitted[8]), FlyingBone.blueBony);
                     hold.moveTo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
+                    hold.setOrigin();
                     if (splitted.length > 9) {
                         hold.setDimensions(Integer.parseInt(splitted[9]), Integer.parseInt(splitted[10]));
                     }
@@ -144,10 +151,12 @@ public class SJBossFight extends BaseLevel implements BossLevel {
 
                 case LINE_EXPLODER_TESTER_CHAR:
                     LineExploderTester letx = new LineExploderTester(time, 20, Double.parseDouble(splitted[4]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), clock);
+                    letx.setOrigin();
                     timeToLines.get(time).add(letx);
                     break;
                 case SERIOUS_EXPLODER_CHAR:
                     LineExploderTester lety = new LineExploderTester(time, 18, Double.parseDouble(splitted[4]), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), clock, LineExploderTester.sansSrous);
+                    lety.setOrigin();
                     timeToLines.get(time).add(lety);
             }
         }
@@ -172,24 +181,9 @@ public class SJBossFight extends BaseLevel implements BossLevel {
         if (timestamp > endtime || timestamp <= 0)
             return new ArrayList<>();
         List<FlyingBone> temp = allTheBlasts.subList(timeToBlastIndex[timestamp - 1], timeToBlastIndex[timestamp]);
-        List<FlyingBone> hold = new ArrayList<>();
-        if (temp == null)
-            return hold;
-        for (FlyingBone bla : temp) {
-            FlyingBone kin = bla.clone();
-            kin.moveTo(start.x + SPACING_BETWEEN_BLOCKS * bla.getX() / 2 + STANDARD_ICON_WIDTH / 2, start.y + SPACING_BETWEEN_BLOCKS * bla.getY() / 2 + STANDARD_ICON_WIDTH / 2);
-            if (kin instanceof ArcingBone && ((ArcingBone) kin).angle > 900) {
-                ArcingBone ab = (ArcingBone) kin;
-                ab.angle = Math.atan2(render.x - kin.getX(), render.y - kin.getY());
-                ab.xvelocity = kin.getSpeed() * Math.sin(ab.angle);
-                ab.yvelocity = kin.getSpeed() * Math.cos(ab.angle);
-                ab.angle *= -1;
-                ab.tx = new AffineTransform();
-                ab.tx.rotate(ab.angle);
-            }
-            hold.add(kin);
-        }
-        return hold;
+        for (FlyingBone fb : temp)
+            fb.updateToPanel(render, start);
+        return temp;
     }
 
     @Override
@@ -197,20 +191,10 @@ public class SJBossFight extends BaseLevel implements BossLevel {
         if (timestamp > endtime || timestamp <= 0)
             return new ArrayList<>();
         List<BaseLevel.LineExploder> temp = allTheLines.subList(timeToLinesIndex[timestamp - 1], timeToLinesIndex[timestamp]);
-        List<BaseLevel.LineExploder> hold = new ArrayList<>();
-        if (temp == null)
-            return hold;
         for (BaseLevel.LineExploder lein : temp) {
-            assert lein instanceof Cloneable;
-            BaseLevel.LineExploder kin;
-            try { kin = lein.clone(); }
-            catch(CloneNotSupportedException e) { throw new IllegalArgumentException(e); } // TODO fix kludge
-            kin.moveTo(start.x + SPACING_BETWEEN_BLOCKS * kin.getX() / 2 + STANDARD_ICON_WIDTH / 2,
-                       start.y + SPACING_BETWEEN_BLOCKS * kin.getY() / 2 + STANDARD_ICON_WIDTH / 2);
-            kin.updateRegister();
-            hold.add(kin);
+            ((LineExploderTester) lein).updateToPanel(render, start);
         }
-        return hold;
+        return temp;
     }
 
     @Override
@@ -335,7 +319,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     @Override
     public int getPlayerHealth() { return levelHP; }
 
-    public static class FlyingBone extends Projectile implements Cloneable {
+    public static class FlyingBone extends Projectile implements Resettable {
         public static final Image bonypict = new ImageIcon("Pics/bonepic.png", "bonepic").getImage();
         public static final Image orangeBony = new ImageIcon("Pics/orangebone.png", "orangebone").getImage();
         public static final Image blueBony = new ImageIcon("Pics/bluebone.png", "bluebone").getImage();
@@ -347,9 +331,12 @@ public class SJBossFight extends BaseLevel implements BossLevel {
         int yregister;
         AffineTransform tx;
         Area oldArea;
+        private Coordinate origin;
+        private double angleorig;
 
         public FlyingBone(double d, int bs) {
             this(d, bs, bonypict);
+            origin = new Coordinate(this.getX(), this.getY());
         }
 
         public FlyingBone(double d, int bs, Image i) {
@@ -368,6 +355,12 @@ public class SJBossFight extends BaseLevel implements BossLevel {
             picwidth = newWidth;
             picheight = newHeight;
             icon = new ImageIcon(image.getScaledInstance(picwidth, picheight, java.awt.Image.SCALE_SMOOTH));
+        }
+        
+        @Override
+        public void setOrigin() {
+            origin = new Coordinate(this.getX(), this.getY());
+            angleorig = angle;
         }
 
         @Override
@@ -411,15 +404,29 @@ public class SJBossFight extends BaseLevel implements BossLevel {
         }
 
         @Override
-        public FlyingBone clone() {
-            FlyingBone fb = new FlyingBone(angle, getSpeed(), image);
-            fb.setDimensions(picwidth, picheight);
-            return fb;
+        public void resetToOrigin() {
+            this.moveTo(origin.x, origin.y);
+            angle = angleorig;
+        }
+
+        @Override
+        public void updateToPanel(Coordinate render, Coordinate start) {
+            moveTo(start.x + SPACING_BETWEEN_BLOCKS * getX() / 2 + STANDARD_ICON_WIDTH / 2, start.y + SPACING_BETWEEN_BLOCKS * getY() / 2 + STANDARD_ICON_WIDTH / 2);
+            if (this instanceof ArcingBone && ((ArcingBone) this).angle > 900) {
+                ArcingBone ab = (ArcingBone) this;
+                ab.angle = Math.atan2(render.x - getX(), render.y - getY());
+                ab.xvelocity = getSpeed() * Math.sin(ab.angle);
+                ab.yvelocity = getSpeed() * Math.cos(ab.angle);
+                ab.angle *= -1;
+                ab.tx = new AffineTransform();
+                ab.tx.rotate(ab.angle);
+            }
         }
     }
 
 
     public static class ArcingBone extends FlyingBone {
+        double xvelorigin, yvelorigin;
         double xvelocity;
         double yvelocity;
         double xaccel;
@@ -458,14 +465,20 @@ public class SJBossFight extends BaseLevel implements BossLevel {
 
             return a;
         }
-
+        
         @Override
-        public ArcingBone clone() {
-            ArcingBone ab = new ArcingBone(angle, xvelocity, yvelocity, xaccel, yaccel, image);
-            ab.setDimensions(picwidth, picheight);
-            return ab;
+        public void setOrigin() {
+            super.setOrigin();
+            xvelorigin = xvelocity;
+            yvelorigin = yvelocity;
         }
-
+        
+        @Override
+        public void resetToOrigin() {
+            super.resetToOrigin();
+            xvelocity = xvelorigin;
+            yvelocity = yvelorigin;
+        }
     }
 
     public static class RotatingBone extends ArcingBone {
@@ -484,12 +497,6 @@ public class SJBossFight extends BaseLevel implements BossLevel {
             moveOffset((int) xvelocity, (int) yvelocity);
             updateRegister();
             tx.rotate(angularVel);
-        }
-
-        public RotatingBone clone() {
-            RotatingBone rb = new RotatingBone(angle, xvelocity, yvelocity, xaccel, yaccel, angularVel);
-            rb.setDimensions(picwidth, picheight);
-            return rb;
         }
 
     }
