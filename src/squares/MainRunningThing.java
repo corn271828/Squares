@@ -818,25 +818,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (clock.getTimestamp() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING)
             clock.increment();
 
-<<<<<<< HEAD
         if (player.level.winCond(player) && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
-=======
-        if (player.position.x == player.level.getEndPos().x && player.position.y == player.level.getEndPos().y && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
-            if (player.isPracticeMode) {
-                player.charState = CharacterState.RESTARTING;
-                isSwitching = true;
-                opacity = 10;
-                transitioning = new Color(180, 180, 180);
-                repaint();
-            } else {
-                levelFinished();
-            }
-        }
-        
-
-        if (player.level instanceof BossLevel && ((BossLevel) player.level).getEndTime() <= clock.getTimestamp() && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
-            System.out.println("Hey times up");
->>>>>>> 9770e401e76ba9b9436928513f3187d1cfcf90be
             if (tasActive || player.isPracticeMode) {
                 tasActive = false;
                 player.charState = CharacterState.RESTARTING;
