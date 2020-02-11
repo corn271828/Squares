@@ -636,8 +636,6 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         player.level.tickBlocks(player, start);
         player.level.tickEntities(player, new AABB(start, end));
-        player.level.tickBlocks(player, clock, start);
-        player.level.tickEntities(player, new AABB(start, end), clock);
 
 
         // Calculates where the blasts would be
