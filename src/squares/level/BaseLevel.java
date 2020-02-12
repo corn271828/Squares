@@ -170,7 +170,6 @@ public class BaseLevel extends Level {
             for (Block cell : row)
                 if (cell != null) cell.reset();
         player.setMaxHP(hp);
-        player.iftime = -11;
     }
 
     @Override
