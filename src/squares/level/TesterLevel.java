@@ -22,15 +22,16 @@ import squares.api.block.FiringBlock;
 import squares.api.block.Projectile;
 import squares.api.level.BossLevel;
 import squares.api.level.Level;
-import static squares.level.SJBossFight.ARCING_BONE_CHAR;
 import squares.level.SJBossFight.ArcingBone;
-import static squares.level.SJBossFight.FLYING_BONE_CHAR;
 import squares.level.SJBossFight.FlyingBone;
+import squares.level.SJBossFight.RotatingBone;
+import squares.level.SJBossFight.BoneExploder;
+
+import static squares.level.SJBossFight.ARCING_BONE_CHAR;
+import static squares.level.SJBossFight.FLYING_BONE_CHAR;
 import static squares.level.SJBossFight.LINE_EXPLODER_TESTER_CHAR;
 import static squares.level.SJBossFight.ROTATING_BONE_CHAR;
-import squares.level.SJBossFight.RotatingBone;
 import static squares.api.RenderingConstants.*;
-import squares.level.SJBossFight.BoneExploder;
 
 /**
  *
