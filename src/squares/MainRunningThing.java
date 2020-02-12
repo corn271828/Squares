@@ -7,6 +7,7 @@ package squares;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
@@ -512,9 +513,6 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         player.isPracticeMode = toggle_practice.isSelected();
         player.level.setup(player);
-        if (player.isPracticeMode) {
-            player.hp = Player.PRACTICE_MODE_LIVES;
-        }
         if (musicOn) {
             player.level.setupMusic(audio, clock);
         }
@@ -751,20 +749,28 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         // Draws the stuff at the top of the screen
         g.setColor(new Color(207, 226, 243));
-        g.fillRect(0, 0, this.getWidth(), 120);
+        g.fillRect(0, 0, getWidth(), 120);
         g.setColor(Color.BLACK);
-        g.fillRect(this.getWidth() / 2 - 27, 48, 54, 54);
+        g.fillRect(getWidth() / 2 - 27, 48, 54, 54);
         g.setColor(Color.WHITE);
-        g.fillRect(this.getWidth() / 2 - 25, 50, 50, 50);
+        g.fillRect(getWidth() / 2 - 25, 50, 50, 50);
         g.setColor(Color.BLACK);
         g.setFont(g.getFont().deriveFont(18f));
-        g.drawString(player.level.label, this.getWidth() / 2 - 20, 70);
-        g.drawString(String.format("TimeStamp: %d", clock.time()), this.getWidth() - 300, 80);
-        g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"), this.getWidth() - 300, 100);
-        g.drawString(String.format("Death Count (Total): %d", player.deaths), 300, 50);
-        g.drawString(String.format("Death Count (Level): %d", player.level.getDeaths()), 300, 70);
-        g.drawString(String.format("Health: %d", player.hp), 300, 90);
-        g.drawString(String.format("Level Code: %s", player.level.code), 300, 110);
+        FontMetrics fm = g.getFontMetrics(g.getFont());
+        int offset = 300;
+        for(Player.HUDLine line: player.getHUDLines()) {
+            String render = String.format("%s: %s", line.key, line.getValue());
+            g.drawString(render, (int)((line.align - 1) * (offset - getWidth() / 2) + offset - fm.stringWidth(render) / 2), (int)(50 + 20 * line.voffset));
+        }
+/*
+        g.drawString(player.level.label,                                                getWidth() / 2 - 20, 70);
+        g.drawString(String.format("TimeStamp: %d", clock.time()),                      getWidth() - 300, 80);
+        g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"),    getWidth() - 300, 100);
+        g.drawString(String.format("Death Count (Total): %d", player.deaths),           300, 50);
+        g.drawString(String.format("Death Count (Level): %d", player.level.getDeaths()),300, 70);
+        g.drawString(String.format("Health: %d", player.hp),                            300, 90);
+        g.drawString(String.format("Level Code: %s", player.level.code),                300, 110);
+*/
         
         // Draws Lea
         if (isLeaGif) {

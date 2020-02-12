@@ -17,8 +17,8 @@ import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
 import static squares.api.RenderingConstants.BORDER_WIDTH;
 
 public class Player {
-    public static final int itime = 10;
-    public static final int PRACTICE_MODE_LIVES = 100;
+    private static final int itime = 10;
+    private static final int PRACTICE_MODE_LIVES = 100;
 
     public CharacterState charState = CharacterState.NORMAL;
     public Coordinate position = new Coordinate(0, 0); // Target pos, grid coords
@@ -27,21 +27,30 @@ public class Player {
     public Coordinate drawingStart;
     public Consumer<Player> deathCb;
 
-    public int iftime = -11;
-    public int deaths = 0;
-    public int hp = 1;
+    private int iftime = -11;
+    private int deaths = 0;
+    private int hp = 1;
     public boolean isPracticeMode = false;
     
-    public static final int RIGHT_KEY_PRESS = 39;
-    public static final int LEFT_KEY_PRESS = 37;
-    public static final int DOWN_KEY_PRESS = 40;
-    public static final int UP_KEY_PRESS = 38;
+    private static final int RIGHT_KEY_PRESS = 39;
+    private static final int LEFT_KEY_PRESS = 37;
+    private static final int DOWN_KEY_PRESS = 40;
+    private static final int UP_KEY_PRESS = 38;
 
     public Clock clock;
     public Level level;
     
-    public int queueKey;
-    public int queueKeyTime;
+    private int queueKey;
+    private int queueKeyTime;
+    private HUDLine[] hud = {
+        new HUDLine("Death Count (total)", 1, 0.0),
+        new HUDLine("Death Count (level)", 1, 1.0),
+        new HUDLine("HP",                  1, 2.0),
+        new HUDLine("Level Code",          1, 3.0),
+        new HUDLine("Current Tick",       -1, 1.5),
+        new HUDLine("Practice Mode",      -1, 2.5),
+        new HUDLine("Level",               0, 1.0),
+    };
 
     public Player(Clock clock, Coordinate ds) {
         this.clock = clock;
@@ -58,6 +67,7 @@ public class Player {
 
     public void setMaxHP(int hp) {
         this.hp = isPracticeMode ? PRACTICE_MODE_LIVES : hp;
+        this.iftime = ~itime;
     }
 
     public boolean canMoveRight() {
@@ -171,5 +181,27 @@ public class Player {
             deaths++;
             deathCb.accept(this);
         }
+    }
+
+    public HUDLine[] getHUDLines() {
+        hud[0].value = String.valueOf(deaths);
+        hud[1].value = String.valueOf(level.getDeaths());
+        hud[2].value = String.valueOf(hp);
+        hud[3].value = level.code;
+        hud[4].value = String.valueOf(clock.time());
+        hud[5].value = isPracticeMode ? "ON" : "OFF";
+        hud[6].value = level.label;
+        return hud;
+    }
+    static class HUDLine {
+        public final String key;
+        private String value;
+        public final double align, voffset;
+        public HUDLine(String key, double align, double voffset) {
+            this.key = key;
+            this.align = align;
+            this.voffset = voffset;
+        }
+        public String getValue()    { return value; }
     }
 }
