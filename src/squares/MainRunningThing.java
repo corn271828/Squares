@@ -105,7 +105,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         middle.y = jPanel1.getHeight() / 2;
         RegistrationHandler.init();
         clock = new Clock();
-        player = new Player(clock);
+        player = new Player(clock, start);
         squares.level.SJBossFight.clock = clock;
         levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"), new BlockFactory());
         player.level = levelLoader.getCurrent();
@@ -333,20 +333,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (tasActive) {
             return;
         }
-        if(player.charState != CharacterState.NORMAL) {
-            return;
-        }
         
-        player.callMove(evt.getKeyCode());
+        player.setKeyBuffer(evt.getKeyCode());
         
-        player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-        if (player.charState == CharacterState.NORMAL) {
-            if (player.level instanceof BossLevel) 
-                player.charState = CharacterState.FASTMOVING;
-            else
-                player.charState = CharacterState.MOVING;
-        }
         repaint();
     }//GEN-LAST:event_jPanel1KeyReleased
 
@@ -852,6 +841,9 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         }
         
+        if (player.charState == CharacterState.NORMAL)
+            player.callMove();
+        player.checkFlushKeyBuffer();
         if (player.moveAnim(clipholder))
             landChecker();
 

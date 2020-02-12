@@ -7,11 +7,14 @@ import java.util.function.Consumer;
 import squares.api.CharacterState;
 import squares.api.Coordinate;
 import squares.api.Clock;
+import static squares.api.RenderingConstants.BORDER_WIDTH;
 import squares.api.level.Level;
 
 import static squares.api.RenderingConstants.CHARACTER_FASTSPEED;
 import static squares.api.RenderingConstants.CHARACTER_SPEED;
 import static squares.api.RenderingConstants.CHARACTER_WIDTH;
+import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
+import squares.api.level.BossLevel;
 
 public class Player {
     public static final int itime = 10;
@@ -21,6 +24,7 @@ public class Player {
     public Coordinate position = new Coordinate(0, 0); // Target pos, grid coords
     public Coordinate target   = new Coordinate(0, 0); // Target position of the character in panel coordinates
     public Coordinate render   = new Coordinate(0, 0); // Position of the upper left hand corner of the character pic in panel coordinates
+    public Coordinate drawingStart;
     public Consumer<Player> deathCb;
 
     public int iftime = -11;
@@ -35,9 +39,13 @@ public class Player {
 
     public Clock clock;
     public Level level;
+    
+    public int keyBuffer;
+    public int keyBuffTime;
 
-    public Player(Clock clock) {
+    public Player(Clock clock, Coordinate ds) {
         this.clock = clock;
+        drawingStart = ds;
     }
     
     public boolean isInvincible() {
@@ -72,8 +80,20 @@ public class Player {
                 level.blockAt(position.x, position.y + 1).stepable;
     }
     
-    public void callMove(int keyCode) {
-        switch (keyCode) { // move
+    public void setKeyBuffer(int keyCode) {
+        keyBuffer = keyCode;
+        keyBuffTime = clock.getTimestamp();
+    }
+    
+    public void checkFlushKeyBuffer() {
+        if (Math.abs(clock.getTimestamp() - keyBuffTime) > 2)
+            keyBuffer = -12345;
+    }
+    
+    public void callMove() {
+        if (keyBuffer == -12345)
+            return;
+        switch (keyBuffer) { // move
             case RIGHT_KEY_PRESS:
             case 'D':
                 if (canMoveRight())
@@ -95,6 +115,15 @@ public class Player {
                     position.y--;
                 break;
         }
+        target.x = drawingStart.x +position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        target.y = drawingStart.y + position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
+        if (charState == CharacterState.NORMAL) {
+            if (level instanceof BossLevel) 
+                charState = CharacterState.FASTMOVING;
+            else
+                charState = CharacterState.MOVING;
+        }
+        keyBuffer = -12345;
     }
     
     public boolean moveAnim(Area clipholder) {
