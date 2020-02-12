@@ -73,7 +73,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 104;
-    public static final boolean SEE_OVERLAP = false;
+    public static final boolean SEE_OVERLAP = true;
     public boolean musicOn = true;
 
     // Checkpoints
@@ -626,6 +626,11 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.level.tickBlocks(player, start);
         player.level.tickEntities(player, new AABB(start, end), clipholder);
 
+        player.checkFlushQueueKey();
+        if (player.charState == CharacterState.NORMAL)
+            player.callMove();
+        if (player.moveAnim(clipholder))
+            landChecker();
 
         // Calculates where the blasts would be
         int charYUpper = player.render.y;
@@ -689,11 +694,6 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         }
         
-        if (player.charState == CharacterState.NORMAL)
-            player.callMove();
-        player.checkFlushQueueKey();
-        if (player.moveAnim(clipholder))
-            landChecker();
 
         ///PAINTINGG!!!
         
