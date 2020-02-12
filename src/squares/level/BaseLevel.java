@@ -101,7 +101,7 @@ public class BaseLevel extends Level {
                 if (currBlock instanceof FiringBlock) {
                     FiringBlock fb = (FiringBlock) currBlock;
 
-                    if ((player.clock.getTimestamp() - fb.getPhase()) % fb.getPeriod() == 0) {
+                    if ((player.clock.time() - fb.getPhase()) % fb.getPeriod() == 0) {
                         blasts.add(fb.createAtCoords(drawingStart.x + columnNumber * SPACING_BETWEEN_BLOCKS, drawingStart.y + rowNumber * SPACING_BETWEEN_BLOCKS));
                     }
                 }
@@ -128,7 +128,7 @@ public class BaseLevel extends Level {
                     } else {
                         holdangle = 0;
                     }
-                    blasts.add(((HighExplosion) bla).getLineExplosion(player.clock.getTimestamp(), holdangle, bla.getX(), bla.getY()));
+                    blasts.add(((HighExplosion) bla).getLineExplosion(player.clock.time(), holdangle, bla.getX(), bla.getY()));
                 }
                 clipholder.add(bla.getClip());
                 onEntityRemove(bla);
@@ -140,7 +140,7 @@ public class BaseLevel extends Level {
     protected boolean shouldRemoveEntity(Entity e, AABB check, Clock clock) {
         if(e instanceof LineExploder) {
             LineExploder le = (LineExploder) e;
-            if (le.starttime + le.timelength <= clock.getTimestamp()) return true;
+            if (le.starttime + le.timelength <= clock.time()) return true;
         }
         return !check.contains(e.getX(), e.getY());
     }

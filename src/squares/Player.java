@@ -49,7 +49,7 @@ public class Player {
     }
     
     public boolean isInvincible() {
-        return iftime + itime >= clock.getTimestamp();
+        return iftime + itime >= clock.time();
     }
 
     public void setMaxHP(int hp) {
@@ -82,11 +82,11 @@ public class Player {
     
     public void setQueueKey(int keyCode) {
         queueKey = keyCode;
-        queueKeyTime = clock.getTimestamp();
+        queueKeyTime = clock.time();
     }
     
     public void checkFlushQueueKey() {
-        if (Math.abs(clock.getTimestamp() - queueKeyTime) > 2)
+        if (Math.abs(clock.time() - queueKeyTime) > 2)
             queueKey = -12345;
     }
     
@@ -155,7 +155,7 @@ public class Player {
             if (--hp <= 0) {
                 die();
             } else {
-                iftime = clock.getTimestamp();
+                iftime = clock.time();
             }
         }
     }

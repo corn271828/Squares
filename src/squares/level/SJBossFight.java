@@ -321,8 +321,8 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     @Override
     public void tickEntities(squares.Player player, AABB check, Area clipholder) {
         super.tickEntities(player, check, clipholder);
-        blasts.addAll(generateBlasts(clock.getTimestamp(), player.render, new Coordinate(check.lx, check.ly)));
-        blasts.addAll(generateLines(clock.getTimestamp(), player.render, new Coordinate(check.lx, check.ly)));
+        blasts.addAll(generateBlasts(clock.time(), player.render, new Coordinate(check.lx, check.ly)));
+        blasts.addAll(generateLines(clock.time(), player.render, new Coordinate(check.lx, check.ly)));
     }
 
     @Override
@@ -333,12 +333,12 @@ public class SJBossFight extends BaseLevel implements BossLevel {
 
     @Override
     public boolean winCond(squares.Player p) {
-        return p.clock.getTimestamp() >= getEndTime();
+        return p.clock.time() >= getEndTime();
     }
 
     @Override
     public void setupMusic(AudioManager audio, Clock c) {
-        audio.restartPlaying("boss", clock.getTimestamp() * audio.getClip("boss").getMicrosecondLength() / 1556);
+        audio.restartPlaying("boss", clock.time() * audio.getClip("boss").getMicrosecondLength() / 1556);
     }
 
     @Override
@@ -556,7 +556,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.rotate(angle);
 
-                int opacity = opacities[clock.getTimestamp() - starttime];
+                int opacity = opacities[clock.time() - starttime];
                 g2d.setColor(new Color(0, 100, 0, opacity));
                 g2d.fillRect(xregister - width / 2, yregister, width, 1000);
                 g2d.setColor(new Color(0, 200, 0, opacity));

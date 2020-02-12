@@ -52,10 +52,10 @@ public class LineExploderTester extends BaseLevel.LineExploder implements Resett
         Graphics2D g2d = (Graphics2D) g;
         g2d.rotate(angle);
 
-        if (clock.getTimestamp() <= starttime + 10) {
+        if (clock.time() <= starttime + 10) {
             plody.paintIcon(c, g2d, xregister - sans_width / 2, yregister - sans_height / 2);
-        } else if (clock.getTimestamp() < starttime + timelength - 2) {
-            int opacity = opacities[clock.getTimestamp() - starttime - 10];
+        } else if (clock.time() < starttime + timelength - 2) {
+            int opacity = opacities[clock.time() - starttime - 10];
             g2d.setColor(new Color(100, 0, 0, opacity));
             g2d.fillRect(xregister - sans_width / 2, yregister, sans_width, 1000);
             g2d.setColor(new Color(200, 0, 0, opacity));
@@ -68,7 +68,7 @@ public class LineExploderTester extends BaseLevel.LineExploder implements Resett
 
     @Override
     public Area getCollision() {
-        if (clock.getTimestamp() > starttime + 10 && clock.getTimestamp() < starttime + timelength - 2)
+        if (clock.time() > starttime + 10 && clock.time() < starttime + timelength - 2)
             return new Area(tx.createTransformedShape(new Rectangle(xregister - sans_width / 2, yregister - sans_height / 2, sans_width, 1000)));
         else
             return new Area();
@@ -76,7 +76,7 @@ public class LineExploderTester extends BaseLevel.LineExploder implements Resett
 
     @Override
     public Area getClip() {
-        if (clock.getTimestamp() <= starttime + 10) {
+        if (clock.time() <= starttime + 10) {
             return new Area(tx.createTransformedShape(new Rectangle(xregister - sans_width / 2, yregister - sans_height / 2, sans_width, sans_height)));
         } else {
             return new Area(tx.createTransformedShape(new Rectangle(xregister - sans_width / 2, yregister - sans_height / 2, sans_width, 1000)));

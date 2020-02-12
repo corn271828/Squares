@@ -16,7 +16,7 @@ public class Clock {
         timestamp = 0;
     }
     
-    public int getTimestamp() {
+    public int time() {
         return timestamp;
     }
     
