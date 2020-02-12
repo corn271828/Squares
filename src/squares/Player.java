@@ -51,6 +51,10 @@ public class Player {
     public boolean isInvincible() {
         return iftime + itime >= clock.time();
     }
+    
+    public boolean shouldRefresh() {
+        return iftime + itime + 1 >= clock.time();
+    }
 
     public void setMaxHP(int hp) {
         this.hp = isPracticeMode ? PRACTICE_MODE_LIVES : hp;
