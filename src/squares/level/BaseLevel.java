@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Component;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
@@ -112,6 +113,7 @@ public class BaseLevel extends Level {
     
     @Override
     public void tickEntities(squares.Player player, AABB check, Area clipholder) {
+        ArrayList<Entity> toAdd = new ArrayList<>();
         for (Iterator<Entity> it = blasts.iterator(); it.hasNext();) {
             Entity bla = it.next();
 
@@ -128,13 +130,14 @@ public class BaseLevel extends Level {
                     } else {
                         holdangle = 0;
                     }
-                    blasts.add(((HighExplosion) bla).getLineExplosion(player.clock.time(), holdangle, bla.getX(), bla.getY()));
+                    toAdd.add(((HighExplosion) bla).getLineExplosion(player.clock.time(), holdangle, bla.getX(), bla.getY()));
                 }
                 clipholder.add(bla.getClip());
                 onEntityRemove(bla);
                 it.remove();
             }
         }
+        blasts.addAll(toAdd);
     }
 
     protected boolean shouldRemoveEntity(Entity e, AABB check, Clock clock) {
