@@ -10,7 +10,7 @@ import squares.api.Coordinate;
 import squares.api.Clock;
 import squares.api.AABB;
 import squares.api.block.Block;
-import squares.api.block.Entity;
+import squares.api.entity.Entity;
 
 public abstract class Level {
     private int deaths = 0;

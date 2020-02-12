@@ -23,7 +23,7 @@ import squares.api.CharacterState;
 import squares.api.Clock;
 import squares.api.ResourceLoader;
 import squares.api.Coordinate;
-import squares.api.block.Entity;
+import squares.api.entity.Entity;
 import squares.api.block.BlockFactory;
 import squares.api.level.Level;
 import squares.api.level.BossLevel;

@@ -17,7 +17,7 @@ import java.util.HashSet;
 import squares.api.AABB;
 import squares.api.AudioManager;
 import squares.api.Clock;
-import squares.api.block.Entity;
+import squares.api.entity.Entity;
 import squares.api.block.Block;
 import squares.api.block.FiringBlock;
 import squares.api.block.TargetingBlock;

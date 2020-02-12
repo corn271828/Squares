@@ -17,7 +17,7 @@ import javax.swing.ImageIcon;
 import squares.api.ResourceLoader;
 import squares.api.Clock;
 import squares.api.Coordinate;
-import squares.api.block.Resettable;
+import squares.api.entity.Resettable;
 
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
 import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;

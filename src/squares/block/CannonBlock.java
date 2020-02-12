@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
 import squares.Player;
 import squares.api.ResourceLoader;
 import squares.api.block.Block;
-import squares.api.block.Projectile;
+import squares.api.entity.Projectile;
 import squares.api.block.FiringBlock;
 import squares.api.block.TargetingBlock;
 

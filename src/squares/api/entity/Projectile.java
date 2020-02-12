@@ -1,4 +1,4 @@
-package squares.api.block;
+package squares.api.entity;
 
 import java.awt.Graphics;
 import java.awt.Component;
