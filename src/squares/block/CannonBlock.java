@@ -10,6 +10,7 @@ import java.awt.geom.Area;
 import javax.swing.ImageIcon;
 
 import squares.Player;
+import squares.api.ResourceLoader;
 import squares.api.block.Block;
 import squares.api.block.Projectile;
 import squares.api.block.FiringBlock;
@@ -27,7 +28,7 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
     public int cannonballSpeed; //pixels per timestamp
     public int delay;
     public int targetX, targetY;
-    public static final ImageIcon cannonBlockIcon = new ImageIcon("Pics/Aiming Cannon Base.png", "Cannon Block Image");
+    public static final ImageIcon cannonBlockIcon = new ResourceLoader("sprites", "Aiming Cannon Base").asImageIcon();
 
     public CannonBlock(String arg) {
         this(
@@ -80,7 +81,7 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
     }
 
     public static class Cannonball extends Projectile {
-        protected static final ImageIcon cannonballPic = new ImageIcon(new ImageIcon("Pics/Cannonball.png", "Cannonball pic").getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        protected static final ImageIcon cannonballPic = new ImageIcon(new ResourceLoader("sprites", "Cannonball").asImageIcon().getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
         public double angle; // angle in radians; think reflected unit circle
 
         public Cannonball(int x, int y, int s, double ang) {

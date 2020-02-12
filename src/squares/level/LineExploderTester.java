@@ -14,6 +14,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Area;
 import javax.swing.ImageIcon;
 
+import squares.api.ResourceLoader;
 import squares.api.Clock;
 import squares.api.Coordinate;
 import squares.api.block.Resettable;
@@ -30,8 +31,8 @@ public class LineExploderTester extends BaseLevel.LineExploder implements Resett
     public static final int sans_height = 100;
     public static final int[] opacities = new int[] {50, 100, 200, 255, 255, 255, 200, 100, 50};
 
-    public static final ImageIcon sansImage = new ImageIcon(new ImageIcon("Pics/sans_thumbnail2.png", "sanspic").getImage().getScaledInstance(sans_width, sans_height, java.awt.Image.SCALE_SMOOTH));
-    public static final ImageIcon sansSrous = new ImageIcon(new ImageIcon("Pics/sans_srs.png", "sanssrspic").getImage().getScaledInstance(sans_width, sans_height, java.awt.Image.SCALE_SMOOTH));
+    public static final ImageIcon sansImage = new ImageIcon(new ResourceLoader("sprites", "sans_thumbnail2").asImageIcon().getImage().getScaledInstance(sans_width, sans_height, java.awt.Image.SCALE_SMOOTH));
+    public static final ImageIcon sansSrous = new ImageIcon(new ResourceLoader("sprites", "sans_srs").asImageIcon().getImage().getScaledInstance(sans_width, sans_height, java.awt.Image.SCALE_SMOOTH));
     public final ImageIcon plody;
 
     public final Clock clock;

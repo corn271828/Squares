@@ -8,6 +8,7 @@ package squares.block;
 import javax.swing.ImageIcon;
 
 import squares.Player;
+import squares.api.ResourceLoader;
 import squares.api.block.Block;
 import squares.api.CharacterState;
 
@@ -17,7 +18,7 @@ import squares.api.CharacterState;
  */
 
 public class EndingBlock extends Block {
-    public static final ImageIcon endingBlockIcon = new ImageIcon("Pics/Ending Block.png", "End Block Image");
+    public static final ImageIcon endingBlockIcon = new ResourceLoader("sprites", "Ending Block").asImageIcon();
 
     public EndingBlock() {
         super(endingBlockIcon, "End Block", true);

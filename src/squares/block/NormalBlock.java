@@ -7,6 +7,7 @@ package squares.block;
 
 import javax.swing.ImageIcon;
 import squares.Player;
+import squares.api.ResourceLoader;
 import squares.api.CharacterState;
 import squares.api.block.Block;
 
@@ -16,7 +17,7 @@ import squares.api.block.Block;
  */
 public class NormalBlock extends Block {
 
-    public static final ImageIcon normalBlockIcon = new ImageIcon("Pics/Normal Block.png", "Normal Block Image");
+    public static final ImageIcon normalBlockIcon = new ResourceLoader("sprites", "Normal Block").asImageIcon();
 
     public NormalBlock() {
         super(normalBlockIcon, "Normal Block", true);

@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 
 import squares.Player;
 import squares.api.CharacterState;
+import squares.api.ResourceLoader;
 import squares.api.Direction;
 import squares.api.block.Block;
 import squares.api.block.DirectedBlock;
@@ -33,7 +34,7 @@ public class LauncherBlock extends Block implements DirectedBlock {
     private static ImageIcon getIconByDirection(Direction d) {
         int i = d.ordinal();
         if(launcherBlocks[i] == null)
-            launcherBlocks[i] = new ImageIcon(String.format("Pics/Launcher Block %s.png", d.name), "Launcher Block Image");
+            launcherBlocks[i] = new ResourceLoader("sprites", String.format("Launcher Block %s", d.name)).asImageIcon();
         return launcherBlocks[i];
     }
 

@@ -68,7 +68,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public Area clipholder;
     public Area ouchArea;
 
-    public static final ImageIcon characterIconAlive = new ImageIcon("Pics/Character.png", "Character image");
+    public static final ImageIcon characterIconAlive = new ResourceLoader("sprites", "Character").asImageIcon();
 
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
@@ -83,9 +83,9 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     // Easter eggs
     public static final String KONAMI_CODE = "uuddlrlrba";
-    public static final ImageIcon LEAGIF = new ImageIcon("Pics/lea.gif");
+    public static final ImageIcon LEAGIF = new ResourceLoader("sprites", "lea.gif").asImageIcon();
     public boolean isLeaGif = false;
-    public static final ImageIcon PIEPNG = new ImageIcon(new ImageIcon("Pics/pie.png").getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
+    public static final ImageIcon PIEPNG = new ImageIcon(new ResourceLoader("sprites", "pie").asImageIcon().getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
 
     // All the levels. All of them.
     public LevelLoader levelLoader;

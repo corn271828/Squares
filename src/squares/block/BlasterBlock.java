@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import squares.Player;
 
 import squares.api.Direction;
+import squares.api.ResourceLoader;
 import squares.api.block.Block;
 import squares.api.block.DirectedBlock;
 import squares.api.block.FiringBlock;
@@ -57,7 +58,7 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
     private static ImageIcon getIconByDirection(Direction d) {
         int i = d.ordinal();
         if(blasterBlocks[i] == null)
-            blasterBlocks[i] = new ImageIcon(String.format("Pics/Blaster Block %s.png", d.name), "Blaster Block Image");
+            blasterBlocks[i] = new ResourceLoader("sprites", String.format("Blaster Block %s", d.name)).asImageIcon();
         return blasterBlocks[i];
     }
 
@@ -124,7 +125,7 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
         private static Icon getIconByDirection(Direction d) {
             int i = d.ordinal();
             if(blastIcons[i] == null)
-                blastIcons[i] = new ImageIcon(String.format("Pics/Slow Blast %s.png", d.name), "Blaster Block Image");
+                blastIcons[i] = new ResourceLoader("sprites", String.format("Slow Blast %s", d.name)).asImageIcon();
             return blastIcons[i];
         }
 

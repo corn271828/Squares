@@ -10,11 +10,13 @@ public class ResourceLoader {
     private final String path;
     private final static String[] prefices = {"", "/"};
 
-    public ResourceLoader(String namespace, String path) {
-        this.path = String.format(format, namespace, path);
+    public ResourceLoader(String namespace, String name) {
+        this.path = String.format(format, namespace, name);
     }
+
+    // Output methods
     public InputStream asInputStream(String suffix) {
-        String path = this.path + "." + suffix;
+        String path = suffixedPath(suffix);
         for(String prefix: prefices) {
             InputStream stream = getClass().getClassLoader().getResourceAsStream(prefix + path);
             if(stream != null)
@@ -29,6 +31,10 @@ public class ResourceLoader {
         return javax.sound.sampled.AudioSystem.getAudioInputStream(asInputStream("wav"));
     }
     public ImageIcon asImageIcon() {
-        return new ImageIcon(path + ".png");
+        return new ImageIcon(suffixedPath("png"));
+    }
+
+    private String suffixedPath(String suffix) {
+        return suffix.lastIndexOf('.') == -1 ? path + "." + suffix : path;
     }
 }

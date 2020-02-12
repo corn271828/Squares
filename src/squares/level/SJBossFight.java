@@ -65,7 +65,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
 
     public static final int wI_WIDTH = 300;
     public static final int wI_HEIGHT = 300;
-    public static ImageIcon warningIcon = new ImageIcon(new ImageIcon("Pics/warning750.png").getImage().getScaledInstance(wI_WIDTH, wI_HEIGHT, java.awt.Image.SCALE_SMOOTH));
+    public static ImageIcon warningIcon = new ImageIcon(new ResourceLoader("sprites", "warning750").asImageIcon().getImage().getScaledInstance(wI_WIDTH, wI_HEIGHT, java.awt.Image.SCALE_SMOOTH));
 
     private int endtime, levelHP;
     static public Clock clock;
@@ -345,9 +345,9 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     public int getEndTime() { return endtime; }
 
     public static class FlyingBone extends Projectile implements Resettable {
-        public static final Image bonypict = new ImageIcon("Pics/bonepic.png", "bonepic").getImage();
-        public static final Image orangeBony = new ImageIcon("Pics/orangebone.png", "orangebone").getImage();
-        public static final Image blueBony = new ImageIcon("Pics/bluebone.png", "bluebone").getImage();
+        public static final Image bonypict = new ResourceLoader("sprites", "bonepic").asImageIcon().getImage();
+        public static final Image orangeBony = new ResourceLoader("sprites", "orangebone").asImageIcon().getImage();
+        public static final Image blueBony = new ResourceLoader("sprites", "bluebone").asImageIcon().getImage();
         public int picwidth = 100;
         public int picheight = 30;
         public Image image;
