@@ -668,7 +668,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         
 
         // Setting clip
-        if (player.level instanceof BossLevel) {
+        if (player.level instanceof BossLevel || SEE_OVERLAP) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
         } else {
             for (Entity bla: player.level.getEntities()) {
@@ -726,7 +726,8 @@ public class MainRunningThing extends javax.swing.JFrame {
             /*currG.setColor(Color.red);
             ((Graphics2D) currG).draw(clipholder);*/
             currG.setColor(Color.black);
-            ((Graphics2D) currG).draw(ouchArea);
+            for (Entity e : player.level.getEntities())
+                ((Graphics2D) currG).draw(e.getCollision());
         }
         
         // Draws all the blasts and explosions and stuff

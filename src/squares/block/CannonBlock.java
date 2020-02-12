@@ -83,6 +83,7 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
     public static class Cannonball extends Projectile {
         protected static final ImageIcon cannonballPic = new ImageIcon(new ResourceLoader("sprites", "Cannonball").asImageIcon().getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
         public double angle; // angle in radians; think reflected unit circle
+        public static final int CANNONBALL_RADIUS = 9;
 
         public Cannonball(int x, int y, int s, double ang) {
             super(x, y, s, cannonballPic);
@@ -96,14 +97,14 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
 
         @Override
         public Area getCollision() {
-            return new Area(new Rectangle(getX(), getY(), 20, 20));
+            return new Area(new Rectangle(getX() + 1, getY() + 1, 14, 14));
         }
 
         @Override
         public Area getClip() {
-            Area a = new Area(new Rectangle(getX(), getY(), 20, 20));
-            a.add(new Area(new Rectangle((int) (getX() - getSpeed() * Math.cos(angle)), 
-                    (int) (getY() - getSpeed() * Math.sin(angle)), 20, 20)));
+            Area a = new Area(new Rectangle(getX() - 1, getY() - 1, 20, 20));
+            a.add(new Area(new Rectangle((int) (getX() - 1 - getSpeed() * Math.cos(angle)), 
+                    (int) (getY() - 1 - getSpeed() * Math.sin(angle)), 20, 20)));
             return a;
         }
 
