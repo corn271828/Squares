@@ -7,14 +7,14 @@ import java.util.function.Consumer;
 import squares.api.CharacterState;
 import squares.api.Coordinate;
 import squares.api.Clock;
-import static squares.api.RenderingConstants.BORDER_WIDTH;
+import squares.api.level.BossLevel;
 import squares.api.level.Level;
 
 import static squares.api.RenderingConstants.CHARACTER_FASTSPEED;
 import static squares.api.RenderingConstants.CHARACTER_SPEED;
 import static squares.api.RenderingConstants.CHARACTER_WIDTH;
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
-import squares.api.level.BossLevel;
+import static squares.api.RenderingConstants.BORDER_WIDTH;
 
 public class Player {
     public static final int itime = 10;

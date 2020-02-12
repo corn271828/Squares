@@ -4,8 +4,6 @@ import squares.api.Coordinate;
 import squares.api.block.Projectile;
 import squares.api.ResourceLoader;
 
-import static squares.level.BaseLevel.LineExploder; // stopgap
-
 public interface BossLevel {
     int getEndTime();
 
