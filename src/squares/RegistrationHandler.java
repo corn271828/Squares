@@ -11,6 +11,7 @@ import squares.block.NormalBlock;
 import squares.level.BaseLevel;
 import squares.level.LevelLoader;
 import squares.level.SJBossFight;
+import squares.level.TesterLevel;
 
 public class RegistrationHandler {
     private RegistrationHandler() {}
@@ -37,6 +38,7 @@ public class RegistrationHandler {
 
         LevelLoader.addLevelType("sjbossfight", SJBossFight::new);
         LevelLoader.addLevelType("level",       BaseLevel::new);
+        LevelLoader.addLevelType("testlevel",   TesterLevel::new);
         return true;
     }
     
