@@ -74,7 +74,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 104;
-    public static final boolean SEE_OVERLAP = true;
+    public static final boolean SEE_OVERLAP = false;
     public boolean musicOn = true;
 
     // Checkpoints
@@ -682,7 +682,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
             }
 
-            if (player.isInvincible()) {
+            if (player.shouldRefresh()) {
                 clipholder.add(new Area(new Rectangle(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH)));
             }
 
