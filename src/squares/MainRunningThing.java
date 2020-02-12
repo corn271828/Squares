@@ -641,11 +641,7 @@ public class MainRunningThing extends javax.swing.JFrame {
                 ouchArea.add(blaouch);
             }
         }
-        
-/*
-        /// Levelspecific testing
-        
-*/
+
         if (tasActive && player.level instanceof SJBossFight) {
             sjbossTas.doTasStuff(start, clock.time(), player);
         }
