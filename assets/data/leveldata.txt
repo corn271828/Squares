@@ -50,7 +50,7 @@ N	L<	L>	N	L>	L^	O
 %%
 level
 8 0vER_Ord
-0	0	Bv153005	0
+0	0	Bv153004	0
 0	0	0	0
 X	N	N	O
 %%
@@ -104,7 +104,7 @@ N	N	N	B<2525
 %%
 level
 15 L0gHriZn
-0	0	C153005	0
+0	0	C153004	0
 0	0	0	0
 X	N	N	O
 %%
@@ -130,6 +130,13 @@ N	N	0	0	0	N	O
 N	N	0	0	0	N	N
 0	N	N	N	N	N	B<3020
 0	B^302005	N	0	N	0	0
+%%
+level
+19 aPoPt0SoMe
+0       0       0       0       0       0       0       O       0
+B>3020  N       N       N       N       N       N       N       B<2030
+B>302015	N       N       N       N       N       N       N       B<203010
+0       X       0       0       0       0       0       0       0
 %%
 sjbossfight
 BOSS 20 sjbossfight_easy YoUJ0snKi
@@ -186,6 +193,13 @@ N	N	N	N	N
 C201005	0	0	0	N
 N	N	N	N	N
 O	N	N	N	N
+%%
+level
+1/3 PakeCAn
+0       0       0       0       0       0       C202006 O       0
+B>3020  N       N       N       N       N       N       N       B<2030
+B>302015	N       N       N       N       N       N       N       B<203010
+0       X       0       0       0       C202016 0       0       0
 %%
 level
 1 soEasyyy
