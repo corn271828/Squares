@@ -79,7 +79,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Checkpoints
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
     public boolean tasActive = false;
-    public TasGenerator sjbossTas = new TasGenerator(new ResourceLoader("bossdata", "sjbossscript.txt"));
+    public TasGenerator sjbossTas = new TasGenerator(new ResourceLoader("bossdata", "sjbossscript"));
 
     // Easter eggs
     public static final String KONAMI_CODE = "uuddlrlrba";
@@ -107,13 +107,13 @@ public class MainRunningThing extends javax.swing.JFrame {
         clock = new Clock();
         player = new Player(clock, start);
         squares.level.SJBossFight.clock = clock;
-        levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata.txt"), new BlockFactory());
+        levelLoader = new LevelLoader(new ResourceLoader("data", "leveldata"), new BlockFactory());
         player.level = levelLoader.getCurrent();
         player.deathCb = this::death;
 
         if (musicOn) {
-            audio.addClip("normal", new ResourceLoader("bgm", "Canon_in_D_Swing.wav"))
-                 .addClip("boss",   new ResourceLoader("bgm", "Megalovania_Swing.wav"));
+            audio.addClip("normal", new ResourceLoader("bgm", "Canon_in_D_Swing"))
+                 .addClip("boss",   new ResourceLoader("bgm", "Megalovania_Swing"));
         }
     }
 
