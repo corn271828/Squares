@@ -38,13 +38,9 @@ import squares.level.SJBossFight.BoneExploder;
  */
 public class TesterLevel extends BaseLevel {
 
-    List<EntityGenerator> entgens = new ArrayList<>();
     
     public TesterLevel(String[][] in, String[] args, BlockFactory bf) {// for now
         super(in, args, bf);
-        for (int i = 2; i < args.length; i++) {
-            entgens.add(new EntityGenerator(args[i]));
-        }
     }
     
     @Override
@@ -210,78 +206,23 @@ public class TesterLevel extends BaseLevel {
             if (player.clock.time() == 2) {
                 RotatingBone hold = new SJBossFight.RotatingBone(0, 0, 0, 0, 0, -.055);
                 hold.moveTo(middle.x, middle.y);
-                ((SJBossFight.RotatingBone) hold).setDimensions(500, 30);
+                hold.setDimensions(500, 30);
                 blasts.add(hold);
             }
 
             if (player.clock.time() % 20 == 2) {
                 RotatingBone hold = new SJBossFight.RotatingBone(0, 0, -3, 0, -2, 0.1);
                 hold.moveTo(drawingStart.x + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 5 / 2, end.y);
-                ((SJBossFight.RotatingBone) hold).setDimensions(200, 30);
+                hold.setDimensions(200, 30);
                 blasts.add(hold);
             }
 
             if (player.clock.time() % 20 == 4) {
                 RotatingBone hold = new SJBossFight.RotatingBone(0, 0, 3, 0, 2, -0.1);
                 hold.moveTo(drawingStart.x + STANDARD_ICON_WIDTH / 2 + SPACING_BETWEEN_BLOCKS * 9 / 2, drawingStart.y);
-                ((SJBossFight.RotatingBone) hold).setDimensions(200, 30);
+                hold.setDimensions(200, 30);
                 blasts.add(hold);
             }
         }
-    }
-    
-    public static class EntityGenerator {
-        char type;
-        String[] splitted;
-        int delay;
-        int period;
-        Coordinate pos;
-        
-        public EntityGenerator(String control) {
-            type = control.charAt(0);
-            StringTokenizer st = new StringTokenizer(control, ",");
-            st.nextToken();
-            delay = Integer.parseInt(st.nextToken());
-            period = Integer.parseInt(st.nextToken());
-            pos = new Coordinate(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
-            System.out.println(st.toString());
-            splitted = st.toString().split(",");
-        }
-
-        public boolean checkGen(Clock clock) {
-            return clock.time() % period == delay;
-        }
-        
-        public Entity gentity(Clock clock, Coordinate drawStart) { // gen-entity!
-            switch(type) {
-                case FLYING_BONE_CHAR:
-                    FlyingBone holdb = new FlyingBone(Double.parseDouble(splitted[0]), Integer.parseInt(splitted[1]));
-                    holdb.moveTo(drawStart.x + pos.x, drawStart.x + pos.y);
-                    if (splitted.length > 2) {
-                        holdb.setDimensions(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
-                    }
-                    return holdb;
-                case ARCING_BONE_CHAR:
-                    ArcingBone holda = new ArcingBone(Double.parseDouble(splitted[0]), Double.parseDouble(splitted[1]), Double.parseDouble(splitted[2]),  Double.parseDouble(splitted[3]),  Double.parseDouble(splitted[4]));
-                    holda.moveTo(drawStart.x + pos.x, drawStart.x + pos.y);
-                    if (splitted.length > 5) {
-                        holda.setDimensions(Integer.parseInt(splitted[5]), Integer.parseInt(splitted[6]));
-                    }
-                    return holda;
-                case ROTATING_BONE_CHAR:
-                    RotatingBone holdr = new RotatingBone(Double.parseDouble(splitted[0]), Double.parseDouble(splitted[1]), Double.parseDouble(splitted[2]),  Double.parseDouble(splitted[3]),  Double.parseDouble(splitted[4]), Double.parseDouble(splitted[5]));
-                    holdr.moveTo(drawStart.x + pos.x, drawStart.x + pos.y);
-                    if (splitted.length > 6) {
-                        holdr.setDimensions(Integer.parseInt(splitted[6]), Integer.parseInt(splitted[7]));
-                    }
-                    return holdr;
-
-                case LINE_EXPLODER_TESTER_CHAR:
-                    LineExploderTester letx = new LineExploderTester(clock.time(), 20, Double.parseDouble(splitted[0]), drawStart.x + pos.x, drawStart.x + pos.y, clock);
-                    return letx;
-            }
-            return null;
-        }
-        
     }
 }
