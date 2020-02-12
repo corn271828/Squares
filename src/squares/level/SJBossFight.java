@@ -322,6 +322,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     public void tickEntities(squares.Player player, AABB check, Area clipholder) {
         super.tickEntities(player, check, clipholder);
         blasts.addAll(generateBlasts(clock.getTimestamp(), player.render, new Coordinate(check.lx, check.ly)));
+        blasts.addAll(generateLines(clock.getTimestamp(), player.render, new Coordinate(check.lx, check.ly)));
     }
 
     @Override
