@@ -30,7 +30,7 @@ public class TasGenerator {
 
     public boolean doTasStuff(Coordinate start, int timestamp, Player player) {
         if (script.containsKey(timestamp)) {
-            player.setKeyBuffer(script.get(timestamp));
+            player.setQueueKey(script.get(timestamp));
             player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             if (player.charState == CharacterState.NORMAL) {

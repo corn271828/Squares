@@ -334,7 +334,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             return;
         }
         
-        player.setKeyBuffer(evt.getKeyCode());
+        player.setQueueKey(evt.getKeyCode());
         
         repaint();
     }//GEN-LAST:event_jPanel1KeyReleased
@@ -789,10 +789,6 @@ public class MainRunningThing extends javax.swing.JFrame {
                 ((SJBossFight.RotatingBone) blasts.get(blasts.size() - 1)).setDimensions(200, 30);
             }
         }
-
-        if (player.level instanceof BossLevel) {
-            lineExplosions.addAll(((BossLevel) player.level).generateLines(clock.getTimestamp(), player.render, start));
-        }
 */
         if (tasActive && player.level instanceof SJBossFight) {
             sjbossTas.doTasStuff(start, clock.getTimestamp(), player);
@@ -802,7 +798,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.hurt();
         }
         
-        if (clock.getTimestamp() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive)
+        if (clock.getTimestamp() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight)
             clock.increment();
 
         if (player.level.winCond(player) && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
@@ -843,7 +839,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         
         if (player.charState == CharacterState.NORMAL)
             player.callMove();
-        player.checkFlushKeyBuffer();
+        player.checkFlushQueueKey();
         if (player.moveAnim(clipholder))
             landChecker();
 

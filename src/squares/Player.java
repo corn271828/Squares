@@ -40,8 +40,8 @@ public class Player {
     public Clock clock;
     public Level level;
     
-    public int keyBuffer;
-    public int keyBuffTime;
+    public int queueKey;
+    public int queueKeyTime;
 
     public Player(Clock clock, Coordinate ds) {
         this.clock = clock;
@@ -80,20 +80,20 @@ public class Player {
                 level.blockAt(position.x, position.y + 1).stepable;
     }
     
-    public void setKeyBuffer(int keyCode) {
-        keyBuffer = keyCode;
-        keyBuffTime = clock.getTimestamp();
+    public void setQueueKey(int keyCode) {
+        queueKey = keyCode;
+        queueKeyTime = clock.getTimestamp();
     }
     
-    public void checkFlushKeyBuffer() {
-        if (Math.abs(clock.getTimestamp() - keyBuffTime) > 2)
-            keyBuffer = -12345;
+    public void checkFlushQueueKey() {
+        if (Math.abs(clock.getTimestamp() - queueKeyTime) > 2)
+            queueKey = -12345;
     }
     
     public void callMove() {
-        if (keyBuffer == -12345)
+        if (queueKey == -12345)
             return;
-        switch (keyBuffer) { // move
+        switch (queueKey) { // move
             case RIGHT_KEY_PRESS:
             case 'D':
                 if (canMoveRight())
@@ -123,7 +123,7 @@ public class Player {
             else
                 charState = CharacterState.MOVING;
         }
-        keyBuffer = -12345;
+        queueKey = -12345;
     }
     
     public boolean moveAnim(Area clipholder) {
