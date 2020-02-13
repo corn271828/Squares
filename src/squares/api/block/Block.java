@@ -5,7 +5,6 @@
  */
 package squares.api.block;
 
-import java.awt.geom.Area;
 import javax.swing.Icon;
 
 /**

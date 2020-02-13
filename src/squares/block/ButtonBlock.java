@@ -5,8 +5,6 @@
  */
 package squares.block;
 
-import java.awt.Rectangle;
-import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;

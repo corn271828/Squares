@@ -1,7 +1,5 @@
 package squares.api.level;
 
-import squares.api.Coordinate;
-import squares.api.entity.Projectile;
 import squares.api.ResourceLoader;
 
 public interface BossLevel {

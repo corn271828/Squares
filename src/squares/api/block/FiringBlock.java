@@ -1,6 +1,5 @@
 package squares.api.block;
 
-import squares.Player;
 import squares.api.entity.Projectile;
 
 public interface FiringBlock {

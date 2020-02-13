@@ -14,9 +14,6 @@ import squares.api.Direction;
 import squares.api.block.Block;
 import squares.api.block.DirectedBlock;
 
-import static squares.api.RenderingConstants.BORDER_WIDTH;
-import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
-
 /**
  *
  * @author piercelai

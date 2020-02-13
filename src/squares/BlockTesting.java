@@ -6,9 +6,6 @@
 package squares;
 
 import java.awt.Graphics;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import squares.block.NormalBlock;
 import squares.api.block.Block;
