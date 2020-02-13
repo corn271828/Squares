@@ -173,6 +173,8 @@ public class SJBossFight extends BaseLevel implements BossLevel {
             currentLineCount += timeToLines.get(i).size();
             timeToLinesIndex[i] = currentLineCount;
         }
+        timeToLines.clear();
+        timeToBlasts.clear();
     }
 
 

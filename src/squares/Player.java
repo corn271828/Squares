@@ -62,7 +62,7 @@ public class Player {
     }
     
     public boolean shouldRefresh() {
-        return iftime + itime + 1 >= clock.time();
+        return iftime + itime > clock.time();
     }
 
     public void setMaxHP(int hp) {
