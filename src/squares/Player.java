@@ -100,7 +100,7 @@ public class Player {
     }
     
     public void checkFlushQueueKey() {
-        if (Math.abs(clock.time() - queueKeyTime) > 2)
+        if (Math.abs(clock.time() - queueKeyTime) > 1)
             queueKey = -12345;
     }
     
