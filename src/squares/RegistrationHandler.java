@@ -4,6 +4,8 @@ import squares.api.block.Block;
 import squares.api.block.BlockFactory;
 import squares.api.Direction;
 import squares.block.BlasterBlock;
+import squares.block.ButtonBlock;
+import squares.block.ButtonBlock.ButtonLinkedBlock;
 import squares.block.CannonBlock;
 import squares.block.EndingBlock;
 import squares.block.LauncherBlock;
@@ -35,6 +37,8 @@ public class RegistrationHandler {
         BlockFactory.addBlockType('L', str -> lbs[getDirByChar(str.charAt(0)).ordinal()]);
         BlockFactory.addBlockType('B', str -> new BlasterBlock(getDirByChar(str.charAt(0)), str.substring(1)));
         BlockFactory.addBlockType('C', CannonBlock::new);
+        BlockFactory.addBlockType('U', str -> new ButtonBlock(Integer.parseInt(str)));
+        BlockFactory.addBlockType('V', str -> new ButtonLinkedBlock(Integer.parseInt(str)));
 
         LevelLoader.addLevelType("sjbossfight", SJBossFight::new);
         LevelLoader.addLevelType("level",       BaseLevel::new);

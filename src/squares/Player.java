@@ -49,7 +49,7 @@ public class Player {
         new HUDLine("Level Code",          1, 3.0),
         new HUDLine("Current Tick",       -1, 1.5),
         new HUDLine("Practice Mode",      -1, 2.5),
-        new HUDLine("Level",               0, 1.0),
+        new HUDLine("",               0, 1.0),
     };
 
     public Player(Clock clock, Coordinate ds) {

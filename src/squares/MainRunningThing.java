@@ -50,7 +50,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public AudioManager audio = new AudioManager();
 
     // Level indices
-    public int maxLevelIndex = 0;
+    public int maxLevelIndex = 19;
     public int holdLevelIndex = maxLevelIndex;
 
 
@@ -671,6 +671,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         
 
         // Setting clip
+        if (player.level.shouldRefreshIcons)
+            clipholder.add(player.level.refreshAllBlockIcons(player.drawingStart));
+        
         if (player.level instanceof BossLevel || SEE_OVERLAP) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
         } else {
@@ -760,6 +763,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         int offset = 300;
         for(Player.HUDLine line: player.getHUDLines()) {
             String render = String.format("%s: %s", line.key, line.getValue());
+            if (line.key.equals("")) render = line.getValue();
             g.drawString(render, (int)((line.align - 1) * (offset - getWidth() / 2) + offset - fm.stringWidth(render) / 2), (int)(50 + 20 * line.voffset));
         }
 /*
