@@ -7,6 +7,7 @@ package squares.level;
 
 import java.awt.Graphics;
 import java.awt.Component;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.ArrayList;
@@ -24,10 +25,12 @@ import squares.api.block.TargetingBlock;
 import squares.api.block.BlockFactory;
 import squares.api.level.Level;
 import squares.api.Coordinate;
+import squares.block.ButtonBlock;
 import squares.block.HighExplosion;
 
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
 import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
+import squares.block.ButtonBlock.ButtonLinkedBlock;
 
 /**
  *
@@ -43,6 +46,8 @@ public class BaseLevel extends Level {
     public final Coordinate start, end; // Starting position in indices
 
     protected Set<Entity> blasts = new HashSet<>();
+    
+    protected ButtonBlock[] buttons = new ButtonBlock[3]; // Needs a fast reference place
 
     public BaseLevel(String[][] in, String[] args, BlockFactory bf) {
         this(in, args[0], args.length >= 2 ? args[1] : null, bf);
@@ -65,10 +70,18 @@ public class BaseLevel extends Level {
         bf.addBlockListener('O', endpos);
 
         blocks = new Block[in.length][in[0].length];
-        for (int rowNumber = 0; rowNumber < in.length; rowNumber++)
-            for (int columnNumber = 0; columnNumber < in[0].length; columnNumber++)
-                blocks[rowNumber][columnNumber] = bf.makeBlock(in[rowNumber][columnNumber], columnNumber, rowNumber);
 
+        for (int rowNumber = 0; rowNumber < in.length; rowNumber++)
+            for (int columnNumber = 0; columnNumber < in[0].length; columnNumber++) {
+                blocks[rowNumber][columnNumber] = bf.makeBlock(in[rowNumber][columnNumber], columnNumber, rowNumber);
+                if (blocks[rowNumber][columnNumber] instanceof ButtonBlock) // sorry alwinfy
+                    buttons[((ButtonBlock) blocks[rowNumber][columnNumber]).getIndex()] = (ButtonBlock) blocks[rowNumber][columnNumber];
+            }
+        for (Block[] row : blocks)
+            for (Block bl : row) {
+                if (bl instanceof ButtonLinkedBlock) // sorry alwinfy
+                    ((ButtonLinkedBlock) bl).setLinked(buttons[((ButtonLinkedBlock)bl).getIndex()]);
+            }
         bf.removeBlockListener('X', startpos);
         bf.removeBlockListener('O', endpos);
         start = new Coordinate(temp[0], temp[1]);
@@ -196,6 +209,22 @@ public class BaseLevel extends Level {
     @Override
     public Coordinate getEndPos() {
         return end;
+    }
+    
+    @Override
+    public Area refreshAllBlockIcons(Coordinate drawingStart) {
+        Area hold = new Area();
+        shouldRefreshIcons = false; 
+        for (int rowNumber = 0; rowNumber < blocks.length; rowNumber++)
+            for (int columnNumber = 0; columnNumber < blocks[0].length; columnNumber++) {
+                if (blocks[rowNumber][columnNumber] == null)
+                    continue;
+                if (blocks[rowNumber][columnNumber].refreshIcon())
+                    hold.add(new Area(new Rectangle(drawingStart.x + columnNumber * SPACING_BETWEEN_BLOCKS,
+                                                    drawingStart.y + rowNumber * SPACING_BETWEEN_BLOCKS,
+                                                    STANDARD_ICON_WIDTH, STANDARD_ICON_WIDTH)));
+            }
+        return hold;
     }
     
     public static class LineExploder extends Entity {

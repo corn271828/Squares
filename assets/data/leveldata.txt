@@ -138,6 +138,20 @@ B>3020  N       N       N       N       N       N       N       B<2030
 B>302015	N       N       N       N       N       N       N       B<203010
 0       X       0       0       0       0       0       0       0
 %%
+level
+20 xBoxChAN
+X       U1      V1      O
+%%
+level
+21 KaNTaICol
+X       N       L>      V2      0       O     
+0       U2      0       B^202005 0       0
+%%
+level
+22 uNOrdNArY
+X       N       L>      V0      0       N
+0       U0      0       O       0       B^202005
+%%
 sjbossfight
 BOSS 20 sjbossfight_easy YoUJ0snKi
 0	0	0	0	0	0	0	0	0

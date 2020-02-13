@@ -5,6 +5,7 @@
  */
 package squares.api.block;
 
+import java.awt.geom.Area;
 import javax.swing.Icon;
 
 /**
@@ -12,9 +13,9 @@ import javax.swing.Icon;
  * @author lai_889937
  */
 public abstract class Block {
-    public final Icon icon;
+    public Icon icon;
     public final String label;
-    public final boolean stepable; // Represents whether or not one can step on this type of block
+    public boolean stepable; // Represents whether or not one can step on this type of block
 
     public Block(Icon i, String l, boolean s) {
         icon = i;
@@ -22,7 +23,7 @@ public abstract class Block {
         stepable = s;
     }
 
-    public void refreshIcon() {}
+    public boolean refreshIcon() {return false;}
     public void reset() {}
 
     @Override

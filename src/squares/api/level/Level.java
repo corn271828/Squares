@@ -15,6 +15,7 @@ import squares.api.entity.Entity;
 public abstract class Level {
     private int deaths = 0;
     public final String label, code;
+    public boolean shouldRefreshIcons = false;
     public Level(String label, String code) {
         this.label = label;
         this.code = code;
@@ -46,5 +47,9 @@ public abstract class Level {
     }
     public Color getBackgroundColor(int ts) {
         return Color.WHITE;
+    }
+    public Area refreshAllBlockIcons(Coordinate drawingStart) {
+        shouldRefreshIcons = false;
+        return new Area();
     }
 }
