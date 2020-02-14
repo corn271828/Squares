@@ -165,6 +165,16 @@ U2      0       C2030   V0      U1      0
 V1      N       N       N       V2      O
 0       U0      0       X       0       0
 %%
+level
+25 spdrdance
+0       N       N       N       B<103005 N      X
+N       N       V0      N       V0      N       0
+0       N       0       N       0       N       0
+N       N       0       N       0       N       0
+0       N       V0      N       N       N       B<1030
+B>1030  N       U0      0       0       V0      0
+0       B^3040  0       B^1030  0       N       O
+%%
 sjbossfight
 BOSS 20 sjbossfight_easy YoUJ0snKi
 0	0	0	0	0	0	0	0	0
@@ -227,6 +237,16 @@ level
 B>3020  N       N       N       N       N       N       N       B<2030
 B>302015	N       N       N       N       N       N       N       B<203010
 0       X       0       0       0       C202016 0       0       0
+%%
+level
+1/2 spdrdanz2
+0       N       N       N       B<103005 N      X
+N       N       V0      N       V0      N       0
+0       N       C0530   N       0       N       0
+N       N       0       N       0       N       0
+0       N       V0      N       N       N       B<1030
+B>1030  N       U0      0       0       V0      0
+0       B^3040  0       B^1030  0       N       O
 %%
 level
 1 soEasyyy

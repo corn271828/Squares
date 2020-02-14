@@ -49,7 +49,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public AudioManager audio = new AudioManager();
 
     // Level indices
-    public int maxLevelIndex = 22;
+    public int maxLevelIndex = 28;
     public int holdLevelIndex = maxLevelIndex;
 
 
