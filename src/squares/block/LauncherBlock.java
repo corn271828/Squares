@@ -18,13 +18,13 @@ import squares.api.block.DirectedBlock;
  *
  * @author piercelai
  */
-public class LauncherBlock extends Block implements DirectedBlock {
+public class LauncherBlock extends BaseBlock implements DirectedBlock {
 
     private static final ImageIcon[] launcherBlocks = new ImageIcon[Direction.values().length];
     protected Direction direction;
 
     public LauncherBlock(Direction direction) {
-        super(getIconByDirection(direction), "Launcher Block", true);
+        super(getIconByDirection(direction), "Launcher Block");
         this.direction = direction;
     }
 
@@ -39,12 +39,16 @@ public class LauncherBlock extends Block implements DirectedBlock {
     public Direction getDirection() {
         return direction;
     }
+    @Override
+    public boolean canStep() {
+        return true;
+    }
 
     @Override
     public void onLand(Player player) {
         switch(getDirection()) {
             case UP :
-                while(player.position.y > 0 && (player.level.blockAt(player.position.x, player.position.y - 1) != null && !player.level.blockAt(player.position.x, player.position.y - 1).stepable
+                while(player.position.y > 0 && (player.level.blockAt(player.position.x, player.position.y - 1) != null && !player.level.blockAt(player.position.x, player.position.y - 1).canStep()
                         || player.level.blockAt(player.position.x, player.position.y - 1) == null))
                     player.position.y--;
                 player.position.y--;
@@ -52,7 +56,7 @@ public class LauncherBlock extends Block implements DirectedBlock {
                 break;
             case RIGHT :
                 while(player.position.x < player.level.xSize() - 1 && (player.level.blockAt(player.position.x + 1, player.position.y) != null &&
-                        !player.level.blockAt(player.position.x + 1, player.position.y).stepable || player.level.blockAt(player.position.x + 1, player.position.y) == null )) {
+                        !player.level.blockAt(player.position.x + 1, player.position.y).canStep() || player.level.blockAt(player.position.x + 1, player.position.y) == null )) {
                      player.position.x++;
                 }
                 player.position.x++;
@@ -60,14 +64,14 @@ public class LauncherBlock extends Block implements DirectedBlock {
                 break;
             case DOWN :
                 while(player.position.y < player.level.ySize() - 1 && (player.level.blockAt(player.position.x, player.position.y + 1) != null && 
-                        !player.level.blockAt(player.position.x, player.position.y + 1).stepable  || player.level.blockAt(player.position.x, player.position.y + 1) == null))
+                        !player.level.blockAt(player.position.x, player.position.y + 1).canStep()  || player.level.blockAt(player.position.x, player.position.y + 1) == null))
                     player.position.y++;
                 player.position.y++;
                 player.charState = CharacterState.FASTMOVING;
                 break;
             case LEFT :
                 while(player.position.x > 0 && (player.level.blockAt(player.position.x - 1, player.position.y) != null 
-                        && !player.level.blockAt(player.position.x - 1, player.position.y).stepable  || player.level.blockAt(player.position.x - 1, player.position.y) == null ))
+                        && !player.level.blockAt(player.position.x - 1, player.position.y).canStep()  || player.level.blockAt(player.position.x - 1, player.position.y) == null ))
                     player.position.x--;
                 player.position.x--;
                 player.charState = CharacterState.FASTMOVING;

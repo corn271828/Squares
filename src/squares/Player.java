@@ -73,25 +73,25 @@ public class Player {
     public boolean canMoveRight() {
         return !(position.x == level.xSize() - 1) &&
                 !(level.blockAt(position.x + 1, position.y) == null) &&
-                level.blockAt(position.x + 1, position.y).stepable;
+                level.blockAt(position.x + 1, position.y).canStep();
     }
     
     public boolean canMoveLeft() {
         return !(position.x == 0) &&
                 !(level.blockAt(position.x - 1, position.y) == null) &&
-                level.blockAt(position.x - 1, position.y).stepable;
+                level.blockAt(position.x - 1, position.y).canStep();
     }
     
     public boolean canMoveUp() {
         return !(position.y == 0) &&
                 !(level.blockAt(position.x, position.y - 1) == null) &&
-                level.blockAt(position.x, position.y - 1).stepable;
+                level.blockAt(position.x, position.y - 1).canStep();
     }
     
     public boolean canMoveDown() {
         return !(position.y == level.ySize() - 1) &&
                 !(level.blockAt(position.x, position.y + 1) == null) &&
-                level.blockAt(position.x, position.y + 1).stepable;
+                level.blockAt(position.x, position.y + 1).canStep();
     }
     
     public void setQueueKey(int keyCode) {

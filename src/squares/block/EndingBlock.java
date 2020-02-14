@@ -17,16 +17,20 @@ import squares.api.CharacterState;
  * @author piercelai
  */
 
-public class EndingBlock extends Block {
+public class EndingBlock extends BaseBlock {
     public static final ImageIcon endingBlockIcon = new ResourceLoader("sprites", "Ending Block").asImageIcon();
 
     public EndingBlock() {
-        super(endingBlockIcon, "End Block", true);
+        super(endingBlockIcon, "End Block");
     }
 
     @Override
     public void onLand(Player player) {
         player.charState = CharacterState.NORMAL;
+    }
+    @Override
+    public boolean canStep() {
+        return true;
     }
 
 }

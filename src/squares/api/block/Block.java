@@ -11,29 +11,14 @@ import javax.swing.Icon;
  *
  * @author lai_889937
  */
-public abstract class Block {
-    public Icon icon;
-    public final String label;
-    public boolean stepable; // Represents whether or not one can step on this type of block
+public interface Block {
+    boolean refreshIcon();
 
-    public Block(Icon i, String l, boolean s) {
-        icon = i;
-        label = l;
-        stepable = s;
-    }
+    void reset();
 
-    public boolean refreshIcon() {return false;}
-    public void reset() {}
-
-    @Override
-    public String toString() {
-        return label;
-    }
-
-    public Icon getIcon() {
-        return icon;
-    }
+    Icon getIcon();
+    boolean canStep();
     
-    public abstract void onLand(squares.Player player);
+    void onLand(squares.Player player);
 }
 

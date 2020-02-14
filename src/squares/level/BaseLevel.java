@@ -22,12 +22,12 @@ import squares.api.entity.Entity;
 import squares.api.block.Block;
 import squares.api.block.FiringBlock;
 import squares.api.block.TargetingBlock;
+import squares.api.block.LinkedBlock;
+import squares.api.block.LinkableBlock;
 import squares.api.block.BlockFactory;
 import squares.api.level.Level;
 import squares.api.Coordinate;
-import squares.block.ButtonBlock;
 import squares.block.HighExplosion;
-import squares.block.ButtonBlock.ButtonLinkedBlock;
 
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
 import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
@@ -47,7 +47,7 @@ public class BaseLevel extends Level {
 
     protected Set<Entity> blasts = new HashSet<>();
     
-    protected ButtonBlock[] buttons = new ButtonBlock[3]; // Needs a fast reference place
+    //protected ButtonBlock[] buttons = new ButtonBlock[3]; // Needs a fast reference place
 
     public BaseLevel(String[][] in, String[] args, BlockFactory bf) {
         this(in, args[0], args.length >= 2 ? args[1] : null, bf);
@@ -74,13 +74,16 @@ public class BaseLevel extends Level {
         for (int rowNumber = 0; rowNumber < in.length; rowNumber++)
             for (int columnNumber = 0; columnNumber < in[0].length; columnNumber++) {
                 blocks[rowNumber][columnNumber] = bf.makeBlock(in[rowNumber][columnNumber], columnNumber, rowNumber);
-                if (blocks[rowNumber][columnNumber] instanceof ButtonBlock) // sorry alwinfy
-                    buttons[((ButtonBlock) blocks[rowNumber][columnNumber]).getIndex()] = (ButtonBlock) blocks[rowNumber][columnNumber];
             }
         for (Block[] row : blocks)
             for (Block bl : row) {
-                if (bl instanceof ButtonLinkedBlock) // sorry alwinfy
-                    ((ButtonLinkedBlock) bl).setLinked(buttons[((ButtonLinkedBlock)bl).getIndex()]);
+                if (bl instanceof LinkedBlock) {
+                    LinkedBlock lb = ((LinkedBlock) bl);
+                    Coordinate tpos = lb.getTarget();
+                    Block target = blocks[tpos.x][tpos.y];
+                    assert target instanceof LinkableBlock;
+                    lb.linkTo((LinkableBlock) target);
+                }
             }
         bf.removeBlockListener('X', startpos);
         bf.removeBlockListener('O', endpos);

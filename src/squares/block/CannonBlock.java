@@ -23,7 +23,7 @@ import static squares.api.RenderingConstants.CHARACTER_WIDTH;
  *
  * @author piercelai
  */
-public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
+public class CannonBlock extends BaseBlock implements FiringBlock, TargetingBlock {
     public int period; //In units of timestamp
     public int cannonballSpeed; //pixels per timestamp
     public int delay;
@@ -40,7 +40,7 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
     }
 
     public CannonBlock(int p, int bs, int d) {
-        super(cannonBlockIcon, null, false);
+        super(cannonBlockIcon, null);
         period = p;
         cannonballSpeed = bs;
         delay = d;
@@ -56,6 +56,10 @@ public class CannonBlock extends Block implements FiringBlock, TargetingBlock {
         targetY = y;
     }
 
+    @Override
+    public boolean canStep() {
+        return false;
+    }
     @Override
     public int getPeriod() {
         return period;

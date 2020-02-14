@@ -15,12 +15,17 @@ import squares.api.block.Block;
  *
  * @author piercelai
  */
-public class NormalBlock extends Block {
+public class NormalBlock extends BaseBlock {
 
     public static final ImageIcon normalBlockIcon = new ResourceLoader("sprites", "Normal Block").asImageIcon();
 
     public NormalBlock() {
-        super(normalBlockIcon, "Normal Block", true);
+        super(normalBlockIcon, "Normal Block");
+    }
+
+    @Override
+    public boolean canStep() {
+        return true;
     }
 
     @Override

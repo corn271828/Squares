@@ -14,19 +14,20 @@ import javax.swing.ImageIcon;
 
 import squares.Player;
 import squares.api.CharacterState;
+import squares.api.Coordinate;
 import squares.api.ResourceLoader;
 import squares.api.block.Block;
+import squares.api.block.LinkableBlock;
+import squares.api.block.LinkedBlock;
 
 import static squares.api.RenderingConstants.PIXELS_PER_INCH;
 import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
-import squares.api.block.LinkableBlock;
-import squares.api.block.LinkedBlock;
 
 /**
  *
  * @author piercelai
  */
-public class ButtonBlock extends LinkableBlock {
+public class ButtonBlock extends BaseBlock implements LinkedBlock {
     
     boolean pressed = false;
     private static ImageIcon[] buttonimages = new ImageIcon[6]; // pu, pp, ou, op, gu, gp
@@ -44,11 +45,21 @@ public class ButtonBlock extends LinkableBlock {
             Logger.getLogger(ButtonBlock.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private int index; // 0 - purple, 1 - orange, 2 - green
+    private Coordinate target;
+    private LinkableBlock link;
 
-    public ButtonBlock(int ind) {
-        super(buttonimages[ind * 2], "Button Block", true);
-        index = ind;
+    public ButtonBlock(int x, int y) {
+        super(null, "Button Block");
+        target = new Coordinate(x, y);
+    }
+
+    @Override
+    public Coordinate getTarget() {
+        return target;
+    }
+    @Override
+    public void linkTo(LinkableBlock lb) {
+        link = lb;
     }
     
     @Override
@@ -56,33 +67,38 @@ public class ButtonBlock extends LinkableBlock {
         player.charState = CharacterState.NORMAL;
         if (!pressed) {
             pressed = true;
-            this.icon = buttonimages[index * 2 + 1];
-            player.level.shouldRefreshIcons = true;
+            this.icon = buttonimages[link.getLinkIndex() * 2 + 1];
+            link.onLinkedBlockChange();
         }
     }
     
     @Override
+    public boolean canStep() {
+        return true;
+    }
+
+    @Override
     public void reset() {
         pressed = false;
-        this.icon = buttonimages[index * 2];
+        this.icon = buttonimages[link.getLinkIndex() * 2];
     }
     
-    public int getIndex() {
-        return index;
-    }
-    
-    public static class ButtonLinkedBlock extends LinkedBlock<ButtonBlock>{
+    public static class ButtonLinkedBlock extends BaseBlock implements LinkableBlock {
 
-        int index;
+        private int index;
+        private boolean steppable = false;
         
         public ButtonLinkedBlock(int ind) {
-            super(buttonLinkedImages[ind * 2], "Button Linked Block", false);
+            super(buttonLinkedImages[ind * 2], "Button Linked Block");
             index = ind;
         }
         
         @Override
-        public void setLinked(ButtonBlock bb) {
-            linked = bb;
+        public int getLinkIndex() { return index; }
+        @Override
+        public void onLinkedBlockChange() {
+            icon = buttonLinkedImages[index * 2 + 1];
+            steppable = true;
         }
         
         @Override
@@ -91,15 +107,13 @@ public class ButtonBlock extends LinkableBlock {
         }
         
         @Override
-        public boolean refreshIcon() {
-            icon = buttonLinkedImages[index * 2 + (linked.pressed ? 1 : 0)];
-            stepable = linked.pressed;
-            return true;
+        public boolean canStep() {
+            return steppable;
         }
         
         @Override
         public void reset() {
-            stepable = false;
+            steppable = false;
             icon = buttonLinkedImages[index * 2];
         }
         

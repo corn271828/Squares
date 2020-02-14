@@ -7,18 +7,14 @@ package squares.api.block;
 
 import javax.swing.ImageIcon;
 
+import squares.api.Coordinate;
+
 /**
  *
  * @author piercelai
  * @param <T>
  */
-public abstract class LinkedBlock<T extends LinkableBlock> extends Block {
-    public T linked;
-    
-    public LinkedBlock(ImageIcon i, String label, boolean b) {
-        super(i, label, b);
-    }
-    
-    public abstract void setLinked(T block);
-    
+public interface LinkedBlock extends Block{
+    void linkTo(LinkableBlock block);
+    Coordinate getTarget();
 }

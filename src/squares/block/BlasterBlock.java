@@ -22,7 +22,7 @@ import squares.api.entity.Projectile;
  *
  * @author piercelai
  */
-public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
+public class BlasterBlock extends BaseBlock implements DirectedBlock, FiringBlock {
     public Direction direction;
     public int period; //In units of timestamp
     public int blastSpeed; //pixels per timestamp
@@ -47,7 +47,7 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
     }
 
     public BlasterBlock(Direction d, int p, int bs, int delay) {
-        super(getIconByDirection(d), "Blaster Block", false);
+        super(getIconByDirection(d), "Blaster Block");
         period = p;
         blastSpeed = bs;
         primed = false;
@@ -103,6 +103,10 @@ public class BlasterBlock extends Block implements DirectedBlock, FiringBlock {
             return b;
     }
 
+    @Override
+    public boolean canStep() {
+        return false;
+    }
     @Override
     public void onLand(Player player) {
         System.out.println("Bruh, dunno how you landed on a BlasterBlock, but here you are.");

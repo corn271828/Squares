@@ -11,10 +11,7 @@ import javax.swing.ImageIcon;
  *
  * @author piercelai
  */
-public abstract class LinkableBlock extends Block {
-    
-    public LinkableBlock(ImageIcon i, String label, boolean b) {
-        super(i, label, b);
-    }
-    
+public interface LinkableBlock extends Block {
+    void onLinkedBlockChange();
+    int getLinkIndex(); // TODO do it better >:(
 }
