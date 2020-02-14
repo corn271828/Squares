@@ -7,8 +7,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 
-import squares.api.ResourceLoader;
-
 public class AudioManager {
     private Map<String, Clip> clips = new HashMap<>();
     Clip current;

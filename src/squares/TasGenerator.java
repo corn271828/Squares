@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import squares.api.CharacterState;
 import squares.api.Coordinate;
 import squares.api.ResourceLoader;
-import squares.api.level.Level;
 import squares.api.level.BossLevel;
 
 import static squares.api.RenderingConstants.*;

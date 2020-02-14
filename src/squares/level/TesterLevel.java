@@ -5,32 +5,13 @@
  */
 package squares.level;
 
-import java.awt.geom.Area;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-import squares.Player;
-import squares.api.AABB;
-import squares.api.AudioManager;
-import squares.api.Clock;
 import squares.api.Coordinate;
-import squares.api.ResourceLoader;
-import squares.api.block.Block;
 import squares.api.block.BlockFactory;
-import squares.api.entity.Entity;
-import squares.api.block.FiringBlock;
-import squares.api.entity.Projectile;
-import squares.api.level.BossLevel;
-import squares.api.level.Level;
 import squares.level.SJBossFight.ArcingBone;
 import squares.level.SJBossFight.FlyingBone;
 import squares.level.SJBossFight.RotatingBone;
 import squares.level.SJBossFight.BoneExploder;
 
-import static squares.level.SJBossFight.ARCING_BONE_CHAR;
-import static squares.level.SJBossFight.FLYING_BONE_CHAR;
-import static squares.level.SJBossFight.LINE_EXPLODER_TESTER_CHAR;
-import static squares.level.SJBossFight.ROTATING_BONE_CHAR;
 import static squares.api.RenderingConstants.*;
 
 /**

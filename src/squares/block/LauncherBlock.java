@@ -14,9 +14,6 @@ import squares.api.Direction;
 import squares.api.block.Block;
 import squares.api.block.DirectedBlock;
 
-import static squares.api.RenderingConstants.BORDER_WIDTH;
-import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
-
 /**
  *
  * @author piercelai
@@ -54,7 +51,7 @@ public class LauncherBlock extends Block implements DirectedBlock {
                 player.charState = CharacterState.FASTMOVING;
                 break;
             case RIGHT :
-                while(player.position.x < player.level.xSize() && (player.level.blockAt(player.position.x + 1, player.position.y) != null &&
+                while(player.position.x < player.level.xSize() - 1 && (player.level.blockAt(player.position.x + 1, player.position.y) != null &&
                         !player.level.blockAt(player.position.x + 1, player.position.y).stepable || player.level.blockAt(player.position.x + 1, player.position.y) == null )) {
                      player.position.x++;
                 }
@@ -62,7 +59,7 @@ public class LauncherBlock extends Block implements DirectedBlock {
                 player.charState = CharacterState.FASTMOVING;
                 break;
             case DOWN :
-                while(player.position.y < player.level.ySize() && (player.level.blockAt(player.position.x, player.position.y + 1) != null && 
+                while(player.position.y < player.level.ySize() - 1 && (player.level.blockAt(player.position.x, player.position.y + 1) != null && 
                         !player.level.blockAt(player.position.x, player.position.y + 1).stepable  || player.level.blockAt(player.position.x, player.position.y + 1) == null))
                     player.position.y++;
                 player.position.y++;

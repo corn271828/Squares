@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.function.Function;
 
-import squares.api.block.Block;
 
 //import squares.level.Level;
 

@@ -27,10 +27,10 @@ import squares.api.level.Level;
 import squares.api.Coordinate;
 import squares.block.ButtonBlock;
 import squares.block.HighExplosion;
+import squares.block.ButtonBlock.ButtonLinkedBlock;
 
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
 import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
-import squares.block.ButtonBlock.ButtonLinkedBlock;
 
 /**
  *
