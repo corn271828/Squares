@@ -670,8 +670,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         
 
         // Setting clip
-        if (player.level.shouldRefreshIcons)
-            clipholder.add(player.level.refreshAllBlockIcons(player.drawingStart));
+        //if (player.level.shouldRefreshIcons)
+        clipholder.add(player.level.refreshAllBlockIcons(player.drawingStart));
         
         if (player.level instanceof BossLevel || SEE_OVERLAP) {
             clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
