@@ -19,12 +19,14 @@ import squares.api.block.Block;
 
 import static squares.api.RenderingConstants.PIXELS_PER_INCH;
 import static squares.api.RenderingConstants.STANDARD_ICON_WIDTH;
+import squares.api.block.LinkableBlock;
+import squares.api.block.LinkedBlock;
 
 /**
  *
  * @author piercelai
  */
-public class ButtonBlock extends Block {
+public class ButtonBlock extends LinkableBlock {
     
     boolean pressed = false;
     private static ImageIcon[] buttonimages = new ImageIcon[6]; // pu, pp, ou, op, gu, gp
@@ -69,9 +71,8 @@ public class ButtonBlock extends Block {
         return index;
     }
     
-    public static class ButtonLinkedBlock extends Block {
+    public static class ButtonLinkedBlock extends LinkedBlock<ButtonBlock>{
 
-        ButtonBlock linked;
         int index;
         
         public ButtonLinkedBlock(int ind) {
@@ -79,6 +80,7 @@ public class ButtonBlock extends Block {
             index = ind;
         }
         
+        @Override
         public void setLinked(ButtonBlock bb) {
             linked = bb;
         }
