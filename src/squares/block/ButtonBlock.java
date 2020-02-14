@@ -9,7 +9,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.List;
+import java.util.LinkedList;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.ImageIcon;
 
 import squares.Player;
@@ -45,21 +48,21 @@ public class ButtonBlock extends BaseBlock implements LinkedBlock {
             Logger.getLogger(ButtonBlock.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private Coordinate target;
-    private LinkableBlock link;
+    private int index;
+    private List<LinkableBlock> link = new LinkedList<>();
 
-    public ButtonBlock(int x, int y) {
-        super(null, "Button Block");
-        target = new Coordinate(x, y);
+    public ButtonBlock(int target) {
+        super(buttonimages[target * 2], "Button Block");
+        index = target;
     }
 
     @Override
-    public Coordinate getTarget() {
-        return target;
+    public int getTarget() {
+        return index;
     }
     @Override
     public void linkTo(LinkableBlock lb) {
-        link = lb;
+        link.add(lb);
     }
     
     @Override
@@ -67,8 +70,9 @@ public class ButtonBlock extends BaseBlock implements LinkedBlock {
         player.charState = CharacterState.NORMAL;
         if (!pressed) {
             pressed = true;
-            this.icon = buttonimages[link.getLinkIndex() * 2 + 1];
-            link.onLinkedBlockChange();
+            this.icon = buttonimages[index * 2 + 1];
+            for(LinkableBlock lb: link)
+                lb.onLinkedBlockChange();
         }
     }
     
@@ -80,7 +84,7 @@ public class ButtonBlock extends BaseBlock implements LinkedBlock {
     @Override
     public void reset() {
         pressed = false;
-        this.icon = buttonimages[link.getLinkIndex() * 2];
+        this.icon = buttonimages[index * 2];
     }
     
     public static class ButtonLinkedBlock extends BaseBlock implements LinkableBlock {

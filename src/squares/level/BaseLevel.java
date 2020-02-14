@@ -11,8 +11,12 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.List;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import squares.api.AABB;
@@ -58,9 +62,15 @@ public class BaseLevel extends Level {
         design = in;
 
         int[] temp = new int[4];
+        Map<Integer, List<LinkableBlock>> linkables = new HashMap<>();
         BlockFactory.BlockListener startpos = ($, x, y) -> {
             temp[0] = x;
             temp[1] = y;
+        };
+        BlockFactory.BlockListener catchLinks = (b, $1, $2) -> {
+            assert b instanceof LinkableBlock;
+            LinkableBlock lb = (LinkableBlock) b;
+            linkables.computeIfAbsent(lb.getLinkIndex(), i -> new LinkedList<>()).add(lb);
         };
         BlockFactory.BlockListener endpos = ($, x, y) -> {
             temp[2] = x;
@@ -68,6 +78,7 @@ public class BaseLevel extends Level {
         };
         bf.addBlockListener('X', startpos);
         bf.addBlockListener('O', endpos);
+        bf.addBlockListener('V', catchLinks);
 
         blocks = new Block[in.length][in[0].length];
 
@@ -79,14 +90,13 @@ public class BaseLevel extends Level {
             for (Block bl : row) {
                 if (bl instanceof LinkedBlock) {
                     LinkedBlock lb = ((LinkedBlock) bl);
-                    Coordinate tpos = lb.getTarget();
-                    Block target = blocks[tpos.x][tpos.y];
-                    assert target instanceof LinkableBlock;
-                    lb.linkTo((LinkableBlock) target);
+                    for(LinkableBlock target: linkables.get(lb.getTarget()))
+                        lb.linkTo(target);
                 }
             }
         bf.removeBlockListener('X', startpos);
         bf.removeBlockListener('O', endpos);
+        bf.removeBlockListener('V', catchLinks);
         start = new Coordinate(temp[0], temp[1]);
         end = new Coordinate(temp[2], temp[3]);
     }
@@ -129,7 +139,7 @@ public class BaseLevel extends Level {
     
     @Override
     public void tickEntities(squares.Player player, AABB check, Area clipholder) {
-        ArrayList<Entity> toAdd = new ArrayList<>();
+        List<Entity> toAdd = new ArrayList<>();
         for (Iterator<Entity> it = blasts.iterator(); it.hasNext();) {
             Entity bla = it.next();
 

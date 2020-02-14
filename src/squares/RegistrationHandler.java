@@ -37,7 +37,7 @@ public class RegistrationHandler {
         BlockFactory.addBlockType('L', str -> lbs[getDirByChar(str.charAt(0)).ordinal()]);
         BlockFactory.addBlockType('B', str -> new BlasterBlock(getDirByChar(str.charAt(0)), str.substring(1)));
         BlockFactory.addBlockType('C', CannonBlock::new);
-        BlockFactory.addBlockType('U', str -> new ButtonBlock(Integer.parseInt(str.substring(0, 2)), Integer.parseInt(str.substring(2))));
+        BlockFactory.addBlockType('U', str -> new ButtonBlock(Integer.parseInt(str)));
         BlockFactory.addBlockType('V', str -> new ButtonLinkedBlock(Integer.parseInt(str)));
 
         LevelLoader.addLevelType("sjbossfight", SJBossFight::new);

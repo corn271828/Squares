@@ -16,5 +16,5 @@ import squares.api.Coordinate;
  */
 public interface LinkedBlock extends Block{
     void linkTo(LinkableBlock block);
-    Coordinate getTarget();
+    int getTarget();
 }
