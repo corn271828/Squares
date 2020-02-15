@@ -340,7 +340,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
 
     @Override
     public void setupMusic(AudioManager audio, Clock c) {
-        audio.restartPlaying("boss", clock.time() * audio.getClip("boss").getMicrosecondLength() / 1556);
+        audio.restartPlaying("boss", 0);
     }
 
     @Override

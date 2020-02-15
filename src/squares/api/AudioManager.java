@@ -8,32 +8,22 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 
 public class AudioManager {
-    private Map<String, Clip> clips = new HashMap<>();
-    Clip current;
+    private Map<String, ExamplePlayer> examplePlayers = new HashMap<>();
+    ExamplePlayer current;
 
-    public AudioManager addClip(String name, ResourceLoader loc) {
-        try (AudioInputStream ais = loc.asAudioStream()) {
-            Clip clip = AudioSystem.getClip();
-            clip.open(ais);
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
-            clips.put(name, clip);
-            clip.stop();
-        }
-        catch(javax.sound.sampled.UnsupportedAudioFileException
-                | LineUnavailableException
-                | java.io.IOException ex) {
-            java.util.logging.Logger.getLogger(getClass().getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+    public AudioManager addClip(String name, String path) {
+        ExamplePlayer ep = new ExamplePlayer(path);
+        examplePlayers.put(name, ep);
         return this;
     }
-    public Clip getClip(String name) {
-        return name == null ? current : clips.getOrDefault(name, null);
+    public ExamplePlayer getClip(String name) {
+        return name == null ? current : examplePlayers.getOrDefault(name, null);
     }
     public AudioManager setPlaying(String name) {
         return setPlaying(name, 0);
     }
     public AudioManager setPlaying(String name, long mspt) {
-        if (clips.get(name).equals(current))
+        if (examplePlayers.get(name).equals(current))
             return this;
         return restartPlaying(name, mspt);
     }
@@ -41,9 +31,9 @@ public class AudioManager {
         if(current != null) {
             current.stop();
         }
-        current = clips.getOrDefault(name, null);
+        current = examplePlayers.getOrDefault(name, null);
         if(current != null) {
-            current.setMicrosecondPosition(mspt);
+            //current.setMicrosecondPosition(mspt);
             current.start();
         }
         return this;

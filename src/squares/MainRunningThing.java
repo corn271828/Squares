@@ -86,7 +86,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final ImageIcon LEAGIF = new ResourceLoader("sprites", "lea.gif").asImageIcon();
     public boolean isLeaGif = false;
     public static final ImageIcon PIEPNG = new ImageIcon(new ResourceLoader("sprites", "pie").asImageIcon().getImage().getScaledInstance(200, 200, java.awt.Image.SCALE_SMOOTH));
-
+    
     // All the levels. All of them.
     public LevelLoader levelLoader;
 
@@ -112,8 +112,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.deathCb = this::death;
 
         if (musicOn) {
-            audio.addClip("normal", new ResourceLoader("bgm", "Canon_in_D_Swing"))
-                 .addClip("boss",   new ResourceLoader("bgm", "Megalovania_Swing"));
+            audio.addClip("normal", "Canon_in_D_Swing.ogg")
+                 .addClip("boss",   "Megalovania_Swing.ogg");
         }
     }
 
