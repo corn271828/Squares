@@ -5,6 +5,8 @@ A simple game/
 Instructions:
 Game mechanics should be obvious. Move with WASD or arrow keys.
 
+For some reason the jspinner grabs the focus when the game starts; just double click on the game panel and it should work.
+
 Hotkeys: 
 
 R - restart level
