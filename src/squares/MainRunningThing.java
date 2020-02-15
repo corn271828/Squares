@@ -74,7 +74,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 104;
     public static final boolean SEE_OVERLAP = false;
-    public boolean musicOn = false;
+    public boolean musicOn = true;
 
     // Checkpoints
     public TreeSet<Integer> checkpointTimes = new TreeSet<>();
