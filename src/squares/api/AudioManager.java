@@ -2,6 +2,8 @@ package squares.api;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -10,6 +12,7 @@ import javax.sound.sampled.LineUnavailableException;
 public class AudioManager {
     private Map<String, ExamplePlayer> examplePlayers = new HashMap<>();
     ExamplePlayer current;
+    public boolean running;
 
     public AudioManager addClip(String name, String path) {
         ExamplePlayer ep = new ExamplePlayer(path);
@@ -28,13 +31,20 @@ public class AudioManager {
         return restartPlaying(name, mspt);
     }
     public AudioManager restartPlaying(String name, long mspt) {
+        running = false;
         if(current != null) {
-            current.stop();
+            current.setStop();
+            try {
+                current.join();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AudioManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         current = examplePlayers.getOrDefault(name, null);
         if(current != null) {
             //current.setMicrosecondPosition(mspt);
             current.start();
+            running = true;
         }
         return this;
     }

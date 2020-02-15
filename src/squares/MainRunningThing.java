@@ -49,7 +49,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public AudioManager audio = new AudioManager();
 
     // Level indices
-    public int maxLevelIndex = 0;
+    public int maxLevelIndex = 25;
     public int holdLevelIndex = maxLevelIndex;
 
 
@@ -652,7 +652,7 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.hurt();
         }
         
-        if (clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight)
+        if (!(player.level instanceof SJBossFight && !audio.running) && (clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
             clock.increment();
 
         if (player.level.winCond(player) && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
