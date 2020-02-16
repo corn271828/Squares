@@ -12,6 +12,7 @@ import javax.sound.sampled.LineUnavailableException;
 public class AudioManager {
     private Map<String, ExamplePlayer> examplePlayers = new HashMap<>();
     ExamplePlayer current;
+    String currString;
     public boolean running;
 
     public AudioManager addClip(String name, String path) {
@@ -39,7 +40,9 @@ public class AudioManager {
             } catch (InterruptedException ex) {
                 Logger.getLogger(AudioManager.class.getName()).log(Level.SEVERE, null, ex);
             }
+            examplePlayers.put(currString, new ExamplePlayer(current.path));
         }
+        currString = name;
         current = examplePlayers.getOrDefault(name, null);
         if(current != null) {
             //current.setMicrosecondPosition(mspt);

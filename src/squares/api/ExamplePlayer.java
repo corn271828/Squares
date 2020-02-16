@@ -106,6 +106,7 @@ public class ExamplePlayer extends Thread
     private Info jorbisInfo = new Info();
 
     private boolean shouldStop = false;
+    public String path;
 
     /**
      * The programs <code>main()</code> method. Will read the first
@@ -127,6 +128,7 @@ public class ExamplePlayer extends Thread
      */
     ExamplePlayer(String pUrl)
     {
+            path = pUrl;
             configureInputStream(pUrl);
     }
 
