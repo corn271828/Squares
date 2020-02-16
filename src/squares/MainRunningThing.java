@@ -112,8 +112,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.deathCb = this::death;
 
         if (musicOn) {
-            audio.addClip("normal", "Canon_in_D_Swing.ogg")
-                 .addClip("boss",   "Megalovania_Swing.ogg");
+            audio.addClip("normal", "Canon_in_D_Swing")
+                 .addClip("boss",   "Megalovania_Swing");
         }
     }
 

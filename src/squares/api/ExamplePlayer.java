@@ -140,7 +140,7 @@ public class ExamplePlayer extends Thread
      */
     private void configureInputStream(String name)
     {
-            inputStream = new ResourceLoader("bgm", name).asInputStream(".ogg");
+            inputStream = new ResourceLoader("bgm", name).asInputStream("ogg");
     }
 
     /**
