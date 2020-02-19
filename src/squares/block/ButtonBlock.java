@@ -13,13 +13,10 @@ import java.util.List;
 import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.ImageIcon;
 
 import squares.Player;
 import squares.api.CharacterState;
-import squares.api.Coordinate;
 import squares.api.ResourceLoader;
-import squares.api.block.Block;
 import squares.api.block.LinkableBlock;
 import squares.api.block.LinkedBlock;
 

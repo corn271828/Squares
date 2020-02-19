@@ -11,7 +11,6 @@ import squares.Player;
 import squares.api.CharacterState;
 import squares.api.ResourceLoader;
 import squares.api.Direction;
-import squares.api.block.Block;
 import squares.api.block.DirectedBlock;
 
 /**

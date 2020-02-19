@@ -175,6 +175,14 @@ N       N       0       N       0       N       0
 B>1030  N       U0      0       0       V0      0
 0       B^3040  0       B^1030  0       N       O
 %%
+level
+26 bEaTsABr
+V2      O       L>      V1      U1      L>
+V0      C2030   0       L<      L>      U0
+L<      U2      L^      N       L^      Lv
+L>      V1      0       V0      N       0       
+X       0       C2030   0       0       L<
+%%
 sjbossfight
 BOSS 20 sjbossfight_easy YoUJ0snKi
 0	0	0	0	0	0	0	0	0
