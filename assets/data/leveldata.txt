@@ -183,6 +183,18 @@ L<      U2      L^      N       L^      Lv
 L>      V1      0       V0      N       0       
 X       0       C2030   0       0       L<
 %%
+level
+27 PlaTyPuS
+X       V1T     U1      V1      O
+%%
+level
+28 SaKUraSoU
+U1      U2      U0      0       O       V1
+N       X       N       V2T     V2      V0
+V1      V0T     V2      0       V0      V2T
+V0      V2T     V1T     V2T     V0      V1T
+V0T     V1      V0      V1      V1T     V2
+%%
 sjbossfight
 BOSS 20 sjbossfight_easy YoUJ0snKi
 0	0	0	0	0	0	0	0	0

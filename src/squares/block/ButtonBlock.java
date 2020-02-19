@@ -88,6 +88,7 @@ public class ButtonBlock extends BaseBlock implements LinkedBlock {
 
         private int index;
         private boolean steppable = false;
+        private boolean inv = false;
         private boolean refresh = false;
         
         public ButtonLinkedBlock(int ind) {
@@ -95,12 +96,19 @@ public class ButtonBlock extends BaseBlock implements LinkedBlock {
             index = ind;
         }
         
+        public ButtonLinkedBlock(int ind, boolean vert) {
+            super(buttonLinkedImages[ind * 2 + (vert ? 1 : 0)], "Button Linked Block");
+            index = ind;
+            inv = vert;
+            steppable = inv;
+        }
+        
         @Override
         public int getLinkIndex() { return index; }
         @Override
         public void onLinkedBlockChange() {
-            icon = buttonLinkedImages[index * 2 + 1];
-            steppable = true;
+            steppable = !inv;
+            icon = buttonLinkedImages[index * 2 + (steppable ? 1 : 0)];
             refresh = true;
         }
         
@@ -116,8 +124,8 @@ public class ButtonBlock extends BaseBlock implements LinkedBlock {
         
         @Override
         public void reset() {
-            steppable = false;
-            icon = buttonLinkedImages[index * 2];
+            steppable = inv;
+            icon = buttonLinkedImages[index * 2 + (steppable ? 1 : 0)];
         }
         
         @Override
