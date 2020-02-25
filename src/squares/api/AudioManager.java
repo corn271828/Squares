@@ -23,8 +23,11 @@ public class AudioManager {
         return setPlaying(name, 0);
     }
     public AudioManager setPlaying(String name, long mspt) {
-        if (examplePlayers.get(name).equals(current))
+        if (examplePlayers.get(name).equals(current)) {
+            if (current.hasEnded)
+                return restartPlaying(name, mspt);
             return this;
+        }
         return restartPlaying(name, mspt);
     }
     public AudioManager restartPlaying(String name, long mspt) {

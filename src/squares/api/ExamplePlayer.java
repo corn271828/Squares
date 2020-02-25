@@ -108,6 +108,8 @@ public class ExamplePlayer extends Thread
     private boolean shouldStop = false;
     public String path;
 
+    public boolean hasEnded = false;
+    
     /**
      * The programs <code>main()</code> method. Will read the first
      * command-line argument and use it as URL, after which it will start the
@@ -176,6 +178,7 @@ public class ExamplePlayer extends Thread
 
 	    // Afterwards, we clean up.
 	    cleanUp();
+            hasEnded = true;
     }
 
     /**
