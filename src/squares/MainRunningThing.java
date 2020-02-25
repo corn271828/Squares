@@ -133,6 +133,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         jText_levelCode = new javax.swing.JTextField();
         jSpinner_Level = new javax.swing.JSpinner();
         jLabel1 = new javax.swing.JLabel();
+        panel_heading = new HeadingPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -175,7 +176,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 873, Short.MAX_VALUE)
+            .addGap(0, 870, Short.MAX_VALUE)
         );
 
         jButton1.setText("R");
@@ -224,47 +225,57 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         jLabel1.setText("Level Select");
 
+        javax.swing.GroupLayout panel_headingLayout = new javax.swing.GroupLayout(panel_heading);
+        panel_heading.setLayout(panel_headingLayout);
+        panel_headingLayout.setHorizontalGroup(
+            panel_headingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 751, Short.MAX_VALUE)
+        );
+        panel_headingLayout.setVerticalGroup(
+            panel_headingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 118, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(toggle_practice)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(toggle_practice)
-                            .addComponent(jText_levelCode, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 706, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
                         .addComponent(jLabel1)
-                        .addGap(10, 10, 10)
-                        .addComponent(jSpinner_Level, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(861, 861, 861))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSpinner_Level, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jText_levelCode, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24)
+                .addComponent(panel_heading, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGap(12, 12, 12)
+                        .addComponent(toggle_practice)
+                        .addGap(0, 0, 0)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jText_levelCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(toggle_practice)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(jSpinner_Level, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)))
-                .addGap(18, 18, 18)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jText_levelCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jSpinner_Level, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(panel_heading, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -697,37 +708,6 @@ public class MainRunningThing extends javax.swing.JFrame {
         
         super.paint(g);
 
-        // Draws the stuff at the top of the screen
-        g.setColor(new Color(207, 226, 243));
-        g.fillRect(0, 0, getWidth(), 120);
-        g.setColor(Color.BLACK);
-        g.fillRect(getWidth() / 2 - 27, 48, 54, 54);
-        g.setColor(Color.WHITE);
-        g.fillRect(getWidth() / 2 - 25, 50, 50, 50);
-        g.setColor(Color.BLACK);
-        g.setFont(g.getFont().deriveFont(18f));
-        FontMetrics fm = g.getFontMetrics(g.getFont());
-        int offset = 300;
-        for(Player.HUDLine line: player.getHUDLines()) {
-            String render = String.format("%s: %s", line.key, line.getValue());
-            if (line.key.equals("")) render = line.getValue();
-            g.drawString(render, (int)((line.align - 1) * (offset - getWidth() / 2) + offset - fm.stringWidth(render) / 2), (int)(50 + 20 * line.voffset));
-        }
-/*
-        g.drawString(player.level.label,                                                getWidth() / 2 - 20, 70);
-        g.drawString(String.format("TimeStamp: %d", clock.time()),                      getWidth() - 300, 80);
-        g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"),    getWidth() - 300, 100);
-        g.drawString(String.format("Death Count (Total): %d", player.deaths),           300, 50);
-        g.drawString(String.format("Death Count (Level): %d", player.level.getDeaths()),300, 70);
-        g.drawString(String.format("Health: %d", player.hp),                            300, 90);
-        g.drawString(String.format("Level Code: %s", player.level.code),                300, 110);
-*/
-        
-        // Draws Lea
-        if (isLeaGif) {
-            LEAGIF.paintIcon(this, g, 0, 30);
-        }
-
         timeend = Instant.now();
         // Gets the block to show up on first run
         if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || player.level.getEntities().iterator().hasNext() || letsseeifthisworks || player.level instanceof BossLevel) {
@@ -754,6 +734,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSpinner jSpinner_Level;
     private javax.swing.JTextField jText_levelCode;
+    private javax.swing.JPanel panel_heading;
     private javax.swing.JToggleButton toggle_practice;
     // End of variables declaration//GEN-END:variables
  
@@ -814,6 +795,47 @@ public class MainRunningThing extends javax.swing.JFrame {
             if (clock.time() >= 314 && clock.time() <= 334) {
                 PIEPNG.paintIcon(this, currG, 10, 10);
             }
+        }
+        
+    }
+    
+    public class HeadingPanel extends javax.swing.JPanel {
+        
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            // Draws the stuff at the top of the screen
+            g.setColor(new Color(207, 226, 243));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.BLACK);
+            g.fillRect(getWidth() / 2 - 27, 38, 54, 54);
+            g.setColor(Color.WHITE);
+            g.fillRect(getWidth() / 2 - 25, 40, 50, 50);
+            g.setColor(Color.BLACK);
+            g.setFont(g.getFont().deriveFont(18f));
+            FontMetrics fm = g.getFontMetrics(g.getFont());
+            int offset = 180;
+            for(Player.HUDLine line: player.getHUDLines()) {
+                String render = String.format("%s: %s", line.key, line.getValue());
+                if (line.key.equals("")) render = line.getValue();
+                g.drawString(render, (int)((line.align - 1) * (offset - getWidth() / 2) + offset - fm.stringWidth(render) / 2), (int)(40 + 20 * line.voffset));
+            }
+    /*
+            g.drawString(player.level.label,                                                getWidth() / 2 - 20, 70);
+            g.drawString(String.format("TimeStamp: %d", clock.time()),                      getWidth() - 300, 80);
+            g.drawString("Practice Mode: ".concat(player.isPracticeMode ? "On" : "Off"),    getWidth() - 300, 100);
+            g.drawString(String.format("Death Count (Total): %d", player.deaths),           300, 50);
+            g.drawString(String.format("Death Count (Level): %d", player.level.getDeaths()),300, 70);
+            g.drawString(String.format("Health: %d", player.hp),                            300, 90);
+            g.drawString(String.format("Level Code: %s", player.level.code),                300, 110);
+    */
+
+            // Draws Lea
+            if (isLeaGif) {
+                LEAGIF.paintIcon(this, g, 0, 30);
+            }
+        
         }
         
     }
