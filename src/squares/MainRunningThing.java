@@ -127,7 +127,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     private void initComponents() {
 
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        jPanel1 = new javax.swing.JPanel();
+        jPanel1 = new PanelDrawer();
         jButton1 = new javax.swing.JButton();
         toggle_practice = new javax.swing.JToggleButton();
         jText_levelCode = new javax.swing.JTextField();
@@ -694,60 +694,8 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         }
         
-
-        ///PAINTINGG!!!
         
-        // Draws the game panel
-        jPanel1.setBackground(Color.white);
-        Graphics currG = jPanel1.getGraphics();
-        currG.setClip(clipholder);
-        
-        ((Graphics2D) currG).setBackground(player.level.getBackgroundColor(clock.time()));
-
-        currG.clearRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
-
-        player.level.drawBackground(currG, clock.time(), jPanel1, start);
-
-        for (int rowNumber = 0; rowNumber < player.level.ySize(); rowNumber++) 
-            for (int columnNumber = 0; columnNumber < player.level.xSize(); columnNumber++) 
-                if (player.level.blockAt(columnNumber, rowNumber) != null)
-                    player.level.blockAt(columnNumber, rowNumber).getIcon().paintIcon(jPanel1, currG, start.x + columnNumber * SPACING_BETWEEN_BLOCKS, start.y + rowNumber * SPACING_BETWEEN_BLOCKS);
-
-        characterIconAlive.paintIcon(jPanel1, currG, player.render.x, player.render.y);
-
-        if (player.isInvincible()) {
-            currG.setColor(new Color(0, 0, 255, clock.time() % 2 == 0 ? 50 : 100));
-            currG.fillRect(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH);
-        }
-        
-
-        // Dev tool to see ouchArea and the clip
-        if (SEE_OVERLAP) {
-            /*currG.setColor(Color.red);
-            ((Graphics2D) currG).draw(clipholder);*/
-            currG.setColor(Color.black);
-            for (Entity e : player.level.getEntities())
-                ((Graphics2D) currG).draw(e.getCollision());
-        }
-        
-        // Draws all the blasts and explosions and stuff
-        for (Entity e: player.level.getEntities()) {
-                e.draw(currG, jPanel1);
-        }
-
-        // Does the fading animations
-        if (opacity > 15) {
-            currG.setColor(new Color(transitioning.getRed(), transitioning.getGreen(), transitioning.getBlue(), opacity));
-            currG.fillRect(0, 0, jPanel1.getWidth(), jPanel1.getHeight());
-        }
-        
-        player.level.drawForeground(currG, clock.time(), jPanel1, start);
-        
-
-        // Draws the pie at frame 314
-        if (clock.time() >= 314 && clock.time() <= 334) {
-            PIEPNG.paintIcon(jPanel1, currG, 10, 10);
-        }
+        super.paint(g);
 
         // Draws the stuff at the top of the screen
         g.setColor(new Color(207, 226, 243));
@@ -810,4 +758,64 @@ public class MainRunningThing extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
  
 
+    public class PanelDrawer extends javax.swing.JPanel {
+        
+        @Override
+        public void paintComponent(Graphics currG) {
+            super.paintComponent(currG);
+            ///PAINTINGG!!!
+        
+            // Draws the game panel
+            this.setBackground(Color.white);
+
+            ((Graphics2D) currG).setBackground(player.level.getBackgroundColor(clock.time()));
+
+            currG.clearRect(0, 0, this.getWidth(), this.getHeight());
+
+            player.level.drawBackground(currG, clock.time(), this, start);
+
+            for (int rowNumber = 0; rowNumber < player.level.ySize(); rowNumber++) 
+                for (int columnNumber = 0; columnNumber < player.level.xSize(); columnNumber++) 
+                    if (player.level.blockAt(columnNumber, rowNumber) != null)
+                        player.level.blockAt(columnNumber, rowNumber).getIcon().paintIcon(jPanel1, currG, start.x + columnNumber * SPACING_BETWEEN_BLOCKS, start.y + rowNumber * SPACING_BETWEEN_BLOCKS);
+
+            characterIconAlive.paintIcon(jPanel1, currG, player.render.x, player.render.y);
+
+            if (player.isInvincible()) {
+                currG.setColor(new Color(0, 0, 255, clock.time() % 2 == 0 ? 50 : 100));
+                currG.fillRect(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH);
+            }
+
+
+            // Dev tool to see ouchArea and the clip
+            if (SEE_OVERLAP) {
+                /*currG.setColor(Color.red);
+                ((Graphics2D) currG).draw(clipholder);*/
+                currG.setColor(Color.black);
+                for (Entity e : player.level.getEntities())
+                    ((Graphics2D) currG).draw(e.getCollision());
+            }
+
+            // Draws all the blasts and explosions and stuff
+            for (Entity e: player.level.getEntities()) {
+                    e.draw(currG, jPanel1);
+            }
+
+            // Does the fading animations
+            if (opacity > 15) {
+                currG.setColor(new Color(transitioning.getRed(), transitioning.getGreen(), transitioning.getBlue(), opacity));
+                currG.fillRect(0, 0, this.getWidth(), this.getHeight());
+            }
+
+            player.level.drawForeground(currG, clock.time(), jPanel1, start);
+
+
+            // Draws the pie at frame 314
+            if (clock.time() >= 314 && clock.time() <= 334) {
+                PIEPNG.paintIcon(this, currG, 10, 10);
+            }
+        }
+        
+    }
+    
 }
