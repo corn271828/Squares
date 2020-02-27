@@ -69,6 +69,10 @@ public class MainRunningThing extends javax.swing.JFrame {
     public Area ouchArea;
 
     public static final ImageIcon characterIconAlive = new ResourceLoader("sprites", "Character").asImageIcon();
+    static {
+        if (characterIconAlive.getIconWidth() <= 1)
+            System.out.println("BRUH\n\n\n\n\n");
+    }
 
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
@@ -833,7 +837,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
             // Draws Lea
             if (isLeaGif) {
-                LEAGIF.paintIcon(this, g, 0, 30);
+                LEAGIF.paintIcon(this, g, 0, 20);
             }
         
         }

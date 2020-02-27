@@ -2,7 +2,11 @@ package squares.api;
 
 import javax.swing.ImageIcon;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 public class ResourceLoader {
     private static final String format = "assets/%s/%s";
@@ -21,7 +25,13 @@ public class ResourceLoader {
             InputStream stream = getClass().getClassLoader().getResourceAsStream(prefix + path);
             if(stream != null)
                 return new java.io.BufferedInputStream(stream);
-        }
+        } 
+        path = path.substring("assets/".length());
+        for(String prefix: prefices) {
+            InputStream stream = getClass().getClassLoader().getResourceAsStream(prefix + path);
+            if(stream != null)
+                return new java.io.BufferedInputStream(stream);
+        } 
         throw new IllegalArgumentException("Not Okay - Could not locate file: " + path);
     }
     public BufferedReader asBufferedReader() {
@@ -31,10 +41,17 @@ public class ResourceLoader {
         return javax.sound.sampled.AudioSystem.getAudioInputStream(asInputStream("wav"));
     }
     public ImageIcon asImageIcon() {
-        return new ImageIcon(suffixedPath("png"));
+        ImageIcon ret = new ImageIcon(suffixedPath("png"));
+        if (ret.getIconHeight() <= 1)
+            try {
+                ret = new ImageIcon(ImageIO.read(getClass().getClassLoader().getResource(suffixedPath("png").substring("assets/".length()))));
+            } catch (IOException ex) {
+                Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        return ret;
     }
 
     private String suffixedPath(String suffix) {
-        return suffix.lastIndexOf('.') == -1 ? path + "." + suffix : path;
+        return path.lastIndexOf('.') == -1 ? path + "." + suffix : path;
     }
 }

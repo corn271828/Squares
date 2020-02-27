@@ -5,8 +5,8 @@
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>Squares</name>
             <source-roots>
-                <root id="src.Pics.dir"/>
                 <root id="src.dir"/>
+                <root id="src.assets.dir"/>
             </source-roots>
             <test-roots>
                 <root id="test.src.dir"/>
