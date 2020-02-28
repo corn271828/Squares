@@ -195,6 +195,10 @@ V1      V0T     V2      0       V0      V2T
 V0      V2T     V1T     V2T     V0      V1T
 V0T     V1      V0      V1      V1T     V2
 %%
+level
+30 1111111
+X       N       S2007   N       O
+%%
 sjbossfight
 BOSS 20 sjbossfight_easy YoUJ0snKi
 0	0	0	0	0	0	0	0	0

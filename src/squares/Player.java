@@ -15,6 +15,7 @@ import static squares.api.RenderingConstants.CHARACTER_SPEED;
 import static squares.api.RenderingConstants.CHARACTER_WIDTH;
 import static squares.api.RenderingConstants.SPACING_BETWEEN_BLOCKS;
 import static squares.api.RenderingConstants.BORDER_WIDTH;
+import squares.block.ShankerBlock;
 
 public class Player {
     private static final int itime = 10;
@@ -55,6 +56,7 @@ public class Player {
     public Player(Clock clock, Coordinate ds) {
         this.clock = clock;
         drawingStart = ds;
+        ShankerBlock.setTime(clock);
     }
     
     public boolean isInvincible() {

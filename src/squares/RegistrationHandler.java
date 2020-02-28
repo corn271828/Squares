@@ -10,6 +10,7 @@ import squares.block.CannonBlock;
 import squares.block.EndingBlock;
 import squares.block.LauncherBlock;
 import squares.block.NormalBlock;
+import squares.block.ShankerBlock;
 import squares.level.BaseLevel;
 import squares.level.LevelLoader;
 import squares.level.SJBossFight;
@@ -39,6 +40,7 @@ public class RegistrationHandler {
         BlockFactory.addBlockType('C', CannonBlock::new);
         BlockFactory.addBlockType('U', str -> new ButtonBlock(Integer.parseInt(str)));
         BlockFactory.addBlockType('V', str -> new ButtonLinkedBlock(Integer.parseInt(str.substring(0, 1)), str.length() > 1));
+        BlockFactory.addBlockType('S', str -> new ShankerBlock(str));
 
         LevelLoader.addLevelType("sjbossfight", SJBossFight::new);
         LevelLoader.addLevelType("level",       BaseLevel::new);

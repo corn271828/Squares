@@ -1,6 +1,7 @@
 package squares.block;
 
 import javax.swing.Icon;
+import squares.api.Clock;
 import squares.api.block.Block;
 
 public abstract class BaseBlock implements Block {
@@ -28,5 +29,10 @@ public abstract class BaseBlock implements Block {
     @Override
     public Icon getIcon() {
         return icon;
+    }
+    
+    @Override
+    public boolean isOuch() {
+        return false;
     }
 }

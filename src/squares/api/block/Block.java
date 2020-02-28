@@ -6,6 +6,7 @@
 package squares.api.block;
 
 import javax.swing.Icon;
+import squares.api.Clock;
 
 /**
  *
@@ -20,5 +21,7 @@ public interface Block {
     boolean canStep();
     
     void onLand(squares.Player player);
+    
+    boolean isOuch();
 }
 

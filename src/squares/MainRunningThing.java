@@ -77,7 +77,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 104;
-    public static final boolean SEE_OVERLAP = false;
+    public static final boolean SEE_OVERLAP = true;
     public boolean musicOn = true;
 
     // Checkpoints
@@ -644,6 +644,9 @@ public class MainRunningThing extends javax.swing.JFrame {
         if (player.moveAnim(clipholder))
             landChecker();
 
+        if (!(player.level instanceof SJBossFight && !audio.running) && (clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
+            clock.increment();
+        
         // Calculates where the blasts would be
         int charYUpper = player.render.y;
         int charXLeft = player.render.x;
@@ -658,6 +661,17 @@ public class MainRunningThing extends javax.swing.JFrame {
                 ouchArea.add(blaouch);
             }
         }
+        
+        int indexxright = (charXRight - start.x) / SPACING_BETWEEN_BLOCKS;
+        int indexxleft = (int) Math.floor((charXLeft - start.x - STANDARD_ICON_WIDTH + 0.0) / SPACING_BETWEEN_BLOCKS) + 1;
+        int indexylower = (charYLower - start.y) / SPACING_BETWEEN_BLOCKS;
+        int indexyupper = (int) Math.floor((charYUpper - start.y - STANDARD_ICON_WIDTH + 0.0) / SPACING_BETWEEN_BLOCKS) + 1;
+        for (int j = Math.max(indexyupper, 0); j <= Math.min(indexylower, player.level.ySize() - 1); j++)
+            for (int i = Math.max(indexxleft, 0); i <= Math.min(indexxright, player.level.xSize() - 1); i++) {
+                if (player.level.blockAt(i, j) != null && player.level.blockAt(i, j).isOuch())
+                    ouchArea.add(new Area(new Rectangle(start.x + i * SPACING_BETWEEN_BLOCKS, start.y + j * SPACING_BETWEEN_BLOCKS,
+                        STANDARD_ICON_WIDTH, STANDARD_ICON_WIDTH)));
+            }
 
         if (tasActive && player.level instanceof SJBossFight) {
             sjbossTas.doTasStuff(start, clock.time(), player);
@@ -667,8 +681,6 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.hurt();
         }
         
-        if (!(player.level instanceof SJBossFight && !audio.running) && (clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
-            clock.increment();
 
         if (player.level.winCond(player) && !isSwitching && !(opacity > 15) && player.charState == CharacterState.NORMAL) {
             if (tasActive || player.isPracticeMode) {
@@ -683,35 +695,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             }
         }
         
-
-        // Setting clip
-        //if (player.level.shouldRefreshIcons)
-        clipholder.add(player.level.refreshAllBlockIcons(player.drawingStart));
-        
-        if (player.level instanceof BossLevel || SEE_OVERLAP) {
-            clipholder = new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight()));
-        } else {
-            for (Entity bla: player.level.getEntities()) {
-                clipholder.add(bla.getClip());
-            }
-
-            if (opacity > 15) {
-                clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
-            }
-
-            if (player.shouldRefresh()) {
-                clipholder.add(new Area(new Rectangle(player.render.x, player.render.y, CHARACTER_WIDTH, CHARACTER_WIDTH)));
-            }
-
-            if (clock.time() >= 314 && clock.time() <= 335) { // Sets clip for the pie
-                clipholder.add(new Area(new Rectangle(0, 0, PIEPNG.getIconWidth(), PIEPNG.getIconHeight())));
-            }
-
-        }
-        
-        
         super.paint(g);
 
+        
         timeend = Instant.now();
         // Gets the block to show up on first run
         if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || player.level.getEntities().iterator().hasNext() || letsseeifthisworks || player.level instanceof BossLevel) {
