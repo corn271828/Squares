@@ -665,8 +665,8 @@ public class MainRunningThing extends javax.swing.JFrame {
         for (int j = Math.max(indexyupper, 0); j <= Math.min(indexylower, player.level.ySize() - 1); j++)
             for (int i = Math.max(indexxleft, 0); i <= Math.min(indexxright, player.level.xSize() - 1); i++) {
                 if (player.level.blockAt(i, j) != null && player.level.blockAt(i, j).isOuch())
-                    ouchArea.add(new Area(new Rectangle(start.x + i * SPACING_BETWEEN_BLOCKS, start.y + j * SPACING_BETWEEN_BLOCKS,
-                        STANDARD_ICON_WIDTH, STANDARD_ICON_WIDTH)));
+                    ouchArea.add(new Area(new Rectangle(start.x + i * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH, start.y + j * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH,
+                        CHARACTER_WIDTH, CHARACTER_WIDTH)));
             }
 
         if (tasActive && player.level instanceof SJBossFight) {

@@ -188,10 +188,17 @@ level
 X       V1T     U1      V1      O
 %%
 level
-28 SaKUraSoU
+28 2222222
+X       0       0       0       0       0       0
+V0T     N       V0T     N       V0T     U0      B<303005
+V0      N       V0      N       V0      N       B<1030
+O       0       C1030   0       0       0       0
+%%
+level
+29 SaKUraSoU
 U1      U2      U0      0       O       V1
 N       X       N       V2T     V2      V0
-V1      V0T     V2      0       V0      V2T
+V1      V0T     V2      C0480   V0      V2T
 V0      V2T     V1T     V2T     V0      V1T
 V0T     V1      V0      V1      V1T     V2
 %%
