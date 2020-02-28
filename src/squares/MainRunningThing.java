@@ -69,15 +69,11 @@ public class MainRunningThing extends javax.swing.JFrame {
     public Area ouchArea;
 
     public static final ImageIcon characterIconAlive = new ResourceLoader("sprites", "Character").asImageIcon();
-    static {
-        if (characterIconAlive.getIconWidth() <= 1)
-            System.out.println("BRUH\n\n\n\n\n");
-    }
 
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;
     public static final int sleepTime = 104;
-    public static final boolean SEE_OVERLAP = true;
+    public static final boolean SEE_OVERLAP = false;
     public boolean musicOn = true;
 
     // Checkpoints
