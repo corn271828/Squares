@@ -65,7 +65,6 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     public int currentLevelHealth = 1;
 
-    public Area clipholder;
     public Area ouchArea;
 
     public static final ImageIcon characterIconAlive = new ResourceLoader("sprites", "Character").asImageIcon();
@@ -563,19 +562,16 @@ public class MainRunningThing extends javax.swing.JFrame {
     @Override
     public void paint(Graphics g) {
         timestart = Instant.now();
-        clipholder = new Area();
         ouchArea = new Area();
         if (middle.x != jPanel1.getWidth() / 2) {
             middle.x = jPanel1.getWidth() / 2;
             start.x = middle.x - (player.level.xSize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             end.x = middle.x * 2 - start.x;
-            clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
         if (middle.y != jPanel1.getHeight() / 2) {
             middle.y = jPanel1.getHeight() / 2;
             start.y = middle.y - (player.level.ySize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             end.x = middle.x * 2 - start.x;
-            clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
         if (player.level.ySize() == 0) {
@@ -628,16 +624,15 @@ public class MainRunningThing extends javax.swing.JFrame {
             opacity -= 48;
             if (opacity < 15)
                 player.charState = CharacterState.NORMAL;
-            clipholder.add(new Area(new Rectangle(0, 0, jPanel1.getWidth(), jPanel1.getHeight())));
         }
 
         player.level.tickBlocks(player, start);
-        player.level.tickEntities(player, new AABB(start, end), clipholder);
+        player.level.tickEntities(player, new AABB(start, end));
 
         player.checkFlushQueueKey();
         if (player.charState == CharacterState.NORMAL)
             player.callMove();
-        if (player.moveAnim(clipholder))
+        if (player.moveAnim())
             landChecker();
 
         if (!(player.level instanceof SJBossFight && !audio.running) && (clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))

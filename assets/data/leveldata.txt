@@ -188,7 +188,7 @@ level
 X       V1T     U1      V1      O
 %%
 level
-28 2222222
+28 InSoMNiA
 X       0       0       0       0       0       0
 V0T     N       V0T     N       V0T     U0      B<303005
 V0      N       V0      N       V0      N       B<1030
@@ -203,8 +203,13 @@ V0      V2T     V1T     V2T     V0      V1T
 V0T     V1      V0      V1      V1T     V2
 %%
 level
-30 1111111
+30 exeCUTE
 X       N       S2007   N       O
+%%
+level
+31 JAlaPEno
+X       S2007       S1512       0
+C2020   S2017       S1505       O
 %%
 sjbossfight
 BOSS 20 sjbossfight_easy YoUJ0snKi

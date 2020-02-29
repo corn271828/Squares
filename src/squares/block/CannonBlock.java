@@ -104,13 +104,5 @@ public class CannonBlock extends BaseBlock implements FiringBlock, TargetingBloc
             return new Area(new Rectangle(getX() + 1, getY() + 1, 14, 14));
         }
 
-        @Override
-        public Area getClip() {
-            Area a = new Area(new Rectangle(getX() - 1, getY() - 1, 20, 20));
-            a.add(new Area(new Rectangle((int) (getX() - 1 - getSpeed() * Math.cos(angle)), 
-                    (int) (getY() - 1 - getSpeed() * Math.sin(angle)), 20, 20)));
-            return a;
-        }
-
     }
 }

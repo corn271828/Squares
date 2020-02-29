@@ -153,20 +153,6 @@ public class BlasterBlock extends BaseBlock implements DirectedBlock, FiringBloc
             throw new IllegalStateException();
         }
 
-        @Override
-        public Area getClip() {
-            switch (direction) {
-            case LEFT:
-                return new Area(new Rectangle(getX() - 1, getY() - 1, 43 + getSpeed(), 19));
-            case RIGHT:
-                return new Area(new Rectangle(getX() - 1 - getSpeed(), getY() - 1, 43 + getSpeed(), 19));
-            case DOWN:
-                return new Area(new Rectangle(getX() - 1, getY() - 1 - getSpeed(), 19, 43 + getSpeed()));
-            case UP:
-                return new Area(new Rectangle(getX() - 1, getY() - 1, 19, 43 + getSpeed()));
-            }
-            throw new IllegalStateException();
-        }
     }
     @Override
     public Direction getDirection() {

@@ -74,15 +74,6 @@ public class LineExploderTester extends BaseLevel.LineExploder implements Resett
             return new Area();
     }
 
-    @Override
-    public Area getClip() {
-        if (clock.time() <= starttime + 10) {
-            return new Area(tx.createTransformedShape(new Rectangle(xregister - sans_width / 2, yregister - sans_height / 2, sans_width, sans_height)));
-        } else {
-            return new Area(tx.createTransformedShape(new Rectangle(xregister - sans_width / 2, yregister - sans_height / 2, sans_width, 1000)));
-        }
-    }
-
     
     @Override
     public void resetToOrigin() {

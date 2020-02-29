@@ -142,7 +142,7 @@ public class Player {
         queueKey = -12345;
     }
     
-    public boolean moveAnim(Area clipholder) {
+    public boolean moveAnim() {
         // Checks to see if the character is still moving
         int currSpeed = charState == CharacterState.MOVING ? CHARACTER_SPEED : charState == CharacterState.FASTMOVING ? CHARACTER_FASTSPEED : 0;
         if (currSpeed == 0)
@@ -160,8 +160,6 @@ public class Player {
             } else 
                 render.y += render.y > target.y ? -currSpeed : currSpeed;
         }
-        clipholder.add(new Area(new Rectangle(render.x - currSpeed, render.y - currSpeed, 
-                CHARACTER_WIDTH + 2 * currSpeed,  CHARACTER_WIDTH + 2 * currSpeed)));
         
         return render.x == target.x && render.y == target.y; // for landchecker
     }

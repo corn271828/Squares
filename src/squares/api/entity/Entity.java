@@ -11,8 +11,7 @@ public abstract class Entity {
         xpos = x;
         ypos = y;
     }
-
-    public abstract Area getClip();
+    
     public abstract Area getCollision();
 
     public int getX()     { return xpos; }

@@ -138,7 +138,7 @@ public class BaseLevel extends Level {
     }
     
     @Override
-    public void tickEntities(squares.Player player, AABB check, Area clipholder) {
+    public void tickEntities(squares.Player player, AABB check) {
         List<Entity> toAdd = new ArrayList<>();
         for (Iterator<Entity> it = blasts.iterator(); it.hasNext();) {
             Entity bla = it.next();
@@ -158,7 +158,6 @@ public class BaseLevel extends Level {
                     }
                     toAdd.add(((HighExplosion) bla).getLineExplosion(player.clock.time(), holdangle, bla.getX(), bla.getY()));
                 }
-                clipholder.add(bla.getClip());
                 onEntityRemove(bla);
                 it.remove();
             }
@@ -266,11 +265,6 @@ public class BaseLevel extends Level {
 
         @Override
         public Area getCollision() {
-            return new Area();
-        }
-
-        @Override
-        public Area getClip() {
             return new Area();
         }
 

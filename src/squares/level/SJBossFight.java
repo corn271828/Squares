@@ -218,39 +218,6 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     @Override
     public void drawBackground(Graphics g, int timestamp, Component c, Coordinate start) {}
 
-    public Area getForegroundClip(int timestamp, Component c, Coordinate start) {
-        Area ret = new Area();
-        if (timestamp >= 165 && timestamp < 177)
-            ret.add(new Area(new Rectangle(start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    start.y, warningIcon.getIconWidth(), warningIcon.getIconHeight())));
-
-        if (timestamp >= 500 && timestamp < 511)
-            ret.add(new Area(new Rectangle(start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    start.y, warningIcon.getIconWidth(), warningIcon.getIconHeight())));
-
-        if (timestamp >= 520 && timestamp < 531)
-            ret.add(new Area(new Rectangle(start.x + SPACING_BETWEEN_BLOCKS * 6 + STANDARD_ICON_WIDTH, 
-                    start.y + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2,
-                    warningIcon.getIconWidth(), warningIcon.getIconHeight())));
-
-        if (timestamp >= 540 && timestamp < 551)
-            ret.add(new Area(new Rectangle(start.x, 
-                    start.y + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconHeight() / 2,
-                    warningIcon.getIconWidth(), warningIcon.getIconHeight())));
-
-        if (timestamp >= 560 && timestamp < 571)
-            ret.add(new Area(new Rectangle(start.x + SPACING_BETWEEN_BLOCKS * 4 + STANDARD_ICON_WIDTH / 2 - warningIcon.getIconWidth() / 2, 
-                    start.y + SPACING_BETWEEN_BLOCKS * 5 + STANDARD_ICON_WIDTH,
-                    warningIcon.getIconWidth(), warningIcon.getIconHeight())));
-
-        if (timestamp <= FIRST_BOSS_TIME)
-            ret.add(new Area(new Rectangle(c.getWidth() * (timestamp - 1) / FIRST_BOSS_TIME, 0, c.getWidth() * 2 / FIRST_BOSS_TIME, 10)));
-        else
-            ret.add(new Area(new Rectangle(c.getWidth() * (timestamp - 1 - FIRST_BOSS_TIME) / SECOND_BOSS_TIME, 10, c.getWidth() * 2 / FIRST_BOSS_TIME, 10)));
-
-        return ret;
-    }
-
     @Override
     public void drawForeground(Graphics g, int timestamp, Component c, Coordinate start) {
         Area ret = new Area();
@@ -321,8 +288,8 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
     @Override
-    public void tickEntities(squares.Player player, AABB check, Area clipholder) {
-        super.tickEntities(player, check, clipholder);
+    public void tickEntities(squares.Player player, AABB check) {
+        super.tickEntities(player, check);
         blasts.addAll(generateBlasts(clock.time(), player.render, new Coordinate(check.lx, check.ly)));
         blasts.addAll(generateLines(clock.time(), player.render, new Coordinate(check.lx, check.ly)));
     }
@@ -413,16 +380,6 @@ public class SJBossFight extends BaseLevel implements BossLevel {
         }
 
         @Override
-        public Area getClip() {
-            Area a = new Area(tx.createTransformedShape(new Rectangle(xregister - picwidth / 2 - 1, yregister - picheight / 2 - 1, picwidth + 2, picheight + 2)));
-            Area hold = new Area(a);
-            a.add(oldArea);
-            oldArea = hold;
-
-            return a;
-        }
-
-        @Override
         public void draw(Graphics g, Component jp) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.rotate(angle);
@@ -481,16 +438,6 @@ public class SJBossFight extends BaseLevel implements BossLevel {
             yvelocity += yaccel;
             moveOffset((int) xvelocity, (int)yvelocity);
             updateRegister();
-        }
-
-        @Override
-        public Area getClip() {
-            Area a = new Area(tx.createTransformedShape(new Rectangle(xregister - picwidth / 2 - 1, yregister - picheight / 2 - 1, picwidth + 2, picheight + 2)));
-            Area hold = new Area(a);
-            a.add(oldArea);
-            oldArea = hold;
-
-            return a;
         }
         
         @Override
@@ -571,11 +518,6 @@ public class SJBossFight extends BaseLevel implements BossLevel {
 
             @Override
             public Area getCollision() {
-                return new Area(tx.createTransformedShape(new Rectangle(xregister - width / 2, yregister, width, 1000)));
-            }
-
-            @Override
-            public Area getClip() {
                 return new Area(tx.createTransformedShape(new Rectangle(xregister - width / 2, yregister, width, 1000)));
             }
         }
