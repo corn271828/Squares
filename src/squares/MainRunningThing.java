@@ -559,8 +559,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
     }
 
-    @Override
-    public void paint(Graphics g) {
+    public void prepainting() {
         timestart = Instant.now();
         ouchArea = new Area();
         if (middle.x != jPanel1.getWidth() / 2) {
@@ -589,8 +588,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             start.x = middle.x - (player.level.xSize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
             start.y = middle.y - (player.level.ySize() - 1) * SPACING_BETWEEN_BLOCKS / 2 - STANDARD_ICON_WIDTH / 2;
         }
-
-        // Does the level switching / restarting stuff
+    }
+    
+    public void levelSwitching() {
         if (isSwitching) {
             if (opacity < 240) {
                 opacity += 48;
@@ -625,7 +625,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             if (opacity < 15)
                 player.charState = CharacterState.NORMAL;
         }
-
+    }
+    
+    public void playerprimer() {
         player.level.tickBlocks(player, start);
         player.level.tickEntities(player, new AABB(start, end));
 
@@ -634,10 +636,10 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.callMove();
         if (player.moveAnim())
             landChecker();
-
-        if (!(player.level instanceof SJBossFight && !audio.running) && (clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
-            clock.increment();
-        
+    }
+    
+    
+    public void ouchifactor() {
         // Calculates where the blasts would be
         int charYUpper = player.render.y;
         int charXLeft = player.render.x;
@@ -663,7 +665,10 @@ public class MainRunningThing extends javax.swing.JFrame {
                     ouchArea.add(new Area(new Rectangle(start.x + i * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH, start.y + j * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH,
                         CHARACTER_WIDTH, CHARACTER_WIDTH)));
             }
-
+    }
+    
+    public void tasnouchnfin() {
+        
         if (tasActive && player.level instanceof SJBossFight) {
             sjbossTas.doTasStuff(start, clock.time(), player);
         }
@@ -685,10 +690,10 @@ public class MainRunningThing extends javax.swing.JFrame {
                 levelFinished();
             }
         }
-        
-        super.paint(g);
-
-        
+    }
+    
+    public void postpainting() {
+               
         timeend = Instant.now();
         // Gets the block to show up on first run
         if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || player.level.getEntities().iterator().hasNext() || letsseeifthisworks || player.level instanceof BossLevel) {
@@ -705,6 +710,28 @@ public class MainRunningThing extends javax.swing.JFrame {
             shouldRepaint = false;
             repaint();
         }
+    }
+    
+    @Override
+    public void paint(Graphics g) {
+
+        prepainting();
+        
+        // Does the level switching / restarting stuff
+        levelSwitching();
+
+        playerprimer();
+
+        if (!(player.level instanceof SJBossFight && !audio.running) && (clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
+            clock.increment();
+        
+        ouchifactor();
+        
+        tasnouchnfin();
+        
+        super.paint(g);
+
+        postpainting();
 
     }
 
