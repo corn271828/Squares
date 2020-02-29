@@ -13,6 +13,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Timer;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -60,7 +61,6 @@ public class MainRunningThing extends javax.swing.JFrame {
     public Coordinate middle = new Coordinate(0, 0); // middle of panel
     public Coordinate start  = new Coordinate(0, 0); // where to start drawing block
     public Coordinate end    = new Coordinate(0, 0); // Border of block drawings; used to determine when ammunition disappears
-    public boolean shouldRepaint = false;
     public Clock clock;
 
     public int currentLevelHealth = 1;
@@ -88,6 +88,8 @@ public class MainRunningThing extends javax.swing.JFrame {
     
     // All the levels. All of them.
     public LevelLoader levelLoader;
+    Timer timertaskerer;
+    boolean butwhy;
 
     /**
      * Creates new form MainRunningThing
@@ -114,6 +116,9 @@ public class MainRunningThing extends javax.swing.JFrame {
             audio.addClip("normal", "Canon_in_D_Swing")
                  .addClip("boss",   "Megalovania_Swing");
         }
+        
+        timertaskerer = new Timer();
+        timertaskerer.schedule(new TickTaskYeah(), sleepTime, sleepTime);
     }
 
     /**
@@ -292,7 +297,6 @@ public class MainRunningThing extends javax.swing.JFrame {
             isSwitching = true;
             opacity = 10;
             transitioning = new Color(180, 180, 180);
-            repaint();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -316,7 +320,6 @@ public class MainRunningThing extends javax.swing.JFrame {
                     isSwitching = true;
                     opacity = 10;
                     transitioning = new Color(180, 180, 180);
-                    repaint();
                 }
                 break;
             case 'P': // toggle practice mode
@@ -345,8 +348,6 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
         
         player.setQueueKey(evt.getKeyCode());
-        
-        repaint();
     }//GEN-LAST:event_jPanel1KeyReleased
 
     private void jPanel1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPanel1FocusLost
@@ -535,16 +536,13 @@ public class MainRunningThing extends javax.swing.JFrame {
         isSwitching = true;
         opacity = 10;
         transitioning = new Color(255, 255, 255);
-        repaint();
     }
-
 
     // death cb
     public void death(Player p) {
         isSwitching = true;
         opacity = 10;
         transitioning = new Color(0, 0, 0);
-        repaint();
     }
 
     //  checks the character when the character lands at its destination
@@ -555,7 +553,6 @@ public class MainRunningThing extends javax.swing.JFrame {
             player.level.blockAt(player.position.x, player.position.y).onLand(player);
             player.target.x = start.x + player.position.x * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
             player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
-            shouldRepaint = true;
         }
     }
 
@@ -634,8 +631,10 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.checkFlushQueueKey();
         if (player.charState == CharacterState.NORMAL)
             player.callMove();
-        if (player.moveAnim())
+        if (player.moveAnim()) {
+            butwhy = true;
             landChecker();
+        }
     }
     
     
@@ -685,7 +684,6 @@ public class MainRunningThing extends javax.swing.JFrame {
                 isSwitching = true;
                 opacity = 10;
                 transitioning = new Color(180, 180, 180);
-                repaint();
             } else {
                 levelFinished();
             }
@@ -694,27 +692,18 @@ public class MainRunningThing extends javax.swing.JFrame {
     
     public void postpainting() {
                
-        timeend = Instant.now();
+        //timeend = Instant.now();
         // Gets the block to show up on first run
-        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || shouldRepaint || player.level.getEntities().iterator().hasNext() || letsseeifthisworks || player.level instanceof BossLevel) {
+        if (opacity > 15 || player.render.x != player.target.x || player.render.y != player.target.y || player.level.getEntities().iterator().hasNext() || letsseeifthisworks || player.level instanceof BossLevel) {
             if (letsseeifthisworks) {
                 letsseeifthisworks = false;
             }
-            long millitime = Duration.between(timestart, timeend).toMillis();
-            try {
-                if (millitime < sleepTime)
-                    Thread.sleep(sleepTime - millitime);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MainRunningThing.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            }
-            shouldRepaint = false;
-            repaint();
         }
     }
     
     @Override
     public void paint(Graphics g) {
-
+        
         prepainting();
         
         // Does the level switching / restarting stuff
@@ -722,8 +711,10 @@ public class MainRunningThing extends javax.swing.JFrame {
 
         playerprimer();
 
-        if (!(player.level instanceof SJBossFight && !audio.running) && (clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
+        if (!(player.level instanceof SJBossFight && !audio.running) && ((player.level.getEntities().iterator().hasNext() || butwhy) && clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
             clock.increment();
+        
+        butwhy = false;
         
         ouchifactor();
         
@@ -747,6 +738,15 @@ public class MainRunningThing extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
  
 
+    public class TickTaskYeah extends java.util.TimerTask {
+
+        @Override
+        public void run() {
+            repaint();
+        }
+        
+    }
+    
     public class PanelDrawer extends javax.swing.JPanel {
         
         @Override
