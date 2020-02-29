@@ -701,30 +701,6 @@ public class MainRunningThing extends javax.swing.JFrame {
         }
     }
     
-    @Override
-    public void paint(Graphics g) {
-        
-        prepainting();
-        
-        // Does the level switching / restarting stuff
-        levelSwitching();
-
-        playerprimer();
-
-        if (!(player.level instanceof SJBossFight && !audio.running) && ((player.level.getEntities().iterator().hasNext() || butwhy) && clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
-            clock.increment();
-        
-        butwhy = false;
-        
-        ouchifactor();
-        
-        tasnouchnfin();
-        
-        super.paint(g);
-
-        postpainting();
-
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
@@ -741,8 +717,26 @@ public class MainRunningThing extends javax.swing.JFrame {
     public class TickTaskYeah extends java.util.TimerTask {
 
         @Override
-        public void run() {
+        public void run() {        
+            prepainting();
+
+            // Does the level switching / restarting stuff
+            levelSwitching();
+
+            playerprimer();
+
+            if (!(player.level instanceof SJBossFight && !audio.running) && ((player.level.getEntities().iterator().hasNext() || butwhy) && clock.time() >= 1 || player.charState == CharacterState.MOVING || player.charState == CharacterState.FASTMOVING || tasActive || !isSwitching && player.level instanceof SJBossFight))
+                clock.increment();
+
+            butwhy = false;
+
+            ouchifactor();
+
+            tasnouchnfin();
+            
             repaint();
+            
+            postpainting();
         }
         
     }
