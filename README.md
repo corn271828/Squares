@@ -15,7 +15,7 @@ P - toggle practice mode (100 lives) (requires restart)
 
 K - skip level
 
-T - activates autoplay (boss level only) (doesn't work right now don't try it)
+T - activates autoplay (boss level only)
 
 C - adds a checkpoint in practice mode (boss level only) (possibly works?)
 
