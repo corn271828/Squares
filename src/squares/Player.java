@@ -2,6 +2,8 @@ package squares;
 
 import java.awt.Rectangle;
 import java.awt.geom.Area;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.function.Consumer;
 
 import squares.api.CharacterState;
@@ -20,7 +22,9 @@ import squares.block.ShankerBlock;
 public class Player {
     private static final int itime = 10;
     private static final int PRACTICE_MODE_LIVES = 100;
-
+    
+    Instant firststart;
+    
     public CharacterState charState = CharacterState.NORMAL;
     public Coordinate position = new Coordinate(0, 0); // Target pos, grid coords
     public Coordinate target   = new Coordinate(0, 0); // Target position of the character in panel coordinates
@@ -48,8 +52,9 @@ public class Player {
         new HUDLine("Death Count (level)", 1, 1.0),
         new HUDLine("HP",                  1, 2.0),
         new HUDLine("Level Code",          1, 3.0),
-        new HUDLine("Current Tick",       -1, 1.0),
-        new HUDLine("Practice Mode",      -1, 2.0),
+        new HUDLine("Current Tick",       -1, 0.5),
+        new HUDLine("Total Time",         -1, 1.5),
+        new HUDLine("Practice Mode",      -1, 2.5),
         new HUDLine("",               0, 1.0),
     };
 
@@ -189,8 +194,9 @@ public class Player {
         hud[2].value = String.valueOf(hp);
         hud[3].value = level.code;
         hud[4].value = String.valueOf(clock.time());
-        hud[5].value = isPracticeMode ? "ON" : "OFF";
-        hud[6].value = level.label;
+        hud[5].value = String.valueOf(Duration.between(firststart, Instant.now()).toSeconds());
+        hud[6].value = isPracticeMode ? "ON" : "OFF";
+        hud[7].value = level.label;
         return hud;
     }
     static class HUDLine {

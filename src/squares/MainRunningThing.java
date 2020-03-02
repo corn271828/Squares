@@ -40,7 +40,7 @@ import static squares.api.RenderingConstants.*;
 public class MainRunningThing extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 3017531681090479808L;
-
+    
     Instant timestart;
     Instant timeend;
 
@@ -119,6 +119,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         
         timertaskerer = new Timer();
         timertaskerer.schedule(new TickTaskYeah(), sleepTime, sleepTime);
+        player.firststart = Instant.now();
     }
 
     /**
