@@ -50,7 +50,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public AudioManager audio = new AudioManager();
 
     // Level indices
-    public int maxLevelIndex = 0;
+    public int maxLevelIndex = 34;
     public int holdLevelIndex = maxLevelIndex;
 
 
@@ -514,6 +514,7 @@ public class MainRunningThing extends javax.swing.JFrame {
         player.target.y = start.y + player.position.y * SPACING_BETWEEN_BLOCKS + BORDER_WIDTH;
         player.render.x = player.target.x;
         player.render.y = player.target.y;
+        player.isPracticeMode = toggle_practice.isSelected();
         clock.reset();
         if (player.level instanceof BossLevel && !tasActive) {
             if (player.isPracticeMode && checkpointTimes.size() > 0) {
@@ -522,7 +523,6 @@ public class MainRunningThing extends javax.swing.JFrame {
                 clock.setTime(bossTestStartTime);
             }
         }
-        player.isPracticeMode = toggle_practice.isSelected();
         player.level.setup(player);
         if (musicOn) {
             player.level.setupMusic(audio, clock);
