@@ -194,7 +194,7 @@ public class Player {
         hud[2].value = String.valueOf(hp);
         hud[3].value = level.code;
         hud[4].value = String.valueOf(clock.time());
-        hud[5].value = String.valueOf(Duration.between(firststart, Instant.now()).toSeconds());
+        hud[5].value = String.valueOf(Duration.between(firststart, Instant.now()).toMillis() / 1000);
         hud[6].value = isPracticeMode ? "ON" : "OFF";
         hud[7].value = level.label;
         return hud;
