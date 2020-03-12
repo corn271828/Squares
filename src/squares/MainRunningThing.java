@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.time.Duration;
 import java.time.Instant;
@@ -748,6 +749,16 @@ public class MainRunningThing extends javax.swing.JFrame {
         public void paintComponent(Graphics currG) {
             super.paintComponent(currG);
             ///PAINTINGG!!!
+            
+            int minpanelwidth = STANDARD_ICON_WIDTH + (player.level.xSize() - 1) * SPACING_BETWEEN_BLOCKS;
+            int minpanelheight = STANDARD_ICON_WIDTH + (player.level.ySize() - 1) * SPACING_BETWEEN_BLOCKS;
+            
+            
+            double scale = Math.min(1, (jPanel1.getWidth() + 0.0) / minpanelwidth);
+            scale = Math.min(scale, (jPanel1.getHeight() + 0.0) / minpanelheight);
+            ((Graphics2D) currG).translate(jPanel1.getWidth() / 2, jPanel1.getHeight() / 2);
+            ((Graphics2D) currG).scale(scale, scale);
+            ((Graphics2D) currG).translate(-jPanel1.getWidth() / 2, -jPanel1.getHeight() / 2);
         
             // Draws the game panel
             this.setBackground(Color.white);

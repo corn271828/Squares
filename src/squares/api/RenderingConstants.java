@@ -10,6 +10,6 @@ public final class RenderingConstants {
     public static final int CHARACTER_SPEED = 30;
     public static final int CHARACTER_FASTSPEED = 60;
     public static final int PIXELS_PER_INCH = 96;
-
+    
     private RenderingConstants() {}
 }
