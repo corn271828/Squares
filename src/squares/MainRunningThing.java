@@ -753,6 +753,10 @@ public class MainRunningThing extends javax.swing.JFrame {
             int minpanelwidth = STANDARD_ICON_WIDTH + (player.level.xSize() - 1) * SPACING_BETWEEN_BLOCKS;
             int minpanelheight = STANDARD_ICON_WIDTH + (player.level.ySize() - 1) * SPACING_BETWEEN_BLOCKS;
             
+            if (player.level instanceof BossLevel) {
+                minpanelwidth  -= 4 * SPACING_BETWEEN_BLOCKS;
+                minpanelheight -= 4 * SPACING_BETWEEN_BLOCKS;
+            }
             
             double scale = Math.min(1, (jPanel1.getWidth() + 0.0) / minpanelwidth);
             scale = Math.min(scale, (jPanel1.getHeight() + 0.0) / minpanelheight);
