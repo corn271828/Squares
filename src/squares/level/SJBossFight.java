@@ -69,6 +69,7 @@ public class SJBossFight extends BaseLevel implements BossLevel {
 
     private int endtime, levelHP;
     static public Clock clock;
+    ResourceLoader input;
 
     public SJBossFight(String[][] in, String[] args, BlockFactory bf) {
         this(in, args[0], Integer.parseInt(args[1]), new ResourceLoader("bossdata", args[2]), args[3], bf);
@@ -77,8 +78,8 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     public SJBossFight(String[][] in, String label, int hp, ResourceLoader input, String code, BlockFactory bf) {
         super(in, label, code, bf);
         this.endtime = FIRST_BOSS_TIME + SECOND_BOSS_TIME;
-        generateMaps(parseControls(input));
         levelHP = hp;
+        this.input = input;
     }
 
     private void generateMaps(String[] controls) {
@@ -179,6 +180,8 @@ public class SJBossFight extends BaseLevel implements BossLevel {
 
 
     public List<? extends Projectile> generateBlasts(int timestamp, Coordinate render, Coordinate start) {
+        if (allTheBlasts.size() < 2)
+            generateMaps(parseControls(input));
         if (timestamp > endtime || timestamp <= 0)
             return new ArrayList<>();
         List<FlyingBone> temp = allTheBlasts.subList(timeToBlastIndex[timestamp - 1], timeToBlastIndex[timestamp]);
@@ -188,6 +191,8 @@ public class SJBossFight extends BaseLevel implements BossLevel {
     }
 
     public List<? extends LineExploder> generateLines(int timestamp, Coordinate render, Coordinate start) {
+        if (allTheLines.size() < 2)
+            generateMaps(parseControls(input));
         if (timestamp > endtime || timestamp <= 0)
             return new ArrayList<>();
         List<BaseLevel.LineExploder> temp = allTheLines.subList(timeToLinesIndex[timestamp - 1], timeToLinesIndex[timestamp]);
