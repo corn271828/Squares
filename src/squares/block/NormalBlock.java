@@ -17,7 +17,7 @@ import squares.api.block.Block;
  */
 public class NormalBlock extends BaseBlock {
 
-    public static final ImageIcon normalBlockIcon = new ResourceLoader("sprites", "Normal Block").asImageIcon();
+    public static final ImageIcon normalBlockIcon = new ResourceLoader("sprites/block", "normal").asImageIcon();
 
     public NormalBlock() {
         super(normalBlockIcon, "Normal Block");

@@ -28,7 +28,7 @@ public class CannonBlock extends BaseBlock implements FiringBlock, TargetingBloc
     public int cannonballSpeed; //pixels per timestamp
     public int delay;
     public int targetX, targetY;
-    public static final ImageIcon cannonBlockIcon = new ResourceLoader("sprites", "Aiming Cannon Base").asImageIcon();
+    public static final ImageIcon cannonBlockIcon = new ResourceLoader("sprites/block", "cannon").asImageIcon();
 
     public CannonBlock(String arg) {
         this(
@@ -85,7 +85,7 @@ public class CannonBlock extends BaseBlock implements FiringBlock, TargetingBloc
     }
 
     public static class Cannonball extends Projectile {
-        protected static final ImageIcon cannonballPic = new ImageIcon(new ResourceLoader("sprites", "Cannonball").asImageIcon().getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
+        protected static final ImageIcon cannonballPic = new ImageIcon(new ResourceLoader("sprites", "cannonball").asImageIcon().getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH));
         public double angle; // angle in radians; think reflected unit circle
         public static final int CANNONBALL_RADIUS = 9;
 

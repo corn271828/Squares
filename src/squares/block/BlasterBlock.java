@@ -58,7 +58,7 @@ public class BlasterBlock extends BaseBlock implements DirectedBlock, FiringBloc
     private static ImageIcon getIconByDirection(Direction d) {
         int i = d.ordinal();
         if(blasterBlocks[i] == null)
-            blasterBlocks[i] = new ResourceLoader("sprites", String.format("Blaster Block %s", d.name)).asImageIcon();
+            blasterBlocks[i] = new ResourceLoader("sprites/block", "blaster_" + d.name.toLowerCase()).asImageIcon();
         return blasterBlocks[i];
     }
 
@@ -129,7 +129,7 @@ public class BlasterBlock extends BaseBlock implements DirectedBlock, FiringBloc
         private static Icon getIconByDirection(Direction d) {
             int i = d.ordinal();
             if(blastIcons[i] == null)
-                blastIcons[i] = new ResourceLoader("sprites", String.format("Slow Blast %s", d.name)).asImageIcon();
+                blastIcons[i] = new ResourceLoader("sprites", "slow_blast_" + d.name.toLowerCase()).asImageIcon();
             return blastIcons[i];
         }
 

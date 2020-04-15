@@ -18,7 +18,7 @@ import squares.api.CharacterState;
  */
 
 public class EndingBlock extends BaseBlock {
-    public static final ImageIcon endingBlockIcon = new ResourceLoader("sprites", "Ending Block").asImageIcon();
+    public static final ImageIcon endingBlockIcon = new ResourceLoader("sprites/block", "ending").asImageIcon();
 
     public EndingBlock() {
         super(endingBlockIcon, "End Block");

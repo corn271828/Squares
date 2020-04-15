@@ -51,7 +51,7 @@ public class MainRunningThing extends javax.swing.JFrame {
     public AudioManager audio = new AudioManager();
 
     // Level indices
-    public int maxLevelIndex = 0;
+    public int maxLevelIndex = 50;
     public int holdLevelIndex = maxLevelIndex;
 
 
@@ -68,7 +68,7 @@ public class MainRunningThing extends javax.swing.JFrame {
 
     public Area ouchArea;
 
-    public static final ImageIcon characterIconAlive = new ResourceLoader("sprites", "Character").asImageIcon();
+    public static final ImageIcon characterIconAlive = new ResourceLoader("sprites", "character").asImageIcon();
 
     // Dev tools for testing stuff
     public static final int bossTestStartTime = 0;

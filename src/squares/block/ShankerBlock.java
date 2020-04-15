@@ -33,7 +33,7 @@ public class ShankerBlock extends BaseBlock {
     private static Clock time;
     static {
         try {
-            BufferedImage all = ImageIO.read(new ResourceLoader("sprites", "Shanker Block").asInputStream("png"));
+            BufferedImage all = ImageIO.read(new ResourceLoader("sprites/block", "shanker").asInputStream("png"));
             for (int i = 0; i < 3; i++) {
                 shankerPics[i] = new ImageIcon(all.getSubimage(0, i * PIXELS_PER_INCH - (i == 0 ? 0 : 1), STANDARD_ICON_WIDTH, STANDARD_ICON_WIDTH));
             }

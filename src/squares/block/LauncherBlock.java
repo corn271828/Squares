@@ -30,7 +30,7 @@ public class LauncherBlock extends BaseBlock implements DirectedBlock {
     private static ImageIcon getIconByDirection(Direction d) {
         int i = d.ordinal();
         if(launcherBlocks[i] == null)
-            launcherBlocks[i] = new ResourceLoader("sprites", String.format("Launcher Block %s", d.name)).asImageIcon();
+            launcherBlocks[i] = new ResourceLoader("sprites/block", "launcher_" + d.name.toLowerCase()).asImageIcon();
         return launcherBlocks[i];
     }
 
